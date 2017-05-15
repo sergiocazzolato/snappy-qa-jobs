@@ -17,12 +17,10 @@ if [ $ARCHITECTURE == "amd64" ]; then
 	ASSERTION=nested-amd64.model
     QEMU=qemu-system-x86_64
     SPREAD_SYS=ubuntu-core-16-64
-    PORT=8022
 elif [ $ARCHITECTURE == "i386" ]; then
 	ASSERTION=nested-i386.model
     QEMU=qemu-system-i386
     SPREAD_SYS=ubuntu-core-16-32
-    PORT=8023
 else
 	echo "Architecture $ARCHITECTURE not supported"
 	exit 1
