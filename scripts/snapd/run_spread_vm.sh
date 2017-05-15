@@ -4,6 +4,7 @@ set -ex
 ARCHITECTURE=$1
 CHANNEL=$2
 SPREAD_SUITE=$3
+USE_PROXY=$4
 SNAPD_URL=https://github.com/snapcore/snapd
 SPREAD_URL=http://people.canonical.com/~sjcazzol/snappy/spread-amd64.tar.gz
 
@@ -33,10 +34,12 @@ wget $SPREAD_URL
 
 # Configura the proxy
 
-export http_proxy=http://squid.internal:3128
-export HTTP_PROXY=http://squid.internal:3128
-export https_proxy=https://squid.internal:3128
-export HTTPS_PROXY=https://squid.internal:3128
+if [ $USE_PROXY == "USE_PROXY" ]; then
+    export http_proxy=http://squid.internal:3128
+    export HTTP_PROXY=http://squid.internal:3128
+    export https_proxy=https://squid.internal:3128
+    export HTTPS_PROXY=https://squid.internal:3128
+fi
 
 # Install the dependencies
 
@@ -62,15 +65,18 @@ sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyCheckin
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo test:ubuntu | sudo chpasswd'
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo "test ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/create-user-test'
 
-# Create file with proxy variables
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo cp /etc/environment /root/testenv"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\http_proxy=http://squid.internal:3128' /root/testenv"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\https_proxy=https://squid.internal:3128' /root/testenv"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\HTTP_PROXY=http://squid.internal:3128' /root/testenv"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\HTTPS_PROXY=https://squid.internal:3128' /root/testenv"
 
-# Prepare to mount the proxy variables permanently
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "cat <<EOF > etc-environment.mount
+# Create file with proxy variables
+if [ $USE_PROXY == "USE_PROXY" ]; then
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo cp /etc/environment /root/testenv"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\http_proxy=http://squid.internal:3128' /root/testenv"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\https_proxy=https://squid.internal:3128' /root/testenv"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\HTTP_PROXY=http://squid.internal:3128' /root/testenv"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\HTTPS_PROXY=https://squid.internal:3128' /root/testenv"
+
+
+    # Prepare to mount the proxy variables permanently
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "cat <<EOF > etc-environment.mount
 [Unit]
 Description=Mount unit for snapd proxy
 
@@ -84,11 +90,12 @@ Options=nodev,ro,bind
 WantedBy=multi-user.target
 EOF"
 
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo mv ~/etc-environment.mount /etc/systemd/system/etc-environment.mount"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl enable etc-environment.mount"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl start etc-environment.mount"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl stop snapd.service snapd.socket"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl start snapd.service snapd.socket"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo mv ~/etc-environment.mount /etc/systemd/system/etc-environment.mount"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl enable etc-environment.mount"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl start etc-environment.mount"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl stop snapd.service snapd.socket"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl start snapd.service snapd.socket"
+fi 
 
 # Run Spread tests
 tar xzvf spread-amd64.tar.gz
