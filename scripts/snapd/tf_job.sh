@@ -10,7 +10,6 @@ WORKSPACE=$(pwd)
 RESULTS=$WORKSPACE/results
 mkdir $RESULTS
 
-HTTPS_PROXY=https://squid.internal:3128 git clone https://github.com/sergiocazzolato/snappy-jenkins-jobs.git
 JOB_DATA=/var/snap/testflinger-cli/current
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
@@ -30,7 +29,5 @@ sudo cp job.yaml $JOB_DATA/job.yaml
 JOB_ID=$(/snap/bin/testflinger-cli submit -q $JOB_DATA/job.yaml)
 echo "JOB_ID: ${JOB_ID}"
 /snap/bin/testflinger-cli poll ${JOB_ID}
-/snap/bin/testflinger-cli artifacts ${JOB_ID}
+wget -O artifacts.tgz http://testflinger.canonical.com/v1/result/$JOB_ID/artifact
 tar -xzf artifacts.tgz
-TEST_STATUS=$(/snap/bin/testflinger-cli results ${{JOB_ID}} |jq -r .test_status)
-echo "Test exit status: ${TEST_STATUS}"
