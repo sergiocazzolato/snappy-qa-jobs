@@ -2,9 +2,12 @@
 set -ex
 
 DEVICE_QUEUE=$1
-ARCHITECTURE=$2
-CHANNEL=$3
+CHANNEL=$2
+SPREAD_SYS=$3
 SPREAD_SUITE=$4
+
+SNAPD_URL=https://github.com/snapcore/snapd
+SPREAD_URL=http://people.canonical.com/~sjcazzol/snappy/spread-amd64.tar.gz
 
 WORKSPACE=$(pwd)
 RESULTS=$WORKSPACE/results
@@ -14,20 +17,15 @@ JOB_DATA=/var/snap/testflinger-cli/current
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 provision_data:
-  distro: xenial
+  channel: $CHANNEL
 test_data:
   test_cmds: |
     mkdir artifacts
 	ssh ubuntu@{device_ip} 'sudo adduser --extrausers --quiet --disabled-password --gecos "" test'
 	ssh ubuntu@{device_ip} 'echo test:ubuntu | sudo chpasswd'
 	ssh ubuntu@{device_ip} 'echo "test ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/create-user-test'
-
-    mkdir artifacts
-    ssh ubuntu@{device_ip} "git clone https://github.com/sergiocazzolato/snappy-jenkins-jobs.git"
-    ssh ubuntu@{device_ip} "./snappy-jenkins-jobs/scripts/snapd/run_spread_vm.sh $ARCHITECTURE $CHANNEL $SPREAD_SUITE NO_PROXY"
-    scp ubuntu@{device_ip} report.xml artifacts/
-    wget $SPREAD_URL
     git clone $SNAPD_URL
+    wget $SPREAD_URL
     tar xzvf spread-amd64.tar.gz
     cd snapd
     SPREAD_EXTERNAL_ADDRESS={device_ip} ../spread -v -xunit external:$SPREAD_SYS:$SPREAD_SUITE

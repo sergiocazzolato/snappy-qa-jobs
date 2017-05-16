@@ -101,3 +101,4 @@ rm -f spread-amd64.tar.gz
 mv spread work-dir
 cd snapd
 SPREAD_EXTERNAL_ADDRESS=localhost:$PORT $WORKSPACE/work-dir/spread -v -xunit external:$SPREAD_SYS:$SPREAD_SUITE
+
