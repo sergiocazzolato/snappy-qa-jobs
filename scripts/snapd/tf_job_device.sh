@@ -27,8 +27,8 @@ test_data:
   test_cmds: |
     mkdir artifacts
     ssh ubuntu@{device_ip} 'sudo adduser --extrausers --quiet --disabled-password --gecos "" test'
-	ssh ubuntu@{device_ip} 'echo test:ubuntu | sudo chpasswd'
-	ssh ubuntu@{device_ip} 'echo "test ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/create-user-test'
+    ssh ubuntu@{device_ip} 'echo test:ubuntu | sudo chpasswd'
+    ssh ubuntu@{device_ip} 'echo "test ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/create-user-test'
     git clone https://github.com/sergiocazzolato/snappy-jenkins-jobs.git
     git clone https://github.com/snapcore/snapd
     ./snappy-jenkins-jobs/scripts/utils/run_spread.sh {device_ip} 22 snapd $SPREAD_SYS $SPREAD_SUITE
