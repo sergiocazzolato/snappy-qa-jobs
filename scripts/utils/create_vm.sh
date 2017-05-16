@@ -1,37 +1,29 @@
 #!/bin/bash
-set -ex
+set -e
+
+if [ "$#" -ne 4 ]; then
+    echo "Illegal number of parameters"
+fi
 
 ARCHITECTURE=$1
 CHANNEL=$2
-SPREAD_SUITE=$3
-USE_PROXY=$4
-SNAPD_URL=https://github.com/snapcore/snapd
-SPREAD_URL=http://people.canonical.com/~sjcazzol/snappy/spread-amd64.tar.gz
+USE_PROXY=$3
+PORT=$4
 
-PORT=8022
+# Define variables
 WORKSPACE=$(pwd)
-
-# Prepare job
-
 if [ $ARCHITECTURE == "amd64" ]; then
 	ASSERTION=nested-amd64.model
     QEMU=qemu-system-x86_64
-    SPREAD_SYS=ubuntu-core-16-64
 elif [ $ARCHITECTURE == "i386" ]; then
 	ASSERTION=nested-i386.model
     QEMU=qemu-system-i386
-    SPREAD_SYS=ubuntu-core-16-32
 else
 	echo "Architecture $ARCHITECTURE not supported"
 	exit 1
 fi
 
-# Get spread
-
-wget $SPREAD_URL
-
-# Configura the proxy
-
+# Configure the proxy if needed
 if [ $USE_PROXY == "USE_PROXY" ]; then
     export http_proxy=http://squid.internal:3128
     export HTTP_PROXY=http://squid.internal:3128
@@ -40,31 +32,33 @@ if [ $USE_PROXY == "USE_PROXY" ]; then
 fi
 
 # Install the dependencies
-
 sudo apt install -y snapd qemu genisoimage sshpass
 sudo apt install -y ubuntu-image
 sudo apt install -y unzip
 sudo apt install -y sshpass
 
 # Prepare the image under test
-git clone $SNAPD_URL
-mkdir -p work-dir
+WORKDIR=$WORKSPACE/work-dir
+mkdir -p $WORKDIR
 
+git clone https://github.com/snapcore/snapd
 sudo ubuntu-image --image-size 3G snapd/tests/lib/assertions/$ASSERTION --channel $CHANNEL --output ubuntu-core.img
-mv ubuntu-core.img work-dir
+mv ubuntu-core.img $WORKDIR
 
 genisoimage -volid cidata -joliet -rock -o assertions.disk snapd/tests/lib/assertions/auto-import.assert
+mv assertions.disk $WORKDIR
 
-sudo systemd-run --unit sut-vm-$ARCHITECTURE /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$WORKSPACE/work-dir/ubuntu-core.img,if=virtio,cache=none -drive file=$WORKSPACE/assertions.disk,if=virtio,cache=none -machine accel=kvm
+# Run the vm
+sudo systemd-run --unit sut-vm /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$WORKDIR/ubuntu-core.img,if=virtio,cache=none -drive file=$WORKDIR/assertions.disk,if=virtio,cache=none -machine accel=kvm
 sleep 180
 
-# Create the test user
+# Create the test user on the vm
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'sudo adduser --extrausers --quiet --disabled-password --gecos "" test'
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo test:ubuntu | sudo chpasswd'
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo "test ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/create-user-test'
 
 
-# Create file with proxy variables
+# Create file with proxy variables on the vm if needed
 if [ $USE_PROXY == "USE_PROXY" ]; then
     sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo cp /etc/environment /root/testenv"
     sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo  sed -i '$ a\http_proxy=http://squid.internal:3128' /root/testenv"
@@ -95,10 +89,5 @@ EOF"
     sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "sudo systemctl start snapd.service snapd.socket"
 fi 
 
-# Run Spread tests
-tar xzvf spread-amd64.tar.gz
-rm -f spread-amd64.tar.gz
-mv spread work-dir
-cd snapd
-SPREAD_EXTERNAL_ADDRESS=localhost:$PORT $WORKSPACE/work-dir/spread -v -xunit external:$SPREAD_SYS:$SPREAD_SUITE
-
+# Remove snapd code
+rm -rf snapd

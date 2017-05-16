@@ -28,8 +28,8 @@ test_data:
     mkdir artifacts
     ssh ubuntu@{device_ip} "git clone https://github.com/sergiocazzolato/snappy-jenkins-jobs.git"
     ssh ubuntu@{device_ip} "./snappy-jenkins-jobs/scripts/utils/create_vm.sh $ARCHITECTURE $CHANNEL NO_PROXY 8022"
-    ssh ubuntu@{device_ip} "git clone https://github.com/snapcore/snapd"
-    ssh ubuntu@{device_ip} "./snappy-jenkins-jobs/scripts/utils/run_spread.sh localhost 8022 snapd $SPREAD_SYS $SPREAD_SUITE"
+    ssh ubuntu@{device_ip} "git clone https://github.com/sergiocazzolato/console-conf-tests.git"
+    ssh ubuntu@{device_ip} "./snappy-jenkins-jobs/scripts/utils/run_spread.sh localhost 8022 console-conf-tests $SPREAD_SYS $SPREAD_SUITE"
     scp ubuntu@{device_ip}:~/snapd/report.xml artifacts/report.xml
   test_username: admin
   test_password: admin
