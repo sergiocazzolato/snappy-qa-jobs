@@ -12,9 +12,10 @@ SPREAD_SYS=$4
 SPREAD_SUITE=$5
 
 WORKSPACE=$(pwd)
+SPREAD_URL=http://people.canonical.com/~sjcazzol/snappy/spread-amd64.tar.gz
 
 # Get spread
-wget http://people.canonical.com/~sjcazzol/snappy/spread-amd64.tar.gz
+wget $SPREAD_URL
 tar xzvf spread-amd64.tar.gz
 rm -f spread-amd64.tar.gz
 

@@ -10,6 +10,10 @@ ARCHITECTURE=$2
 CHANNEL=$3
 SPREAD_SUITE=$4
 
+PROJECT=snapd
+PROJECT_URL=https://github.com/snapcore/snapd.git
+JOBS_URL=https://github.com/sergiocazzolato/snappy-jenkins-jobs.git
+
 if [ $ARCHITECTURE == "amd64" ]; then
     SPREAD_SYS=ubuntu-core-16-64
 elif [ $ARCHITECTURE == "i386" ]; then
@@ -26,11 +30,11 @@ provision_data:
 test_data:
   test_cmds: |
     mkdir artifacts
-    ssh ubuntu@{device_ip} "git clone https://github.com/sergiocazzolato/snappy-jenkins-jobs.git"
+    ssh ubuntu@{device_ip} "git clone $JOBS_URL"
     ssh ubuntu@{device_ip} "./snappy-jenkins-jobs/scripts/utils/create_vm.sh $ARCHITECTURE $CHANNEL NO_PROXY 8022"
-    ssh ubuntu@{device_ip} "git clone https://github.com/snapcore/snapd"
-    ssh ubuntu@{device_ip} "./snappy-jenkins-jobs/scripts/utils/run_spread.sh localhost 8022 snapd $SPREAD_SYS $SPREAD_SUITE"
-    scp ubuntu@{device_ip}:~/snapd/report.xml artifacts/report.xml
+    ssh ubuntu@{device_ip} "git clone $PROJECT_URL"
+    ssh ubuntu@{device_ip} "./snappy-jenkins-jobs/scripts/utils/run_spread.sh localhost 8022 $PROJECT $SPREAD_SYS $SPREAD_SUITE"
+    scp ubuntu@{device_ip}:~/$PROJECT/report.xml artifacts/report.xml
   test_username: admin
   test_password: admin
 EOF
