@@ -36,5 +36,5 @@ test_data:
     git clone $JOBS_URL
     git clone $PROJECT_URL
     ./snappy-jenkins-jobs/scripts/utils/run_spread.sh {device_ip} 22 $PROJECT $SPREAD_SYS $SPREAD_SUITE
-    scp ubuntu@{device_ip}:~/$PROJECT/report.xml artifacts/report.xml
+    cp $PROJECT/report.xml artifacts/report.xml
 EOF
