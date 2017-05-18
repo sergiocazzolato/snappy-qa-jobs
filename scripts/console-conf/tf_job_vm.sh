@@ -35,6 +35,4 @@ test_data:
     ssh ubuntu@{device_ip} "git clone $PROJECT_URL"
     ssh ubuntu@{device_ip} "./snappy-jenkins-jobs/scripts/utils/run_spread.sh localhost 8022 $PROJECT $SPREAD_SYS $SPREAD_SUITE"
     scp ubuntu@{device_ip}:~/$PROJECT/report.xml artifacts/report.xml
-  test_username: admin
-  test_password: admin
 EOF
