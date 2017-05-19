@@ -30,7 +30,7 @@ test_data:
     git clone $PROJECT_URL
     cd $PROJECT && git checkout $BRANCH && cd ..
     $PROJECT/prepare-ssh.sh {device_ip} $PORT $DEVICE_USER
-    ./snappy-jenkins-jobs/scripts/utils/run_setup.sh {device_ip} $PORT $TEST_USER $SETUP
-    ./snappy-jenkins-jobs/scripts/utils/run_spread.sh {device_ip} $PORT $PROJECT $SPREAD_TESTS
+    ./snappy-jenkins-jobs/scripts/utils/run_setup.sh {device_ip} $PORT $TEST_USER "$SETUP"
+    ./snappy-jenkins-jobs/scripts/utils/run_spread.sh {device_ip} $PORT $PROJECT "$SPREAD_TESTS"
     cp $PROJECT/report.xml artifacts/report.xml
 EOF
