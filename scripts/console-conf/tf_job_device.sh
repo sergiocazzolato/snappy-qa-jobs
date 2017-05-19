@@ -12,8 +12,8 @@ BRANCH=$4
 SPREAD_TESTS=$5
 SETUP=$6
 
-PROJECT=snapd
-PROJECT_URL=https://github.com/snapcore/snapd.git
+PROJECT=console-conf-tests
+PROJECT_URL=https://github.com/sergiocazzolato/console-conf-tests.git
 JOBS_URL=https://github.com/sergiocazzolato/snappy-jenkins-jobs.git
 
 PORT=22
@@ -30,7 +30,7 @@ test_data:
     git clone $JOBS_URL
     git clone $PROJECT_URL
     cd $PROJECT && git checkout $BRANCH && cd ..
-    $PROJECT/tests/lib/external/prepare-ssh.sh {device_ip} $PORT $DEVICE_USER
+    $PROJECT/prepare-ssh.sh {device_ip} $PORT $DEVICE_USER
     ./snappy-jenkins-jobs/scripts/utils/run_setup.sh {device_ip} $PORT $TEST_USER $SETUP
     ./snappy-jenkins-jobs/scripts/utils/run_spread.sh {device_ip} $PORT $PROJECT $SPREAD_TESTS
     cp $PROJECT/report.xml artifacts/report.xml
