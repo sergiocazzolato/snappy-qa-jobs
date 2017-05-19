@@ -1,16 +1,15 @@
 #!/bin/bash
 set -e
 
-if [ "$#" -ne 6 ]; then
+if [ "$#" -ne 5 ]; then
     echo "Illegal number of parameters"
 fi
 
 DEVICE_QUEUE=$1
-ARCHITECTURE=$2
-CHANNEL=$3
-BRANCH=$4
-SPREAD_TESTS=$5
-SETUP=$6
+CHANNEL=$2
+BRANCH=$3
+SPREAD_TESTS=$4
+SETUP=$5
 
 PROJECT=console-conf-tests
 PROJECT_URL=https://github.com/sergiocazzolato/console-conf-tests.git
