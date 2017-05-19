@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
+echo "Running spread"
 
-if [ "$#" -ne 5 ]; then
+if [ "$#" -ne 4 ]; then
     echo "Illegal number of parameters"
 fi
 

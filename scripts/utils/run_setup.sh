@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+echo "Running setup"
 
 if [ "$#" -ne 4 ]; then
     echo "Illegal number of parameters"
@@ -10,4 +11,4 @@ DEVICE_PORT=$2
 USER=$3
 SETUP=$4
 
-ssh -p $DEVICE_PORT $USER@$DEVICE_IP "$SETUP"
+ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $DEVICE_PORT $USER@$DEVICE_IP "$SETUP"

@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+echo "Running testflinger"
 
 JOB_DATA=/var/snap/testflinger-cli/current
 sudo cp job.yaml $JOB_DATA/job.yaml
