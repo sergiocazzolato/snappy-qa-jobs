@@ -19,7 +19,6 @@ JOBS_URL=https://github.com/sergiocazzolato/snappy-jenkins-jobs.git
 HOST=localhost
 PORT=8022
 DEVICE_USER=ubuntu
-VM_USER=user1
 TEST_USER=test
 
 cat > job.yaml <<EOF
@@ -33,8 +32,7 @@ test_data:
     ssh $DEVICE_USER@{device_ip} "./snappy-jenkins-jobs/scripts/utils/create_vm.sh $ARCHITECTURE $CHANNEL NO_PROXY $PORT"
     ssh $DEVICE_USER@{device_ip} "git clone $PROJECT_URL"
     ssh $DEVICE_USER@{device_ip} "cd $PROJECT && git checkout $BRANCH && cd .."
-    ssh $DEVICE_USER@{device_ip} "$PROJECT/external/prepare-ssh.sh localhost $PORT $VM_USER"
     ssh $DEVICE_USER@{device_ip} './snappy-jenkins-jobs/scripts/utils/run_setup.sh {device_ip} $PORT $TEST_USER $SETUP'
-    ssh $DEVICE_USER@{device_ip} './snappy-jenkins-jobs/scripts/utils/run_spread.sh $HOST $PORT $PROJECT $SPREAD_TESTS'
+    ssh $DEVICE_USER@{device_ip} './snappy-jenkins-jobs/scripts/utils/run_spread.sh $HOST $PORT $PROJECT $SPREAD_TESTS ""'
     scp $DEVICE_USER@{device_ip}:~/$PROJECT/report.xml artifacts/report.xml
 EOF
