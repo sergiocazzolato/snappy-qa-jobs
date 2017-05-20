@@ -20,5 +20,12 @@ wget $SPREAD_URL
 tar xzvf spread-amd64.tar.gz
 rm -f spread-amd64.tar.gz
 
+# Export env variables
+if [[ ! -z "$SPREAD_ENV" ]]; then
+    export $SPREAD_ENV
+fi
+export SPREAD_EXTERNAL_ADDRESS=$DEVICE_IP:$DEVICE_PORT
+
+# Run spread
 cd $PROJECT_PATH
-$SPREAD_ENV SPREAD_EXTERNAL_ADDRESS=$DEVICE_IP:$DEVICE_PORT $WORKSPACE/spread -v -xunit $SPREAD_TESTS
+$WORKSPACE/spread -v -xunit $SPREAD_TESTS
