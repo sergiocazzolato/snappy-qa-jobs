@@ -14,7 +14,7 @@ SPREAD_ENV=$6
 
 PROJECT=console-conf-tests
 PROJECT_URL=https://github.com/sergiocazzolato/console-conf-tests.git
-JOBS_URL=https://github.com/sergiocazzolato/snappy-jenkins-jobs.git
+JOBS_URL=https://github.com/sergiocazzolato/snappy-qa-jobs.git
 
 PORT=22
 DEVICE_USER=ubuntu
@@ -31,7 +31,7 @@ test_data:
     git clone $PROJECT_URL
     cd $PROJECT && git checkout $BRANCH && cd ..
     $PROJECT/external/prepare_ssh {device_ip} $PORT $DEVICE_USER
-    ./snappy-jenkins-jobs/scripts/utils/run_setup.sh {device_ip} $PORT $TEST_USER $SETUP
-    ./snappy-jenkins-jobs/scripts/utils/run_spread.sh {device_ip} $PORT $PROJECT $SPREAD_TESTS $SPREAD_ENV
+    ./snappy-qa-jobs/scripts/utils/run_setup.sh {device_ip} $PORT $TEST_USER $SETUP
+    ./snappy-qa-jobs/scripts/utils/run_spread.sh {device_ip} $PORT $PROJECT $SPREAD_TESTS $SPREAD_ENV
     cp $PROJECT/report.xml artifacts/report.xml
 EOF

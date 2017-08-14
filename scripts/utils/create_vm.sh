@@ -2,10 +2,6 @@
 set -e
 echo "Creating vm"
 
-if [ "$#" -ne 4 ]; then
-    echo "Illegal number of parameters"
-fi
-
 ARCHITECTURE=$1
 CHANNEL=$2
 USE_PROXY=$3
@@ -16,9 +12,13 @@ WORKSPACE=$(pwd)
 if [ $ARCHITECTURE == "amd64" ]; then
 	ASSERTION=nested-amd64.model
     QEMU=qemu-system-x86_64
+    PLATFORM=pc-amd64
+    IMG="$VALIDATOR_DIR/images/pc-amd64-$CHANNEL/pc.img"
 elif [ $ARCHITECTURE == "i386" ]; then
 	ASSERTION=nested-i386.model
     QEMU=qemu-system-i386
+    PLATFORM=pc-i386
+    IMG="$VALIDATOR_DIR/images/pc-i386-$CHANNEL/pc.img"
 else
 	echo "Architecture $ARCHITECTURE not supported"
 	exit 1
@@ -33,24 +33,13 @@ if [ $USE_PROXY == "USE_PROXY" ]; then
 fi
 
 # Install the dependencies
-sudo apt install -y snapd qemu genisoimage sshpass
-sudo apt install -y ubuntu-image
-sudo apt install -y unzip
-sudo apt install -y sshpass
+sudo apt install -y snapd qemu genisoimage sshpass unzip
+sudo snap install ubuntu-image
 
-# Prepare the image under test
-WORKDIR=$WORKSPACE/work-dir
-mkdir -p $WORKDIR
-
-git clone https://github.com/snapcore/snapd
-sudo ubuntu-image --image-size 3G snapd/tests/lib/assertions/$ASSERTION --channel $CHANNEL --output ubuntu-core.img
-mv ubuntu-core.img $WORKDIR
-
-genisoimage -volid cidata -joliet -rock -o assertions.disk snapd/tests/lib/assertions/auto-import.assert
-mv assertions.disk $WORKDIR
+$VALIDATOR_DIR/create.sh $CHANNEL $PLATFORM
 
 # Run the vm
-sudo systemd-run --unit sut-vm /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$WORKDIR/ubuntu-core.img,if=virtio,cache=none -drive file=$WORKDIR/assertions.disk,if=virtio,cache=none -machine accel=kvm
+sudo systemd-run --unit sut-vm /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$IMG,if=virtio,cache=none -drive file=$WORKDIR/assertions.disk,if=virtio,cache=none -machine accel=kvm
 sleep 180
 
 # Create the test user on the vm

@@ -11,14 +11,7 @@ DEVICE_PORT=$2
 PROJECT_PATH=$3
 SPREAD_TESTS=$4
 SPREAD_ENV=$5
-
-WORKSPACE=$(pwd)
-SPREAD_URL=http://people.canonical.com/~sjcazzol/snappy/spread-amd64.tar.gz
-
-# Get spread
-wget $SPREAD_URL
-tar xzvf spread-amd64.tar.gz
-rm -f spread-amd64.tar.gz
+LOG_FILE=results.log
 
 # Export env variables
 if [[ ! -z "$SPREAD_ENV" ]]; then
@@ -32,4 +25,5 @@ echo "Tests: $SPREAD_TESTS"
 
 # Run spread
 cd $PROJECT_PATH
-$WORKSPACE/spread -v -xunit $SPREAD_TESTS
+rm -f $LOG_FILE
+spread -v $SPREAD_TESTS | tee $LOG_FILE
