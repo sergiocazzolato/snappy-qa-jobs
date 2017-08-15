@@ -27,7 +27,7 @@ sudo apt install -y snapd qemu genisoimage sshpass unzip
 sudo snap install ubuntu-image --edge --classic
 
 if [ -f validator/create.sh ]; then
-    sudo validator/create.sh $CHANNEL $PLATFORM
+    (cd validator && sudo ./create.sh $CHANNEL $PLATFORM)
 else
     echo "Validator project not available"
     exit 1
