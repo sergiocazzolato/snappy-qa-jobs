@@ -1,21 +1,6 @@
 #!/bin/bash
 set -e
 
-if [ "$#" -ne 6 ]; then
-    echo "Illegal number of parameters"
-fi
-
-DEVICE_QUEUE=$1
-CHANNEL=$2
-BRANCH=$3
-SPREAD_TESTS=$4
-SETUP=$5
-SPREAD_ENV=$6
-
-PROJECT=console-conf-tests
-PROJECT_URL=https://github.com/sergiocazzolato/console-conf-tests.git
-JOBS_URL=https://github.com/sergiocazzolato/snappy-qa-jobs.git
-
 PORT=22
 DEVICE_USER=ubuntu
 TEST_USER=test
@@ -23,15 +8,19 @@ TEST_USER=test
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 provision_data:
-  channel: $CHANNEL
+    channel: $CHANNEL
 test_data:
-  test_cmds: |
-    mkdir artifacts
-    git clone $JOBS_URL
-    git clone $PROJECT_URL
-    cd $PROJECT && git checkout $BRANCH && cd ..
-    $PROJECT/external/prepare_ssh {device_ip} $PORT $DEVICE_USER
-    ./snappy-qa-jobs/scripts/utils/run_setup.sh {device_ip} $PORT $TEST_USER $SETUP
-    ./snappy-qa-jobs/scripts/utils/run_spread.sh {device_ip} $PORT $PROJECT $SPREAD_TESTS $SPREAD_ENV
-    cp $PROJECT/report.xml artifacts/report.xml
+    test_cmds:
+        - sudo apt update && sudo apt install -y git curl
+        - git clone $JOBS_URL
+        - (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
+        - git clone $CCONF_URL
+        - (cd $PROJECT && git checkout $BRANCH)
+        - . "$PROJECT/external/prepare_ssh" {device_ip} $PORT $DEVICE_USER
+        - . "$JOBS_PROJECT/scripts/utils/run_setup.sh" {device_ip} $PORT $TEST_USER $SETUP
+        - . "$JOBS_PROJECT/scripts/utils/get_spread.sh"
+        - . "$JOBS_PROJECT/scripts/utils/run_spread.sh" {device_ip} $PORT $PROJECT $SPREAD_TESTS $SPREAD_ENV
 EOF
+
+export TF_JOB=$TF_DATA/job.yaml
+sudo mv job.yaml $TF_JOB

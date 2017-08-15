@@ -13,7 +13,7 @@ TEST_USER=test
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 provision_data:
-  distro: xenial
+    distro: xenial
 test_data:
     test_cmds:
         - ssh $DEVICE_USER@{device_ip} "sudo apt update && sudo apt install -y git curl"

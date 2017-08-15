@@ -8,7 +8,7 @@ TEST_USER=test
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 provision_data:
-  channel: $CHANNEL
+	channel: $CHANNEL
 test_data:
   	test_cmds:
 	  	- sudo apt update && sudo apt install -y git curl
