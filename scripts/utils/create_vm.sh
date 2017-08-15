@@ -40,8 +40,13 @@ sudo /snap/bin/ubuntu-image --image-size 3G snapd/tests/lib/assertions/$ASSERTIO
 genisoimage -volid cidata -joliet -rock -o assertions.disk snapd/tests/lib/assertions/auto-import.assert
 mv assertions.disk $WORKDIR
 
+if [ ! -f $WORKDIR/$IMG || ! -f $WORKDIR/assertions.disk ]; then 
+    echo "Some needed files does not exist, could be either $WORKDIR/$IMG ot $WORKDIR/assertions.disk"
+    exit 1
+fi
+
 # Run the vm
-sudo systemd-run --unit sut-vm /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$WORKDIR/$IMG,if=virtio,cache=none -drive file=$WORKSPACE/assertions.disk,if=virtio,cache=none -machine accel=kvm
+sudo systemd-run --unit sut-vm /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$WORKDIR/$IMG,if=virtio,cache=none -drive file=$WORKDIR/assertions.disk,if=virtio,cache=none -machine accel=kvm
 sleep 180
 
 # Create the test user on the vm
