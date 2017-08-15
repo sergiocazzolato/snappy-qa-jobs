@@ -14,12 +14,12 @@ if [ $ARCHITECTURE == "amd64" ]; then
 	ASSERTION=nested-amd64.model
     QEMU=qemu-system-x86_64
     PLATFORM=pc-amd64
-    IMG="$pc-amd64.img"
+    IMG="$pc.img"
 elif [ $ARCHITECTURE == "i386" ]; then
 	ASSERTION=nested-i386.model
     QEMU=qemu-system-i386
     PLATFORM=pc-i386
-    IMG="pc-i386.img"
+    IMG="pc.img"
 else
 	echo "Architecture $ARCHITECTURE not supported"
 	exit 1
@@ -36,9 +36,7 @@ mkdir -p $WORKDIR
 if [ ! -d snapd ]; then 
     git clone https://github.com/snapcore/snapd
 fi
-sudo /snap/bin/ubuntu-image --image-size 3G snapd/tests/lib/assertions/$ASSERTION --channel $CHANNEL --output $IMG
-mv $IMG $WORKDIR
-
+sudo /snap/bin/ubuntu-image --image-size 3G snapd/tests/lib/assertions/$ASSERTION --channel $CHANNEL -O $WORKDIR
 genisoimage -volid cidata -joliet -rock -o assertions.disk snapd/tests/lib/assertions/auto-import.assert
 mv assertions.disk $WORKDIR
 
