@@ -14,7 +14,7 @@ if [ $ARCHITECTURE == "amd64" ]; then
 	ASSERTION=nested-amd64.model
     QEMU=qemu-system-x86_64
     PLATFORM=pc-amd64
-    IMG="$pc.img"
+    IMG="pc.img"
 elif [ $ARCHITECTURE == "i386" ]; then
 	ASSERTION=nested-i386.model
     QEMU=qemu-system-i386
@@ -40,8 +40,8 @@ sudo /snap/bin/ubuntu-image --image-size 3G snapd/tests/lib/assertions/$ASSERTIO
 genisoimage -volid cidata -joliet -rock -o assertions.disk snapd/tests/lib/assertions/auto-import.assert
 mv assertions.disk $WORKDIR
 
-if [ ! -f $WORKDIR/$IMG || ! -f $WORKDIR/assertions.disk ]; then 
-    echo "Some needed files does not exist, could be either $WORKDIR/$IMG ot $WORKDIR/assertions.disk"
+if [ ! -f $WORKDIR/$IMG ] || [ ! -f $WORKDIR/assertions.disk ]; then
+    echo "Some needed files does not exist, could be either $WORKDIR/$IMG or $WORKDIR/assertions.disk"
     exit 1
 fi
 
