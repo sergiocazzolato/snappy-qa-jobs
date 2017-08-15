@@ -10,5 +10,5 @@ if [ -d $VALIDATOR_DIR ]; then
 	echo "Validator already downloaded"
 else
 	mkdir -p $GOPATH
-	go get github.com/fgimenez/validator/cmd/tpr
+	go get $TPR_URL
 fi
