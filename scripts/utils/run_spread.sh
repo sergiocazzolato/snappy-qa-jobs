@@ -18,7 +18,7 @@ if [[ ! -z "$SPREAD_ENV" ]]; then
 fi
 export SPREAD_EXTERNAL_ADDRESS=$DEVICE_IP:$DEVICE_PORT
 
-echo "Running Spread with:"
+echo "Running Spread"
 echo "Variables: $SPREAD_ENV"
 echo "Tests: $SPREAD_TESTS"
 
