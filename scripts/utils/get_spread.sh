@@ -3,6 +3,7 @@ set -e
 
 echo "Getting spread"
 
+export WORKSPACE=${WORKSPACE:-$(pwd)}
 export SPREAD_DIR=$WORKSPACE/spread
 export PATH=$SPREAD_DIR:$PATH
 
