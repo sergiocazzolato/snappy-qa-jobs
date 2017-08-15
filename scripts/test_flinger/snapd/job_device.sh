@@ -13,9 +13,9 @@ test_data:
   	test_cmds:
 	  	- sudo apt update && sudo apt install -y git curl
 	    - git clone $JOBS_URL
-	    - (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH && cd ..)
+	    - (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
 	    - git clone $SNAPD_URL
-	    - (cd $PROJECT && git checkout $BRANCH && cd ..)
+	    - (cd $PROJECT && git checkout $BRANCH)
 	    - . "$PROJECT/tests/lib/external/prepare-ssh.sh" {device_ip} $DEVICE_PORT $DEVICE_USER
 	    - . "$JOBS_PROJECT/scripts/utils/run_setup.sh" {device_ip} $DEVICE_PORT $TEST_USER $SETUP
 	    - . "$JOBS_PROJECT/scripts/utils/get_spread.sh"

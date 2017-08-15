@@ -24,7 +24,7 @@ fi
 
 # Install the dependencies
 sudo apt install -y snapd qemu genisoimage sshpass unzip
-sudo snap install ubuntu-image
+sudo snap install ubuntu-image --edge --classic
 
 if [ -f validator/create.sh ]; then
     sudo validator/create.sh $CHANNEL $PLATFORM
