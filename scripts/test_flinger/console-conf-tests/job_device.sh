@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PORT=22
+DEVICE_PORT=22
 DEVICE_USER=ubuntu
 TEST_USER=test
 
@@ -16,10 +16,10 @@ test_data:
         - (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         - git clone $CCONF_URL
         - (cd $PROJECT && git checkout $BRANCH)
-        - . "$PROJECT/external/prepare_ssh" {device_ip} $PORT $DEVICE_USER
-        - . "$JOBS_PROJECT/scripts/utils/run_setup.sh" {device_ip} $PORT $TEST_USER $SETUP
+        - . "$PROJECT/external/prepare_ssh" {device_ip} $DEVICE_PORT $DEVICE_USER
+        - . "$JOBS_PROJECT/scripts/utils/run_setup.sh" {device_ip} $DEVICE_PORT $TEST_USER $SETUP
         - . "$JOBS_PROJECT/scripts/utils/get_spread.sh"
-        - . "$JOBS_PROJECT/scripts/utils/run_spread.sh" {device_ip} $PORT $PROJECT $SPREAD_TESTS $SPREAD_ENV
+        - . "$JOBS_PROJECT/scripts/utils/run_spread.sh" {device_ip} $DEVICE_PORT $PROJECT "$SPREAD_TESTS" "$SPREAD_ENV"
 EOF
 
 export TF_JOB=$TF_DATA/job.yaml
