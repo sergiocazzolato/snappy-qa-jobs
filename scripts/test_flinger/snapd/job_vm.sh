@@ -25,3 +25,6 @@ test_data:
         - ssh $DEVICE_USER@{device_ip} "$JOBS_PROJECT/scripts/utils/run_setup.sh {device_ip} $PORT $TEST_USER \"$SETUP\" "
         - ssh $DEVICE_USER@{device_ip} "$JOBS_PROJECT/scripts/utils/run_spread.sh $HOST $PORT $PROJECT \"$SPREAD_TESTS\" \"$SPREAD_ENV\" "
 EOF
+
+export TF_JOB=$TF_DATA/job.yaml
+sudo mv job.yaml $TF_JOB
