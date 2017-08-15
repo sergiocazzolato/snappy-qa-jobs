@@ -28,7 +28,7 @@ if [[ $(which spread) ]]; then
     echo "Spread found"
 else
     if [ -f $WORKSPACE/spread/spread ]; then
-    	export PATH=PATH:$WORKSPACE/spread
+    	export PATH=$PATH:$WORKSPACE/spread
     else
     	echo "Spread not found"
     fi
