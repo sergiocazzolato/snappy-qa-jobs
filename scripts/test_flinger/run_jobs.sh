@@ -2,7 +2,7 @@
 set -e
 echo "Running testflinger client"
 
-for FILE in $TF_DATA/*.yaml; do 
+for FILE in $TF_DATA/*.yaml; do
 	export TF_JOB=$FILE
-    . $SCRIPTS/test_flinger/run_job.sh &
+    . $SCRIPTS_DIR/test_flinger/run_job.sh &
 done

@@ -1,12 +1,14 @@
 #!/bin/bash
 set -e
 
-export VALIDATOR_DIR=$WORSKPACE/validator
-export PATH=$VALIDATOR_DIR/cmd/tpr/:$PATH
+echo "Getting validator project and tpr command"
+
+export VALIDATOR_DIR=$WORKSPACE/validator
+export PATH=$GOPATH/bin:$PATH
 
 if [ -d $VALIDATOR_DIR ]; then
-	exit
+	echo "Validator already downloaded"
+else
+	mkdir -p $GOPATH
+	go get github.com/fgimenez/validator/cmd/tpr
 fi
-
-git clone https://github.com/fgimenez/validator.git $VALIDATOR_DIR
-go build -o $VALIDATOR_DIR/cmd/tpr/tpr $VALIDATOR_DIR/cmd/tpr/main.go
