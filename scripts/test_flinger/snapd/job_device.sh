@@ -13,7 +13,7 @@ test_data:
   	test_cmds:
 	  	- sudo apt update && sudo apt install -y git curl
 	    - git clone $JOBS_URL
-	    - git clone $PROJECT_URL
+	    - git clone $SNAPD_URL
 	    - (cd $PROJECT && git checkout $BRANCH && cd ..)
 	    - . "$PROJECT/tests/lib/external/prepare-ssh.sh" {device_ip} $DEVICE_PORT $DEVICE_USER
 	    - . "$JOBS_PROJECT/scripts/utils/run_setup.sh" {device_ip} $DEVICE_PORT $TEST_USER $SETUP
