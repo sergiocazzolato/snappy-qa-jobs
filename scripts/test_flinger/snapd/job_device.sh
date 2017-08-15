@@ -11,7 +11,6 @@ provision_data:
   channel: $CHANNEL
 test_data:
   test_cmds: |
-    mkdir artifacts
     git clone $JOBS_URL
     git clone $PROJECT_URL
     (cd $PROJECT && git checkout $BRANCH && cd ..)
@@ -19,5 +18,7 @@ test_data:
     . "$JOBS_PROJECT/scripts/utils/run_setup.sh" {device_ip} $DEVICE_PORT $TEST_USER $SETUP
     . "$JOBS_PROJECT/scripts/utils/get_spread.sh"
     . "$JOBS_PROJECT/scripts/utils/run_spread.sh" {device_ip} $DEVICE_PORT $PROJECT $SPREAD_TESTS $SPREAD_ENV
-    cp "$PROJECT/results.log" artifacts/results.log
 EOF
+
+export TF_JOB=$TF_DATA/job.yaml
+sudo mv job.yaml $TF_JOB

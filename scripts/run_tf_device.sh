@@ -16,5 +16,7 @@ else
 	exit 1
 fi
 
+rm -f $TF_DATA/*
+
 . "$SCRIPTS_DIR/test_flinger/$PROJECT/job_device.sh"
 . "$SCRIPTS_DIR/test_flinger/run_job.sh"

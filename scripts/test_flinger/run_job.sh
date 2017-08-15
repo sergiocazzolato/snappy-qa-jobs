@@ -2,11 +2,12 @@
 set -e
 echo "Running testflinger client"
 
-JOB_DATA=/var/snap/testflinger-cli/current
-sudo cp job.yaml $JOB_DATA
-
-JOB_ID=$(/snap/bin/testflinger-cli submit -q $JOB_DATA/job.yaml)
+echo "Submitting job to testflinger"
+JOB_ID=$($TF_CLIENT submit -q $TF_JOB)
 echo "JOB_ID: ${JOB_ID}"
-/snap/bin/testflinger-cli poll ${JOB_ID}
-wget -O artifacts.tgz http://testflinger.canonical.com/v1/result/$JOB_ID/artifact
-tar -xzf artifacts.tgz
+
+echo "Print job: $TF_JOB "
+cat $TF_JOB | tee $JOB_ID.job
+
+echo "Showing job data"
+$TF_CLIENT poll ${JOB_ID} | tee $JOB_ID.log
