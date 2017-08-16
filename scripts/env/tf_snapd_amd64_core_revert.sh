@@ -6,7 +6,7 @@ set -e
 export PROJECT=${PROJECT:-"snapd"}
 export ARCHITECTURE=${ARCHITECTURE:-"amd64"}
 export DEVICE_QUEUE=${DEVICE_QUEUE:-"intel-gfx"}
-export CHANNEL=${CHANNEL:-"stable"}
+export CHANNEL=${CHANNEL:-"beta"}
 export BRANCH=${BRANCH:-"master"}
 export SETUP=${SETUP:-""}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-16.04-64:tests/nested/core-revert"}

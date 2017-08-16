@@ -5,6 +5,6 @@ set -e
 
 export PROJECT=${PROJECT:-"snapd"}
 export CHANNEL=${CHANNEL:-"beta"}
-export BRANCH=${BRANCH:-"release/2.27"}
+export BRANCH=${BRANCH:-"master"}
 export SETUP=${SETUP:-""}
 export SPREAD_ENV=${SPREAD_ENV:-""}
