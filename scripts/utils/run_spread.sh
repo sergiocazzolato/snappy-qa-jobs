@@ -16,14 +16,11 @@ SPREAD_TESTS=$4
 SPREAD_ENV=$5
 
 # Export env variables
-if [[ ! -z "$SPREAD_ENV" ]]; then
+if [ ! -z "$SPREAD_ENV" ]; then
+	echo "Using spread env: $SPREAD_ENV"
     export $SPREAD_ENV
 fi
 export SPREAD_EXTERNAL_ADDRESS=$DEVICE_IP:$DEVICE_PORT
-
-echo "Running Spread"
-echo "Variables: $SPREAD_ENV"
-echo "Tests: $SPREAD_TESTS"
 
 if [[ $(which spread) ]]; then
     echo "Spread found"
@@ -37,4 +34,5 @@ fi
 
 # Run spread
 cd $PROJECT_PATH
+echo "Running command: spread -v $SPREAD_TESTS"
 spread -v $SPREAD_TESTS

@@ -11,4 +11,5 @@ if [ -d $TPR_DIR ]; then
 else
 	mkdir -p $GOPATH
 	go get $TPR_URL
+	echo "tpr downloaded and ready to use"
 fi

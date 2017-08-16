@@ -48,12 +48,25 @@ fi
 
 # Run the vm
 sudo systemd-run --unit sut-vm /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$WORKDIR/$IMG,if=virtio,cache=none -drive file=$WORKDIR/assertions.disk,if=virtio,cache=none -machine accel=kvm
-sleep 180
+echo "Waiting 60 seconds until vm is ready"
+sleep 60
+
+# Wait until ssh ready
+ssh -p $PORT localhost
+while test $? -gt 0; do
+   sleep 5
+   echo "Trying ssh connection..."
+   ssh -p $PORT localhost
+done
 
 # Create the test user on the vm
+echo "Addind test user to the vm"
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'sudo adduser --extrausers --quiet --disabled-password --gecos "" test'
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo test:ubuntu | sudo chpasswd'
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo "test ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/create-user-test'
 
 # Run vm setup
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "$SETUP"
+if [ ! -z "$SETUP" ]; then
+    echo "Running setup command in the vm"
+    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "$SETUP"
+fi
