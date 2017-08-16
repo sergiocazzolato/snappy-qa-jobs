@@ -12,4 +12,5 @@ export TF_DATA=/var/snap/testflinger-cli/current
 export GOPATH=$WORKSPACE/gopath
 
 export DEVICE_USER=${DEVICE_USER:-"ubuntu"}
+export DEVICE_PORT=${DEVICE_PORT:-22}
 export TEST_USER=${TEST_USER:-"test"}

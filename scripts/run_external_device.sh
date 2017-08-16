@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 1 ]; then
     echo "Illegal number of parameters"
     exit 1
 fi
@@ -14,6 +14,5 @@ else
 	echo "Environment file does not exist: $SCRIPTS_DIR/env/$1.sh"
 	exit 1
 fi
-export DEVICE_IP=$2
 
 . $SCRIPTS_DIR/external/$PROJECT/run_device.sh

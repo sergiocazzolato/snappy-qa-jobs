@@ -1,7 +1,5 @@
 #!/bin/bash
 
-DEVICE_PORT=22
-
 git clone $SNAPD_URL
 (cd $PROJECT && git checkout $BRANCH)
 . "$PROJECT/tests/lib/external/prepare-ssh.sh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER"

@@ -2,8 +2,6 @@
 
 echo "Creating job for snapd using a device"
 
-DEVICE_PORT=22
-
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 provision_data:
