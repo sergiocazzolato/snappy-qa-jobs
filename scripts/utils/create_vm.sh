@@ -48,16 +48,8 @@ fi
 
 # Run the vm
 sudo systemd-run --unit sut-vm /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$WORKDIR/$IMG,if=virtio,cache=none -drive file=$WORKDIR/assertions.disk,if=virtio,cache=none -machine accel=kvm
-echo "Waiting 60 seconds until vm is ready"
-sleep 60
-
-# Wait until ssh ready
-ssh -p $PORT localhost
-while test $? -gt 0; do
-   sleep 5
-   echo "Trying ssh connection..."
-   ssh -p $PORT localhost
-done
+echo "Waiting 180 seconds until vm is ready"
+sleep 180
 
 # Create the test user on the vm
 echo "Addind test user to the vm"
