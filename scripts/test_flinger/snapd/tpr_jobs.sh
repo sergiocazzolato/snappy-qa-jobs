@@ -11,4 +11,4 @@ fi
 cd $WORKSPACE/snapd
 git checkout $BRANCH
 
-. $SCRIPTS_DIR/utils/run_tpr.sh
+. "$SCRIPTS_DIR/utils/run_tpr.sh"
