@@ -6,7 +6,6 @@ ARCHITECTURE=$1
 CHANNEL=$2
 PORT=$3
 BRANCH=$4
-SETUP=$5
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}
 
@@ -56,9 +55,3 @@ echo "Addind test user to the vm"
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'sudo adduser --extrausers --quiet --disabled-password --gecos "" test'
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo test:ubuntu | sudo chpasswd'
 sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo "test ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/create-user-test'
-
-# Run vm setup
-if [ ! -z "$SETUP" ]; then
-    echo "Running setup command in the vm"
-    sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost "$SETUP"
-fi
