@@ -1,7 +1,5 @@
 #!/bin/bash
 
-DEVICE_PORT=22
-
 git clone $CCONF_URL
 (cd $PROJECT && git checkout $BRANCH)
 . "$PROJECT/external/prepare_ssh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER"

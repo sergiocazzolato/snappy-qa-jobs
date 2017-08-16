@@ -10,3 +10,4 @@ export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-arm-64"}
 export SPREAD_ENV=${SPREAD_ENV:-""}
 export WIFI_SSID=${WIFI_SSID:-""}
 export WIFI_PASSWORD=${WIFI_PASSWORD:-""}
+export DEVICE_IP=${DEVICE_IP:-"127.0.0.1"}
