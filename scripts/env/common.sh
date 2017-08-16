@@ -10,3 +10,6 @@ export VALIDATOR_URL=https://github.com/sergiocazzolato/validator.git
 export TF_CLIENT=/snap/bin/testflinger-cli
 export TF_DATA=/var/snap/testflinger-cli/current
 export GOPATH=$WORKSPACE/gopath
+
+export DEVICE_USER=${DEVICE_USER:-"ubuntu"}
+export TEST_USER=${TEST_USER:-"test"}

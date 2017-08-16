@@ -4,8 +4,6 @@ echo "Creating job for snapd using a vm"
 
 HOST=localhost
 PORT=8022
-DEVICE_USER=ubuntu
-TEST_USER=test
 
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE

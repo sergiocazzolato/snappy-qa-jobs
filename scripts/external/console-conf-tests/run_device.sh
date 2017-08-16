@@ -1,9 +1,6 @@
 #!/bin/bash
-set -e
 
 DEVICE_PORT=22
-DEVICE_USER=ubuntu
-TEST_USER=test
 
 git clone $CCONF_URL
 (cd $PROJECT && git checkout $BRANCH)
