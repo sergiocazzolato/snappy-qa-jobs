@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -ex
 
 . "$SCRIPTS_DIR/env/common.sh"
 

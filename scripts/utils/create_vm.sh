@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 echo "Creating vm"
 
 ARCHITECTURE=$1

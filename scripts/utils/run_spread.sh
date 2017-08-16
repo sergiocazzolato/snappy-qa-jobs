@@ -1,9 +1,10 @@
 #!/bin/bash
-set -e
+set -ex
 echo "Running spread"
 
 if [ "$#" -ne 5 ]; then
     echo "Illegal number of parameters"
+    exit 1
 fi
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}

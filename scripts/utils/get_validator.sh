@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 echo "Getting validator project and tpr command"
 export GOPATH=${GOPATH:-$(pwd)/gopath}

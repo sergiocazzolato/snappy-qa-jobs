@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 DEVICE_PORT=22
 DEVICE_USER=ubuntu

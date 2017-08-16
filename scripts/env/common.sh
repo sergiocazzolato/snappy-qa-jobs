@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -ex
 
 export JOBS_PROJECT=snappy-qa-jobs
 export JOBS_URL=https://github.com/sergiocazzolato/snappy-qa-jobs.git

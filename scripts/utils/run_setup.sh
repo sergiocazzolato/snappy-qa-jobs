@@ -1,9 +1,10 @@
 #!/bin/bash
-set -e
+set -ex
 echo "Running setup"
 
 if [ "$#" -ne 4 ]; then
     echo "Illegal number of parameters"
+    exit 1
 fi
 
 DEVICE_IP=$1

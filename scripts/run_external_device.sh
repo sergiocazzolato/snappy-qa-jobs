@@ -1,9 +1,9 @@
 #!/bin/bash
-set -e
+set -ex
 
 if [ "$#" -ne 2 ]; then
     echo "Illegal number of parameters"
-    exit
+    exit 1
 fi
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}
@@ -15,6 +15,6 @@ else
 	echo "Environment file does not exist: $SCRIPTS_DIR/env/$1.sh"
 	exit 1
 fi
-export DEVICE_ID=$2
+export DEVICE_IP=$2
 
 . $SCRIPTS_DIR/external/$PROJECT/run_device.sh
