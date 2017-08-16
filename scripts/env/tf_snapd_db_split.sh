@@ -1,5 +1,4 @@
 #!/bin/sh
-set -ex
 
 . "$SCRIPTS_DIR/env/common.sh"
 

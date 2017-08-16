@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+
 echo "Running testflinger client"
 
 for FILE in $TF_DATA/*.yaml; do

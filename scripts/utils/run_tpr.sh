@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+
 echo "Running tpr"
 
 OUTPUT="$(tpr -channel $CHANNEL -release $BRANCH)"

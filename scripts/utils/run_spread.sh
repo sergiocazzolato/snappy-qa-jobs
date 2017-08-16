@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+
 echo "Running spread"
 
 if [ "$#" -ne 5 ]; then

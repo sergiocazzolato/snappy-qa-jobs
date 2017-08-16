@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+
 echo "Running setup"
 
 if [ "$#" -ne 4 ]; then

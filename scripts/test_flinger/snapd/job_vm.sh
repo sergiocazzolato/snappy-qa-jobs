@@ -1,9 +1,6 @@
 #!/bin/bash
-set -ex
 
-if [ "$#" -ne 6 ]; then
-    echo "Illegal number of parameters"
-fi
+echo "Creating job for snapd using a vm"
 
 HOST=localhost
 PORT=8022

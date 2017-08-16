@@ -1,9 +1,6 @@
 #!/bin/bash
-set -ex
 
-if [ "$#" -ne 7 ]; then
-    echo "Illegal number of parameters"
-fi
+echo "Creating job for cconf using a vm"
 
 HOST=localhost
 PORT=8022

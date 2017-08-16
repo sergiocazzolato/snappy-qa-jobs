@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+
 echo "Running testflinger client"
 
 echo "Submitting job to testflinger"

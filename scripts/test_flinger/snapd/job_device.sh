@@ -1,5 +1,6 @@
 #!/bin/bash
-set -ex
+
+echo "Creating job for snapd using a device"
 
 DEVICE_PORT=22
 DEVICE_USER=ubuntu

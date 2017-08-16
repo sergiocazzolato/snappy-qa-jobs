@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex
 
 echo "Running test flinger script for dragonboard"
 
