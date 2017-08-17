@@ -15,4 +15,4 @@ else
 	exit 1
 fi
 
-. $SCRIPTS_DIR/external/$PROJECT/run_device.sh
+. $SCRIPTS_DIR/linode/$PROJECT/run_linode.sh

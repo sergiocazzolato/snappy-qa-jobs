@@ -5,10 +5,10 @@ echo "Running test flinger script for dragonboard"
 export WORKSPACE=${WORKSPACE:-$(pwd)}
 export SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [ -f "$SCRIPTS_DIR/env/tf_snapd_db_split.sh" ]; then
-	. "$SCRIPTS_DIR/env/tf_snapd_db_split.sh"
+if [ -f "$SCRIPTS_DIR/env/$1.sh" ]; then
+	. "$SCRIPTS_DIR/env/$1.sh"
 else
-	echo "Environment file does not exist: $SCRIPTS_DIR/env/tf_snapd_db_split.sh"
+	echo "Environment file does not exist: $SCRIPTS_DIR/env/$1.sh"
 	exit 1
 fi
 
