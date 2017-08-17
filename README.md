@@ -1,7 +1,16 @@
-## Running tests
-Comming soon
+## About this project
+
+This project provides a set of scripts intended to accelerate the snappy validation process over the diferent platforms and devices supported. 
+
+The scripts are ready to run spread tests for the different scenarios on actual devices, test flinger devices, local vms and to create vms with 
+ubuntu core inside test flinger machines.
+
+The default configuration of the project is ready to run beta validation process.
+
 
 ## Examples
+
+In this section examples are provided to run each of the beta validation process.
 
 
 ## Beta Execution
@@ -17,6 +26,9 @@ DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=2.27.2 ~/workspace/snappy
 
 ##### Beta branch on pi2/pi3
 DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi
+
+##### Beta branch on amd64 using testclinger vm
+BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh dev_snapd_amd64
 
 
 ## Beta refresh from stable

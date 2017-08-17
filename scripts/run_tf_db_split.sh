@@ -1,15 +1,15 @@
 #!/bin/bash
 
-echo "Running test flinger script for dragonboard"
+echo "Running tests on test flinger dragonboards"
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}
 export SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [ -f "$SCRIPTS_DIR/env/$1.sh" ]; then
-	. "$SCRIPTS_DIR/env/$1.sh"
+if [ "$#" -ne 1 ]; then
+    echo "Illegal number of parameters"
+    exit 1
 else
-	echo "Environment file does not exist: $SCRIPTS_DIR/env/$1.sh"
-	exit 1
+	. "$SCRIPTS_DIR/utils/load_env.sh" "$1"
 fi
 
 echo "Deleting test flinger data"
