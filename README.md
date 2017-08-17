@@ -27,8 +27,11 @@ DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=2.27.2 ~/workspace/snappy
 ##### Beta branch on pi2/pi3
 DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi
 
-##### Beta branch on amd64 using testclinger vm
+##### Beta branch on amd64 using testflinger vm
 BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh dev_snapd_amd64
+
+##### Beta branch on dragonboard
+DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db
 
 
 ## Beta refresh from stable
@@ -44,6 +47,9 @@ DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy
 
 ##### Upgrade from stable on pi2/3
 DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh
+
+##### Upgrade from stable on db
+DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh
 
 
 ## Core revert
