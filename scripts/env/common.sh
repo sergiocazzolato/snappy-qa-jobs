@@ -15,7 +15,4 @@ export DEVICE_USER=${DEVICE_USER:-"ubuntu"}
 export DEVICE_PORT=${DEVICE_PORT:-22}
 export TEST_USER=${TEST_USER:-"test"}
 
-export CHANNEL=${CHANNEL:-"beta"}
 export BRANCH=${BRANCH:-"master"}
-export SETUP=${SETUP:-""}
-export SPREAD_ENV=${SPREAD_ENV:-""}

@@ -3,6 +3,7 @@
 . "$SCRIPTS_DIR/env/common.sh"
 
 export PROJECT=${PROJECT:-"console-conf-tests"}
+export CHANNEL=${CHANNEL:-"beta"}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-32"}
 export WIFI_SSID=${WIFI_SSID:-""}
 export WIFI_PASSWORD=${WIFI_PASSWORD:-""}
