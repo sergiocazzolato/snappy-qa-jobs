@@ -15,6 +15,11 @@ PROJECT_PATH=$3
 SPREAD_TESTS=$4
 SPREAD_ENV=$5
 
+if [ -z $SPREAD_TESTS ]; then
+    echo "Spread tests not defined, skipping execution"
+    exit
+fi
+
 # Export env variables
 if [ ! -z "$SPREAD_ENV" ]; then
 	echo "Using spread env: $SPREAD_ENV"
