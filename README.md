@@ -74,3 +74,12 @@ DEVICE_USER=sergio-j-cazzolato DEVICE_IP=10.42.0.67 ~/workspace/snappy-qa-jobs/s
 
 ##### Console conf on pi3
 DEVICE_USER=sergio-j-cazzolato WIFI_SSID=put-your-ssid WIFI_PASSWORD=put-the-pwd DEVICE_IP=192.168.1.6 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_cconf_pi3
+
+
+## SRU validation
+
+##### SRU validation execution on linode machines
+BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_linode_sru.sh lin_snapd_sru_validation
+
+##### SRU validation setup on external desktop machine
+DEVICE_USER=ubuntu DEVICE_PASS=pass DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_exernal_device_sru.sh dev_snapd_sru_validation
