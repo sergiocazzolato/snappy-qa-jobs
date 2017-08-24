@@ -64,10 +64,10 @@ BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_linode.sh lin_snapd_amd64_c
 WIFI_SSID=put-your-ssid WIFI_PASSWORD=put-the-pwd DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_cconf_db
 
 ##### Console conf on local amd64 using local vm
-DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 ~/workspace/snappy-qa-jobs/scripts/run_exernal_device.sh tf_cconf_amd64
+DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh tf_cconf_amd64
 
 ##### Console conf on local i386 using local vm
-DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 ~/workspace/snappy-qa-jobs/scripts/run_exernal_device.sh tf_cconf_i386
+DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh tf_cconf_i386
 
 ##### Console conf on pi2
 DEVICE_USER=sergio-j-cazzolato DEVICE_IP=10.42.0.67 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_cconf_pi2
@@ -82,4 +82,4 @@ DEVICE_USER=sergio-j-cazzolato WIFI_SSID=put-your-ssid WIFI_PASSWORD=put-the-pwd
 BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_linode_sru.sh lin_snapd_sru_validation
 
 ##### SRU validation setup on external desktop machine
-DEVICE_USER=ubuntu DEVICE_PASS=pass DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_exernal_device_sru.sh dev_snapd_sru_validation
+DEVICE_USER=ubuntu DEVICE_PASS=pass DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_external_device_sru.sh dev_snapd_sru_validation
