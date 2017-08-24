@@ -15,7 +15,7 @@ SETUP=$5
 
 if [ -z "$SETUP" ]; then
 	echo "No setup command to run"
-else if [ -z "$PASS" ]; then
+elif [ -z "$PASS" ]; then
 	echo "Running setup command (no pass): $SETUP"
 	ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $DEVICE_PORT $USER@$DEVICE_IP "$SETUP"
 else
