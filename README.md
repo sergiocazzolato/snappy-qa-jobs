@@ -61,7 +61,7 @@ BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_linode.sh lin_snapd_amd64_c
 ## Console conf
 
 ##### Console conf on dragonboard
-WIFI_SSID=put-your-ssid WIFI_PASSWORD=put-the-pwd DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_cconf_db
+DEVICE_USER=sergio-j-cazzolato WIFI_SSID=put-your-ssid WIFI_PASSWORD=put-the-pwd DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_cconf_db
 
 ##### Console conf on local amd64 using local vm
 DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh tf_cconf_amd64
