@@ -15,7 +15,7 @@ PROJECT_PATH=$3
 SPREAD_TESTS=$4
 SPREAD_ENV=$5
 
-if [ -z $SPREAD_TESTS ]; then
+if [ -z "$SPREAD_TESTS" ]; then
     echo "Spread tests not defined, skipping execution"
     exit
 fi
@@ -30,7 +30,7 @@ export SPREAD_EXTERNAL_ADDRESS=$DEVICE_IP:$DEVICE_PORT
 if [[ $(which spread) ]]; then
     echo "Spread found"
 else
-    if [ -f $WORKSPACE/spread/spread ]; then
+    if [ -f "$WORKSPACE/spread/spread" ]; then
     	export PATH=$PATH:$WORKSPACE/spread
     else
     	echo "Spread not found"
