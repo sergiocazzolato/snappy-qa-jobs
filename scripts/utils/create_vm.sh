@@ -92,6 +92,6 @@ wait_for_ssh
 prepare_ssh
 
 echo "Wait for first boot to be done"
-while ! execute_remote "snap changes" | MATCH "Done.*Initialize system state"; do sleep 1; done
+while ! execute_remote "snap changes" | grep -q -E "Done.*Initialize system state"; do sleep 1; done
 
 echo "VM Ready"
