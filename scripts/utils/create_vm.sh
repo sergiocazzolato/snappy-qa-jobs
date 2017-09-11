@@ -10,6 +10,28 @@ BRANCH=$4
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}
 
+execute_remote(){
+    sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
+}
+
+wait_for_ssh(){
+    retry=300
+    while ! execute_remote true; do
+        retry=$(( retry - 1 ))
+        if [ $retry -le 0 ]; then
+            echo "Timed out waiting for ssh. Aborting!"
+            exit 1
+        fi
+        sleep 1
+    done
+}
+
+prepare_ssh(){
+    execute_remote "sudo adduser --extrausers --quiet --disabled-password --gecos '' test"
+    execute_remote "echo test:ubuntu | sudo chpasswd"
+    execute_remote "echo 'test ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/test-user"
+}
+
 # Define variables
 if [ $ARCHITECTURE == "amd64" ]; then
 	ASSERTION=nested-amd64.model
@@ -48,11 +70,9 @@ fi
 
 # Run the vm
 sudo systemd-run --unit sut-vm /usr/bin/$QEMU -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=$WORKDIR/$IMG,if=virtio,cache=none -drive file=$WORKDIR/assertions.disk,if=virtio,cache=none -machine accel=kvm
-echo "Waiting 180 seconds until vm is ready"
-sleep 180
 
-# Create the test user on the vm
-echo "Addind test user to the vm"
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'sudo adduser --extrausers --quiet --disabled-password --gecos "" test'
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo test:ubuntu | sudo chpasswd'
-sshpass -p ubuntu ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $PORT user1@localhost 'echo "test ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/create-user-test'
+echo "Wait for ssh ready and addind test user to the vm"
+wait_for_ssh
+prepare_ssh
+
+echo "VM Ready"
