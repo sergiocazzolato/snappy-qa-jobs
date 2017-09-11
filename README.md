@@ -28,7 +28,7 @@ DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=2.27.2 ~/workspace/snappy
 DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi
 
 ##### Beta branch on amd64 using testflinger vm
-BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh dev_snapd_amd64
+BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64
 
 ##### Beta branch on dragonboard
 DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db
