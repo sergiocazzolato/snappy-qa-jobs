@@ -5,7 +5,7 @@
 export PROJECT=${PROJECT:-"snapd"}
 export CHANNEL=${CHANNEL:-"beta"}
 export ARCHITECTURE=${ARCHITECTURE:-"i386"}
-export DEVICE_QUEUE=${DEVICE_QUEUE:-"intel-gfx"}
+export DEVICE_QUEUE=${DEVICE_QUEUE:-"amd-gfx"}
 export CHANNEL=${CHANNEL:-"stable"}
 export SETUP=${SETUP:-"sudo snap refresh --beta core"}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-32"}

@@ -42,8 +42,14 @@ BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_db_split.sh tf_snapd_db_
 ##### Upgrade from stable on amd64 using local vm
 DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh
 
+##### Upgrade from stable on amd64 using testflinger vm
+BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64_refresh
+
 ##### Upgrade from stable on i386 using local vm
 DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_refresh
+
+##### Upgrade from stable on i386 using testflinger vm
+BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_i386_refresh
 
 ##### Upgrade from stable on pi2/3
 DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh
