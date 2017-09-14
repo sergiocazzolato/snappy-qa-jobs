@@ -10,3 +10,4 @@ export CHANNEL=${CHANNEL:-"stable"}
 export SETUP=${SETUP:-"sudo snap refresh --beta core"}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-64"}
 export TEST_PASS=${TEST_PASS:-"ubuntu"}
+export SKIP_TESTS=${SKIP_TESTS:-""}

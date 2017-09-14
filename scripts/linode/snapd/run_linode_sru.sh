@@ -5,5 +5,5 @@ git clone $SNAPD_URL
 . "$SCRIPTS_DIR/utils/get_spread.sh"
 cp $PROJECT/spread.yaml $PROJECT/spread.yaml.bak
 sed 's/ubuntu-16.04-32/ubuntu-17.04-64/g' -i $PROJECT/spread.yaml
-. "$SCRIPTS_DIR/utils/run_spread.sh" "127.0.0.1" "22" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" | tee run_spread.log
+. "$SCRIPTS_DIR/utils/run_spread.sh" "127.0.0.1" "22" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" | tee run_spread.log
 cp $PROJECT/spread.yaml.bak $PROJECT/spread.yaml
