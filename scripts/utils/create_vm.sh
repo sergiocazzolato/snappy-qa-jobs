@@ -79,7 +79,7 @@ esac
 # create ubuntu-core image
 mkdir -p /tmp/work-dir
 
-snap download core
+snap download --$CHANNEL core
 
 /snap/bin/ubuntu-image --image-size 3G "$TESTSLIB/assertions/nested-${ARCHITECTURE}.model" --channel "$CHANNEL" --output ubuntu-core.img --extra-snaps core_*.snap
 mv ubuntu-core.img /tmp/work-dir
