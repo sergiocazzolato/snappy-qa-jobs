@@ -2,7 +2,7 @@
 
 echo "Running tpr command: tpr -channel $CHANNEL -from $CHANNEL_FROM -release $BRANCH"
 
-OUTPUT="$(tpr -channel $CHANNEL -from $CHANNEL_FROM -release $BRANCH)"
+OUTPUT="$(tpr -channel $CHANNEL -from $CHANNEL_FROM -release $BRANCH -executors $EXECUTORS)"
 JOBS=$(echo $OUTPUT | cut -d "[" -f2 | cut -d "]" -f1)
 
 echo "Moving jobs: $JOBS"
