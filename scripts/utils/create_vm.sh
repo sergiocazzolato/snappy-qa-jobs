@@ -13,7 +13,7 @@ execute_remote(){
 }
 
 wait_for_ssh(){
-    retry=300
+    retry=120
     while ! execute_remote true; do
         retry=$(( retry - 1 ))
         if [ $retry -le 0 ]; then
