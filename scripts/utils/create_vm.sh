@@ -68,7 +68,7 @@ amd64)
     QEMU="$(which qemu-system-x86_64)"
     ;;
 i386)
-    QEMU="$(which qemu-system-i386)"
+    QEMU="$(which qemu-system-x86_64)"
     ;;
 *)
     echo "unsupported architecture"
