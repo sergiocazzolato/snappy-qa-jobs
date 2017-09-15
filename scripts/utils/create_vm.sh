@@ -4,7 +4,7 @@ set -x
 echo "Creating vm"
 
 if [ "$#" -ne 4 ]; then
-    echo "Illegal number of parameters"
+    echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
         echo "param $i: $param"
