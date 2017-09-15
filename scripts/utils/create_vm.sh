@@ -3,7 +3,7 @@ set -x
 
 echo "Creating vm"
 
-if [ "$#" -ne 4 ]; then
+if [ "$#" -lt 3 ]; then
     echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
