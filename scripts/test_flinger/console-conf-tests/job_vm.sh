@@ -11,7 +11,7 @@ provision_data:
     distro: xenial
 test_data:
     test_cmds:
-        - ssh $DEVICE_USER@{device_ip} "sudo apt update && sudo apt install -y git curl"
+        - ssh $DEVICE_USER@{device_ip} "sudo apt update && sudo apt install -y git curl jq"
         - ssh $DEVICE_USER@{device_ip} "git clone $JOBS_URL"
         - ssh $DEVICE_USER@{device_ip} "(cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)"
         - ssh $DEVICE_USER@{device_ip} "git clone $VALIDATOR_URL"
