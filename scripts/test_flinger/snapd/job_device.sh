@@ -9,7 +9,8 @@ provision_data:
 test_data:
     test_cmds: |
         sudo rm -f /var/lib/apt/lists/lock
-        sudo apt update && sudo apt install -y git curl
+        sudo apt update
+        sudo apt install -y git curl
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         git clone $SNAPD_URL
