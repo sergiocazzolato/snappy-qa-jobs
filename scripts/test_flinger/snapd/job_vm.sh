@@ -11,6 +11,7 @@ provision_data:
     distro: xenial
 test_data:
     test_cmds: |
+        #!/bin/bash
         ssh $DEVICE_USER@{device_ip} "sudo rm -f /var/lib/apt/lists/lock"
         ssh $DEVICE_USER@{device_ip} "sudo apt update"
         ssh $DEVICE_USER@{device_ip} "sudo apt install -y git curl jq"

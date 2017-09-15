@@ -8,6 +8,7 @@ provision_data:
     channel: $CHANNEL
 test_data:
     test_cmds: |
+        #!/bin/bash
         sudo rm -f /var/lib/apt/lists/lock
         sudo apt update
         sudo apt install -y git curl
