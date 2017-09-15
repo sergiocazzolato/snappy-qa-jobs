@@ -4,6 +4,11 @@ echo "Running setup command"
 
 if [ "$#" -ne 5 ]; then
     echo "Illegal number of parameters"
+    i=1
+    for param in $*; do
+        echo "param $i: $param"
+        i=$(( i + 1 ))
+    done
     exit 1
 fi
 
