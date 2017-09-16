@@ -47,7 +47,8 @@ fi
 cd $PROJECT_PATH
 
 echo "Moving to manual all the tests to skip: $SKIP_TESTS"
-for test in $SKIP_TESTS; do
+tests_skip="$(echo $SKIP_TESTS | tr ',' ' ')"
+for test in $tests_skip; do
     if [ -f $test/task.yaml ]; then
         cp $test/task.yaml $test/task.yaml.back
         echo "manual: true" >> $test/task.yaml
@@ -58,7 +59,7 @@ echo "Running command: spread -v $SPREAD_TESTS"
 spread -v $SPREAD_TESTS
 
 echo "Restoring skipped tests"
-for test in $SKIP_TESTS; do
+for test in $tests_skip; do
     if [ -f $test/task.yaml.back ]; then
         mv $test/task.yaml.back $test/task.yaml
     fi
