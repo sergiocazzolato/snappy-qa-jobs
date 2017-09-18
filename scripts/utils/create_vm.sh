@@ -90,10 +90,7 @@ esac
 # create ubuntu-core image
 mkdir -p /tmp/work-dir
 
-download_url=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/core?channel=$CORE_CHANNEL | jq -j '.anon_download_url')
-curl -L -o core.snap "$download_url"
-
-/snap/bin/ubuntu-image --image-size 3G "$TESTSLIB/assertions/nested-${ARCHITECTURE}.model" --channel "$CHANNEL" --output ubuntu-core.img --extra-snaps core.snap
+/snap/bin/ubuntu-image --image-size 3G "$TESTSLIB/assertions/nested-${ARCHITECTURE}.model" --channel "$CHANNEL" --output ubuntu-core.img
 mv ubuntu-core.img /tmp/work-dir
 
 create_assertions_disk
