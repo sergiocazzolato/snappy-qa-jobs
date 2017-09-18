@@ -3,7 +3,7 @@ set -x
 
 echo "Creating vm"
 
-if [ "$#" -lt 3 ]; then
+if [ "$#" -lt 4 ]; then
     echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
@@ -16,7 +16,8 @@ fi
 ARCHITECTURE=$1
 CHANNEL=$2
 PORT=$3
-BRANCH=$4
+CORE_CHANNEL=$4
+BRANCH=$5
 
 execute_remote(){
     sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
@@ -89,7 +90,7 @@ esac
 # create ubuntu-core image
 mkdir -p /tmp/work-dir
 
-download_url=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/core?channel=$CHANNEL | jq -j '.anon_download_url')
+download_url=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/core?channel=$CORE_CHANNEL | jq -j '.anon_download_url')
 curl -L -o core.snap "$download_url"
 
 /snap/bin/ubuntu-image --image-size 3G "$TESTSLIB/assertions/nested-${ARCHITECTURE}.model" --channel "$CHANNEL" --output ubuntu-core.img --extra-snaps core.snap
