@@ -4,6 +4,7 @@ echo "Creating job for snapd using a device"
 
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
+global_timeout: 36000
 provision_data:
     channel: $CHANNEL
 test_data:
