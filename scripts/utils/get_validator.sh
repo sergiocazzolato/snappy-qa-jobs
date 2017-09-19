@@ -7,9 +7,9 @@ export VALIDATOR_DIR=$GOPATH/src/$TPR_URL
 export PATH=$GOPATH/bin:$PATH
 
 if [ -d $TPR_DIR ]; then
-	echo "Validator already downloaded"
+    echo "Validator already downloaded"
 else
-	mkdir -p $GOPATH
-	go get $TPR_URL
-	echo "tpr downloaded and ready to use"
+    mkdir -p $GOPATH
+    go get $TPR_URL
+    echo "tpr downloaded and ready to use"
 fi

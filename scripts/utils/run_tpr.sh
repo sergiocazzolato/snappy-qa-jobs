@@ -7,7 +7,7 @@ JOBS=$(echo $OUTPUT | cut -d "[" -f2 | cut -d "]" -f1)
 
 echo "Moving jobs: $JOBS"
 for JOB in $JOBS; do
-	NAME=$(basename "$JOB")
-	sudo mv $JOB $TF_DATA/$NAME.yaml
+    NAME=$(basename "$JOB")
+    sudo mv $JOB $TF_DATA/$NAME.yaml
 done
 

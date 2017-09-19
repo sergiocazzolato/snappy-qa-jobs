@@ -28,7 +28,7 @@ fi
 
 # Export env variables
 if [ ! -z "$SPREAD_ENV" ]; then
-	echo "Using spread env: $SPREAD_ENV"
+    echo "Using spread env: $SPREAD_ENV"
     export $SPREAD_ENV
 fi
 export SPREAD_EXTERNAL_ADDRESS=$DEVICE_IP:$DEVICE_PORT
@@ -37,9 +37,9 @@ if [[ $(which spread) ]]; then
     echo "Spread found"
 else
     if [ -f "$WORKSPACE/spread/spread" ]; then
-    	export PATH=$PATH:$WORKSPACE/spread
+        export PATH=$PATH:$WORKSPACE/spread
     else
-    	echo "Spread not found"
+        echo "Spread not found"
     fi
 fi
 
