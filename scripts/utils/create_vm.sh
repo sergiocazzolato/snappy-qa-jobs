@@ -90,7 +90,11 @@ esac
 # create ubuntu-core image
 mkdir -p /tmp/work-dir
 
-download_url=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/core?channel=$CORE_CHANNEL | jq -j '.anon_download_url')
+if [ $CORE_CHANNEL = "edge" ]; then
+    download_url=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/core?channel=stable | jq -j '.anon_download_url')
+else
+    download_url=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/core?channel=$CORE_CHANNEL | jq -j '.anon_download_url')
+fi
 curl -L -o core.snap "$download_url"
 
 /snap/bin/ubuntu-image --image-size 3G "$TESTSLIB/assertions/nested-${ARCHITECTURE}.model" --channel "$CHANNEL" --output ubuntu-core.img --extra-snaps core.snap
@@ -104,6 +108,19 @@ wait_for_ssh
 prepare_ssh
 
 echo "Wait for first boot to be done"
-while ! execute_remote "snap changes" | grep -q -E "Done.*Initialize system state"; do sleep 1; done
+while ! execute_remote "snap changes" | grep -q -E "Done.*Initialize system state"; do
+    sleep 1
+done
+
+if [ $CORE_CHANNEL = "edge" ]; then
+    execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || true
+
+    wait_for_ssh
+
+    while ! execute_remote "snap changes" | grep -q -E "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel"; do
+        sleep 1
+    done
+    execute_remote "snap info core" | grep -q -E  "tracking: +${CORE_CHANNEL}"
+fi
 
 echo "VM Ready"
