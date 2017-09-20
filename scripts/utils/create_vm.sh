@@ -112,15 +112,4 @@ while ! execute_remote "snap changes" | grep -q -E "Done.*Initialize system stat
     sleep 1
 done
 
-if [ $CORE_CHANNEL = "edge" ]; then
-    execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || true
-
-    wait_for_ssh
-
-    while ! execute_remote "snap changes" | grep -q -E "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel"; do
-        sleep 1
-    done
-    execute_remote "snap info core" | grep -q -E  "tracking: +${CORE_CHANNEL}"
-fi
-
 echo "VM Ready"
