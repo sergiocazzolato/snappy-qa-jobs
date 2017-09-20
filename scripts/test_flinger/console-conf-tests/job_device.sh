@@ -11,7 +11,7 @@ test_data:
         #!/bin/bash
         sudo rm -f /var/lib/apt/lists/lock
         sudo apt update
-        sudo apt install -y git curl
+        sudo apt install -y git curl sshpass
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         git clone $CCONF_URL
