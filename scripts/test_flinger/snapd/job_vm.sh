@@ -12,8 +12,7 @@ provision_data:
 test_data:
     test_cmds: |
         #!/bin/bash
-        ssh $DEVICE_USER@{device_ip} "sudo rm -f /var/lib/apt/lists/lock"
-        ssh $DEVICE_USER@{device_ip} "sudo apt update"
+        ssh $DEVICE_USER@{device_ip} "sudo apt update || ps aux | grep apt"
         ssh $DEVICE_USER@{device_ip} "sudo apt install -y git curl jq sshpass"
         ssh $DEVICE_USER@{device_ip} "git clone $JOBS_URL"
         ssh $DEVICE_USER@{device_ip} "(cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)"

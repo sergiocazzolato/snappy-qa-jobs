@@ -10,8 +10,7 @@ provision_data:
 test_data:
     test_cmds: |
         #!/bin/bash
-        sudo rm -f /var/lib/apt/lists/lock
-        sudo apt update
+        sudo apt update || ps aux | grep apt
         sudo apt install -y git curl sshpass
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
