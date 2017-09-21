@@ -40,15 +40,11 @@ wait_for_ssh(){
 
 if [ -z "$CORE_CHANNEL" ]; then
     echo "No refresh channel defined, exiting"
-    exit 0
+else
+    execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || exit
+    wait_for_ssh
+    while ! execute_remote "snap changes" | grep -q -E "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel"; do
+        sleep 1
+    done
+    execute_remote "snap info core" | grep -q -E  "tracking: +${CORE_CHANNEL}"
 fi
-
-execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || exit
-
-wait_for_ssh
-
-while ! execute_remote "snap changes" | grep -q -E "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel"; do
-    sleep 1
-done
-
-execute_remote "snap info core" | grep -q -E  "tracking: +${CORE_CHANNEL}"
