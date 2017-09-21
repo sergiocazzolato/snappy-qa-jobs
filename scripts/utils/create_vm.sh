@@ -17,7 +17,7 @@ ARCHITECTURE=$1
 CHANNEL=$2
 PORT=$3
 CORE_CHANNEL=$4
-BRANCH=$5
+SNAPD_PATH=$5
 
 execute_remote(){
     sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
@@ -65,13 +65,13 @@ sudo apt install -y snapd qemu genisoimage sshpass
 sudo snap install --classic --beta ubuntu-image
 
 echo "Download snapd and checkout branch"
-if [ ! -d snapd ]; then
+if [ -z "$SNAPD_PATH" ] || [ ! -d $SNAPD_PATH ]; then
     git clone https://github.com/snapcore/snapd
+    export TESTSLIB="./snapd/tests/lib"
+else
+    export TESTSLIB="$SNAPD_PATH/tests/lib"
 fi
-if [ ! -z $BRANCH ]; then
-    (cd snapd && git checkout $BRANCH)
-fi
-export TESTSLIB="./snapd/tests/lib"
+
 
 # determine arch related vars
 case "$ARCHITECTURE" in
