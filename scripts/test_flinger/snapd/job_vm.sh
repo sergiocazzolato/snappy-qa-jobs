@@ -17,7 +17,7 @@ test_data:
         ssh $DEVICE_USER@{device_ip} "git clone $JOBS_URL"
         ssh $DEVICE_USER@{device_ip} "(cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)"
         ssh $DEVICE_USER@{device_ip} "git clone $VALIDATOR_URL"
-        ssh $DEVICE_USER@{device_ip} "git clone $SNAPD_URL"
+        ssh $DEVICE_USER@{device_ip} "git clone $SNAPD_URL $PROJECT"
         ssh $DEVICE_USER@{device_ip} "(cd $PROJECT && git checkout $BRANCH)"
         ssh $DEVICE_USER@{device_ip} "sudo $JOBS_PROJECT/scripts/utils/create_vm.sh \"$ARCHITECTURE\" \"$CHANNEL\" \"$PORT\" \"$CORE_CHANNEL\""
         ssh $DEVICE_USER@{device_ip} ". $JOBS_PROJECT/scripts/utils/register_device.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$REGISTER_EMAIL\""

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-git clone $SNAPD_URL
+git clone $SNAPD_URL $PROJECT
 (cd $PROJECT && git fetch origin && git checkout $BRANCH && git pull)
 . "$SCRIPTS_DIR/utils/get_spread.sh"
 cp $PROJECT/spread.yaml $PROJECT/spread.yaml.bak

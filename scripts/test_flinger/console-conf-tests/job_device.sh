@@ -13,7 +13,7 @@ test_data:
         sudo apt install -y git curl sshpass
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
-        git clone $CCONF_URL
+        git clone $CCONF_URL $PROJECT
         (cd $PROJECT && git checkout $BRANCH)
         . $PROJECT/external/prepare_ssh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER"
         . $JOBS_PROJECT/scripts/utils/register_device.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$REGISTER_EMAIL"
