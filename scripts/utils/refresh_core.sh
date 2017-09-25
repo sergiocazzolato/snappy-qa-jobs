@@ -2,7 +2,7 @@
 
 echo "Refresh core on device"
 
-if [ "$#" -ne 5 ]; then
+if [ "$#" -ne 6 ]; then
     echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
@@ -16,7 +16,8 @@ DEVICE_IP=$1
 DEVICE_PORT=$2
 USER=$3
 PASS=$4
-CORE_CHANNEL=$5
+CHANNEL=$5
+CORE_CHANNEL=$6
 
 execute_remote(){
     if [ -z "$PASS" ]; then
@@ -40,6 +41,8 @@ wait_for_ssh(){
 
 if [ -z "$CORE_CHANNEL" ]; then
     echo "No refresh channel defined, exiting"
+elif [ "$CHANNEL" = "$CORE_CHANNEL" ]; then
+    echo "No refresh channel needed"
 else
     execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || exit
     wait_for_ssh
