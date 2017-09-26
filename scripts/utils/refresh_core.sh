@@ -44,7 +44,7 @@ if [ -z "$CORE_CHANNEL" ]; then
 elif [ "$CHANNEL" = "$CORE_CHANNEL" ]; then
     echo "No refresh channel needed"
 else
-    execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || exit
+    execute_remote "sudo snap refresh --${CORE_CHANNEL} core"
     wait_for_ssh
     while ! execute_remote "snap changes" | grep -q -E "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel"; do
         sleep 1
