@@ -6,5 +6,5 @@ export PROJECT=${PROJECT:-"snapd"}
 export CHANNEL=${CHANNEL:-"stable"}
 export CORE_CHANNEL=${CORE_CHANNEL:-"beta"}
 export SETUP=${SETUP:-""}
-export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-32"}
+export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-arm-32"}
 export DEVICE_IP=${DEVICE_IP:-"127.0.0.1"}
