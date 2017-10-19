@@ -28,26 +28,68 @@ execute_remote(){
 }
 
 wait_for_ssh(){
-    retry=120
+    retries=$1
+    sleep=$2
     while ! execute_remote true; do
-        retry=$(( retry - 1 ))
-        if [ $retry -le 0 ]; then
+        retries=$(( retries - 1 ))
+        if [ $retries -le 0 ]; then
             echo "Timed out waiting for ssh. Aborting!"
             exit 1
         fi
-        sleep 1
+        sleep $sleep
     done
 }
 
+retry_until(){
+    command=$1
+    output=$2
+    retries=$3
+    sleep=$4
+
+    while ! execute_remote "$command" | grep -q -E "$output"; do
+        retries=$(( retries - 1 ))
+        if [ $retries -le 0 ]; then
+            echo "Timed out reached. Aborting!"
+            exit 1
+        fi
+        sleep $sleep
+    done
+}
+
+retry_while(){
+    command=$1
+    output=$2
+    retries=$3
+    sleep=$4
+
+    while execute_remote "$command" | grep -q -E "$output"; do
+        retries=$(( retries - 1 ))
+        if [ $retries -le 0 ]; then
+            echo "Timed out reached. Aborting!"
+            exit 1
+        fi
+        sleep $sleep
+    done
+}
+
+# Auto-refresh core
+if execute_remote "snap changes" | grep  -q -E "Doing.*Auto-refresh snap \"core\""; then
+    echo "Auto-refresh for core in progress"
+    retry_while "snap changes" "Doing.*Auto-refresh snap \"core\"" 120 30
+    wait_for_ssh 120 30
+    retry_until "snap changes" "Done.*Auto-refresh snap \"core\"" 120 2
+    echo "Auto-refresh for core completed"
+fi
+
+# Refresh core
 if [ -z "$CORE_CHANNEL" ]; then
     echo "No refresh channel defined, exiting"
 elif [ "$CHANNEL" = "$CORE_CHANNEL" ]; then
     echo "No refresh channel needed"
 else
+    # Run update and make "|| true" to continue when the connection is closed by remote host
     execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || true
-    wait_for_ssh
-    while ! execute_remote "snap changes" | grep -q -E "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel"; do
-        sleep 1
-    done
+    wait_for_ssh 120 2
+    retry_until "snap changes" "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel" 120 2
     execute_remote "snap info core" | grep -q -E  "tracking: +${CORE_CHANNEL}"
 fi
