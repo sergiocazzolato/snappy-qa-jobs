@@ -2,11 +2,19 @@
 
 echo "Creating job for snapd using a device"
 
+if [ -z $IMAGE_URL ]; then
+    PROVISION_METHOD="channel"
+    PROVISION_VAR="$CHANNEL"
+else
+    PROVISION_METHOD="url"
+    PROVISION_VAR="$IMAGE_URL"
+fi
+
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 global_timeout: 36000
 provision_data:
-    channel: $CHANNEL
+    $PROVISION_METHOD: $PROVISION_VAR
 test_data:
     test_cmds: |
         #!/bin/bash

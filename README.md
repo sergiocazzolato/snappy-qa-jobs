@@ -16,52 +16,58 @@ In this section examples are provided to run each of the beta validation process
 ## Beta Execution
 
 ##### Beta branch on dragonboard using testflinger
-BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_db_split.sh tf_snapd_db_split
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db
+
+##### Beta branch on cm3 using testflinger
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_cm3
 
 ##### Beta branch on amd64 using local vm
-DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64
+DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64
 
 ##### Beta branch on i386 using local vm
-DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386
+DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386
 
 ##### Beta branch on pi2/pi3
-DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi
+DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi
 
 ##### Beta branch on amd64 using testflinger vm
-BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64
 
 ##### Beta branch on dragonboard
-DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db
+DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db
 
 
 ## Beta refresh from stable
 
 ##### Upgrade from stable on dragonboard using testflinger
-BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_db_split.sh tf_snapd_db_split_refresh
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_db.sh tf_snapd_db_refresh
+
+##### Upgrade from stable on cm3 using testflinger
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_db.sh tf_snapd_cm3_refresh
 
 ##### Upgrade from stable on amd64 using local vm
-DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh
+DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh
 
 ##### Upgrade from stable on amd64 using testflinger vm
-BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64_refresh
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64_refresh
 
 ##### Upgrade from stable on i386 using local vm
-DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_refresh
+DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_refresh
 
 ##### Upgrade from stable on i386 using testflinger vm
-BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_i386_refresh
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_i386_refresh
 
 ##### Upgrade from stable on pi2/3
-DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh
+DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh
 
 ##### Upgrade from stable on db
-DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh
+DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh
 
 
 ## Core revert
 
 ##### Core revert test on linode
-BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_linode.sh lin_snapd_amd64_core_revert
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_linode.sh lin_snapd_amd64_core_revert
 
 
 ## Console conf
@@ -85,7 +91,7 @@ DEVICE_USER=sergio-j-cazzolato WIFI_SSID=put-your-ssid WIFI_PASSWORD=put-the-pwd
 ## SRU validation
 
 ##### SRU validation execution on linode machines
-BRANCH=2.27.2 ~/workspace/snappy-qa-jobs/scripts/run_linode_sru.sh lin_snapd_sru_validation
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_linode_sru.sh lin_snapd_sru_validation
 
 ##### SRU validation setup on external desktop machine
 DEVICE_USER=ubuntu DEVICE_PASS=pass DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_external_device_sru.sh dev_snapd_sru_validation
