@@ -40,10 +40,10 @@ DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/s
 ## Beta refresh from stable
 
 ##### Upgrade from stable on dragonboard using testflinger
-BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_db.sh tf_snapd_db_refresh
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db_refresh
 
 ##### Upgrade from stable on cm3 using testflinger
-BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_db.sh tf_snapd_cm3_refresh
+BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_cm3_refresh
 
 ##### Upgrade from stable on amd64 using local vm
 DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh
