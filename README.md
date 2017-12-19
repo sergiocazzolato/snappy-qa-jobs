@@ -8,12 +8,80 @@ ubuntu core inside test flinger machines.
 The default configuration of the project is ready to run beta validation process.
 
 
+## Beta validation
+
+In this section it is explained how to run beta validation by using this project. To complete beta validation all the following tests have to be executed on dragonboard, rpi2, rpi3, core64 and core32.
+
+### Create beta images
+
+By running the following lines, the script will create the images for beta validation for all the supported devices.
+
+    git clone https://github.com/sergiocazzolato/validator.git
+    cd validator
+    sudo ./create.sh beta
+
+### Get stable images used to run the refresh core scenario
+
+Download the images from http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/
+
+
+### Setup a device:
+
+    sudo dd if=<PAT_TO_IMG> of=/dev/mmcblk0 bs=4M oflag=sync status=noxfer
+
+### Create a vm:
+
+    amd64: kvm -snapshot -smp 2 -m 1500 -redir tcp:8022::22 -nographic -serial mon:stdio <PATH_TO_VM_IMAGE>
+    i386: kvm -snapshot -smp 2 -m 1500 -redir tcp:8023::22 -nographic -serial mon:stdio <PATH_TO_VM_IMAGE>
+
+
+### Run beta validation
+
+To complete beta validation is requested to run all the following scenario. For all of them, it is needed to save the results, analize and track test failures:
+
+##### Execution with an image built from the beta channel with kernel from stable:
+    Db: DEVICE_IP=<DEVICE_IP> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_db
+    Amd64: DEVICE_PORT=<DEVICE_PORT> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_amd64
+    I386: DEVICE_PORT=<DEVICE_PORT> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_i386
+    Pi2: DEVICE_IP=<DEVICE_IP> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_pi
+    Pi3: DEVICE_IP=<DEVICE_IP> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_pi
+
+##### Refresh core from stable image to beta channel before the execution:
+    Db: DEVICE_IP=<DEVICE_IP> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_db_refresh
+    Amd64: DEVICE_PORT=<DEVICE_PORT> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_amd64_refresh
+    I386: DEVICE_PORT=<DEVICE_PORT> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_i386_refresh
+    Pi2: DEVICE_IP=<DEVICE_IP> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_pi_refresh
+    Pi3: DEVICE_IP=<DEVICE_IP> DEVICE_USER=<DEVICE_USER> BRANCH=<BRANCH> scripts/run_external_device.sh dev_snapd_pi_refresh
+
+##### console-conf automated tests:
+    Db: DEVICE_USER=<DEVICE_USER> WIFI_SSID=<WIFI_SSID> WIFI_PASSWORD=<WIFI_PASSWORD> DEVICE_IP=<DEVICE_IP> scripts/run_external_device.sh dev_cconf_db
+    Amd64: DEVICE_PORT=<DEVICE_PORT> DEVICE_USER=<DEVICE_USER> ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh tf_cconf_amd64
+    I386: DEVICE_PORT=<DEVICE_PORT> DEVICE_USER=<DEVICE_USER> ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh tf_cconf_i386
+    Pi2: DEVICE_USER=<DEVICE_USER> DEVICE_IP=<DEVICE_IP> scripts/run_external_device.sh dev_cconf_pi2
+    Pi3: DEVICE_USER=<DEVICE_USER> WIFI_SSID=<WIFI_SSID> WIFI_PASSWORD=<WIFI_PASSWORD> DEVICE_IP=<DEVICE_IP> scripts/run_external_device.sh dev_cconf_pi3
+
+##### core revert test:
+    16.04-64: BRANCH=<BRANCH> scripts/run_linode.sh lin_snapd_amd64_core_revert
+
+
+##### Notes
+
+<DEVICE_IP> = The ip of the device that's gonna be tested, in case there are two ips (wifi and lan), it is more reliable to use the lan.
+<DEVICE_USER> = The user for whom the device to test is registered.
+<DEVICE_PORT> = The port used to ssh to the device, it is mostly used when the device is a local vm.
+<BRANCH> = The branch corresponding to the release to validate.
+<WIFI_SSID> = The ssid for the wifi that is gonna used to validate
+<WIFI_PASSWORD> = The password to connect the device to the wifi
+
+In case of dragonboard it can be tested on testflinger. For that it is needed to install the testflinger-cli snap and run the tests connected to the vpn. See the examples section to see how to run it. 
+
+
 ## Examples
 
-In this section examples are provided to run each of the beta validation process.
+The following section shows the examples that are used to execution beta validation
 
 
-## Beta Execution
+### Beta Execution
 
 ##### Beta branch on dragonboard using testflinger
 BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db
@@ -37,7 +105,7 @@ BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64
 DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db
 
 
-## Beta refresh from stable
+### Beta refresh from stable
 
 ##### Upgrade from stable on dragonboard using testflinger
 BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db_refresh
@@ -64,13 +132,13 @@ DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/sn
 DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh
 
 
-## Core revert
+### Core revert
 
 ##### Core revert test on linode
 BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_linode.sh lin_snapd_amd64_core_revert
 
 
-## Console conf
+### Console conf
 
 ##### Console conf on dragonboard
 DEVICE_USER=sergio-j-cazzolato WIFI_SSID=put-your-ssid WIFI_PASSWORD=put-the-pwd DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_cconf_db
@@ -88,10 +156,12 @@ DEVICE_USER=sergio-j-cazzolato DEVICE_IP=10.42.0.67 ~/workspace/snappy-qa-jobs/s
 DEVICE_USER=sergio-j-cazzolato WIFI_SSID=put-your-ssid WIFI_PASSWORD=put-the-pwd DEVICE_IP=192.168.1.6 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_cconf_pi3
 
 
-## SRU validation
+### SRU validation
 
 ##### SRU validation execution on linode machines
 BRANCH=2.30.1 ~/workspace/snappy-qa-jobs/scripts/run_linode_sru.sh lin_snapd_sru_validation
 
 ##### SRU validation setup on external desktop machine
 DEVICE_USER=ubuntu DEVICE_PASS=pass DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_external_device_sru.sh dev_snapd_sru_validation
+
+
