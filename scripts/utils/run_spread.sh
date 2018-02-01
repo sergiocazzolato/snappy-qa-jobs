@@ -2,7 +2,7 @@
 
 echo "Running spread"
 
-if [ "$#" -ne 6 ]; then
+if [ "$#" -ne 7 ]; then
     echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
@@ -20,6 +20,7 @@ PROJECT_PATH=$3
 SPREAD_TESTS=$4
 SPREAD_ENV=$5
 SKIP_TESTS=$6
+SPREAD_PARAMS=$7
 
 if [ -z "$SPREAD_TESTS" ]; then
     echo "Spread tests not defined, skipping execution"
@@ -55,8 +56,10 @@ for test in $tests_skip; do
     fi
 done
 
-echo "Running command: spread -v $SPREAD_TESTS"
-spread -v $SPREAD_TESTS
+spread_params="$(echo $SPREAD_PARAMS | tr ',' ' ')"
+
+echo "Running command: spread $spread_params $SPREAD_TESTS"
+spread $spread_params $SPREAD_TESTS
 
 echo "Restoring skipped tests"
 for test in $tests_skip; do

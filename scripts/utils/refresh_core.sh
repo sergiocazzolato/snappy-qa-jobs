@@ -92,4 +92,8 @@ else
     wait_for_ssh 120 2
     retry_until "snap changes" "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel" 120 2
     retry_until "snap info core" "tracking: +${CORE_CHANNEL}" 10 2
+
+    # Retry until the core is ready to install a snap and remove it
+    retry_until "snap install --devmode jq" "jq .* installed" 20 10
+    execute_remote "snap remove jq"
 fi
