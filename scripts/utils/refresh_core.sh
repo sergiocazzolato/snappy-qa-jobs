@@ -91,5 +91,5 @@ else
     execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || true
     wait_for_ssh 120 2
     retry_until "snap changes" "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel" 120 2
-    execute_remote "snap info core" | grep -q -E  "tracking: +${CORE_CHANNEL}"
+    retry_until "snap info core" "tracking: +${CORE_CHANNEL}" 10 2
 fi
