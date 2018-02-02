@@ -95,5 +95,5 @@ else
 
     # Retry until the core is ready to install a snap and remove it
     retry_until "sudo snap install --devmode jq" "jq .* installed" 20 10
-    execute_remote "snap remove jq"
+    execute_remote "sudo snap remove jq"
 fi
