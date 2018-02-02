@@ -94,6 +94,6 @@ else
     retry_until "snap info core" "tracking: +${CORE_CHANNEL}" 10 2
 
     # Retry until the core is ready to install a snap and remove it
-    retry_until "snap install --devmode jq" "jq .* installed" 20 10
+    retry_until "sudo snap install --devmode jq" "jq .* installed" 20 10
     execute_remote "snap remove jq"
 fi
