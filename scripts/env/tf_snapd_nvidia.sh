@@ -13,4 +13,6 @@ export TEST_PASS=${TEST_PASS:-"ubuntu"}
 export TEST_USER_TYPE=${TEST_USER_TYPE:-"regular"}
 export SKIP_TESTS=${SKIP_TESTS:-""}
 export SETUP=${SETUP:-"sudo add-apt-repository -y ppa:graphics-drivers && sudo apt-get update && sudo apt-get install -y nvidia-367 && echo 'rebooting' && sudo reboot"}
-export SETUP_2=${SETUP_2:-"echo 'Check nvidia is installed' && lsmod | grep nvidia && echo 'Waiting ...' && sleep 180 && echo 'Check nvidia is installed' && lsmod | grep nvidia && echo 'Finishing setup'"}
+export POST_SETUP=${POST_SETUP:-"echo 'Waiting ...' && sleep 60"}
+export SETUP_2=${SETUP_2:-"echo 'Check nvidia is installed' && lsmod | grep nvidia"}
+export POST_SETUP_2=${POST_SETUP_2:-""}
