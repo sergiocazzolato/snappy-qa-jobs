@@ -2,12 +2,15 @@
 
 echo "Creating job for cconf using a device"
 
-if [ -z $IMAGE_URL ]; then
-    PROVISION_METHOD="channel"
-    PROVISION_VAR="$CHANNEL"
-else
+if ! [ -z $IMAGE_URL ]; then
     PROVISION_METHOD="url"
     PROVISION_VAR="$IMAGE_URL"
+elif ! [ -z $DISTRO ]; then
+    PROVISION_METHOD="distro"
+    PROVISION_VAR="$DISTRO"
+else
+    PROVISION_METHOD="channel"
+    PROVISION_VAR="$CHANNEL"
 fi
 
 cat > job.yaml <<EOF
@@ -23,7 +26,7 @@ test_data:
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         git clone $CCONF_URL $PROJECT
         (cd $PROJECT && git checkout $BRANCH)
-        . $PROJECT/external/prepare_ssh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER"
+        . $JOBS_PROJECT/scripts/utils/add_test_user.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "test" "ubuntu" "$TEST_USER_TYPE"
         . $JOBS_PROJECT/scripts/utils/register_device.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$REGISTER_EMAIL"
         . $JOBS_PROJECT/scripts/utils/refresh_core.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$CHANNEL" "$CORE_CHANNEL"
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$SETUP"
