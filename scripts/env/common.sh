@@ -13,7 +13,5 @@ export DEVICE_USER=${DEVICE_USER:-"ubuntu"}
 export DEVICE_PASS=${DEVICE_PASS:-""}
 export DEVICE_PORT=${DEVICE_PORT:-22}
 export TEST_USER=${TEST_USER:-"test"}
-export TEST_USER_TYPE=${TEST_USER_TYPE:-"external"}
-
 
 export BRANCH=${BRANCH:-"master"}

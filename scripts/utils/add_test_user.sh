@@ -13,10 +13,10 @@ execute_remote(){
     ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p "$INSTANCE_PORT" "$ME@$INSTANCE_IP" "$@"
 }
 
-if [ "$USER_TYPE" = "external" ]; then
-	TYPE="--external"
-else
+if [ "$USER_TYPE" = "regular" ]; then
 	TYPE=""
+else
+	TYPE="--external"
 fi
 
 execute_remote "sudo adduser --quiet $TYPE --disabled-password --gecos '' $USER_NAME"
