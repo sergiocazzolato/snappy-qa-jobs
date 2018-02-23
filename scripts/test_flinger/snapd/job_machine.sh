@@ -27,7 +27,7 @@ test_data:
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         git clone $SNAPD_URL $PROJECT
         (cd $PROJECT && git checkout $BRANCH)
-        . $JOBS_PROJECT/scripts/utils/refresh_core.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" $CHANNEL" "$CORE_CHANNEL" || true
+        . $JOBS_PROJECT/scripts/utils/refresh_core.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$CHANNEL" "$CORE_CHANNEL" || true
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP" || true
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_2" || true
         . $JOBS_PROJECT/scripts/utils/get_spread.sh
