@@ -16,3 +16,4 @@ export SETUP=${SETUP:-"sudo add-apt-repository -y ppa:graphics-drivers && sudo a
 export POST_SETUP=${POST_SETUP:-"echo 'Waiting ...' && sleep 180"}
 export SETUP_2=${SETUP_2:-"echo 'Check nvidia is installed' && lsmod | grep nvidia"}
 export POST_SETUP_2=${POST_SETUP_2:-""}
+export SETUP_3=${SETUP_3:-"echo 'Configuring ssh connection' && sudo cp -a /home/ubuntu/.ssh /home/generic/.ssh && sudo chown -R generic.generic /home/generic/.ssh"}
