@@ -14,3 +14,4 @@ export TEST_USER_TYPE=${TEST_USER_TYPE:-"regular"}
 export SKIP_TESTS=${SKIP_TESTS:-""}
 export SETUP=${SETUP:-"sudo add-apt-repository -y ppa:graphics-drivers && sudo apt-get update && sudo apt-get install -y nvidia-367 && echo 'rebooting' && sudo reboot"}
 export SETUP_2=${SETUP_2:-"echo 'Check nvidia is installed' && lsmod && lsmod | grep nvidia"}
+export SETUP_3=${SETUP_3:-"echo ubuntu:ubuntu | sudo chpasswd"}
