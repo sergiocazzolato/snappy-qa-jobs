@@ -5,7 +5,7 @@ INSTANCE_IP="${1:-localhost}"
 INSTANCE_PORT="${2:-8022}"
 ME="${3:-$(whoami)}"
 USER_NAME="${4:-test}"
-USER_PASS="${5:-ubuntu}"
+USER_PASS="${5:-}"
 USER_TYPE="${6:-external}"
 
 execute_remote(){
@@ -20,5 +20,7 @@ else
 fi
 
 execute_remote "sudo adduser --quiet $TYPE --disabled-password --gecos '' $USER_NAME"
-execute_remote "echo $USER_NAME:$USER_PASS | sudo chpasswd"
+if ! [ -z $USER_PASS ]; then
+	execute_remote "echo $USER_NAME:$USER_PASS | sudo chpasswd"
+fi
 execute_remote "echo '$USER_NAME ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/create-user-$USER_NAME"
