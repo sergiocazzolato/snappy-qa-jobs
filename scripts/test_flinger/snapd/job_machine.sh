@@ -29,7 +29,8 @@ test_data:
         (cd $PROJECT && git checkout $BRANCH)
         . $JOBS_PROJECT/scripts/utils/add_test_user.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "test" "ubuntu" "$TEST_USER_TYPE"
         . $JOBS_PROJECT/scripts/utils/refresh_core.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$CHANNEL" "$CORE_CHANNEL"
-        . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP"
+        . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP" || true
+        . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_2" || true
         . $JOBS_PROJECT/scripts/utils/get_spread.sh
         . $JOBS_PROJECT/scripts/utils/run_spread.sh "{device_ip}" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
 EOF
