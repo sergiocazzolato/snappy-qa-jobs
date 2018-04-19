@@ -88,10 +88,45 @@ elif [ "$CHANNEL" = "$CORE_CHANNEL" ]; then
     echo "No refresh channel needed"
 else
     # Run update and make "|| true" to continue when the connection is closed by remote host
-    execute_remote "sudo snap refresh --${CORE_CHANNEL} core" || true
-    wait_for_ssh 120 2
-    retry_until "snap changes" "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel" 120 2
-    retry_until "snap info core" "tracking: +${CORE_CHANNEL}" 10 2
+    execute_remote "rm -f /tmp/refresh.log"
+    execute_remote "sudo snap refresh --${CORE_CHANNEL} core > /tmp/refresh.log  2>&1 &"
+
+    rebooted=0
+    while true; do
+        output=$(execute_remote "cat /tmp/refresh.log")
+        case "$output" in
+            *"reboot scheduled"*)
+                echo "Reboot scheduled, forcing reboot ..."
+                execute_remote "sudo reboot" || true
+                rebooted=1
+                break
+                ;;
+            *"updates available"*)
+                echo "No updates available for refresh"
+                break
+                ;;
+            *"refreshed"*)
+                echo "Core already refreshed"
+                break
+                ;;
+            *"Waiting for restart"*)
+                echo "Already waiting for restart, forcing reboot ..."
+                execute_remote "sudo reboot" || true
+                rebooted=1
+                break
+                ;;
+            *)
+                execute_remote "tail -n 1 /tmp/refresh.log"
+                ;;
+        esac
+        sleep 10
+    done
+
+    if [ $rebooted = 1 ]; then
+        wait_for_ssh 120 2
+        retry_until "snap changes" "Done.*Refresh \"core\" snap from \"${CORE_CHANNEL}\" channel" 120 2
+        retry_until "snap info core" "tracking: +${CORE_CHANNEL}" 10 2
+    fi
 
     # Retry until the core is ready to install a snap and remove it
     retry_until "sudo snap install --devmode jq" "jq .* installed" 20 10
