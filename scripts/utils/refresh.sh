@@ -89,7 +89,7 @@ do_full_refresh(){
 do_core_refresh(){
     refresh_channel=$1
 
-    execute_remote "rm -f /tmp/refresh.log"
+    # Run update and make "|| true" to continue when the connection is closed by remote host
     execute_remote "sudo snap refresh --${refresh_channel} core" || true
 
     check_refresh "$refresh_channel"
