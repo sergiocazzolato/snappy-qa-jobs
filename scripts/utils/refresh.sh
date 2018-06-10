@@ -107,7 +107,7 @@ fi
 # Refresh core
 if [ -z "$CORE_CHANNEL" ]; then
     echo "No refresh channel defined, exiting"
-    exit
+    return
 elif [ "$CHANNEL" = "$CORE_CHANNEL" ]; then
     do_full_refresh "$CHANNEL"
 else
