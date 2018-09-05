@@ -1,0 +1,12 @@
+summary: Connect and disconnect a plug
+
+priority: 800
+
+restore: |
+    snap remove test-snapd-uhid
+
+execute: |
+    snap install test-snapd-uhid
+    snap connect test-snapd-uhid:uhid
+    snap disconnect test-snapd-uhid:uhid
+    

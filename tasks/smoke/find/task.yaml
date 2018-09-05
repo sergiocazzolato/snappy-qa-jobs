@@ -1,0 +1,6 @@
+summary: Find a snap in the store
+
+priority: 900
+
+execute: |
+    snap find test-snapd-tools | grep -q test-snapd-tools

@@ -1,0 +1,9 @@
+summary: Install and remove a snap
+
+priority: 1000
+
+execute: |
+    snap install test-snapd-tools
+    snap list | grep -q test-snapd-tools
+    snap remove test-snapd-tools
+    snap list | grep -qv test-snapd-tools

@@ -1,0 +1,8 @@
+summary: Install and remove a snap
+
+priority: 700
+
+execute: |
+    snap info core | grep -qE "installed:.*${CORE_VERSION}"
+    snap info core | grep -qE "tracking:.*${CORE_CHANNEL}"
+

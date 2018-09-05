@@ -7,6 +7,20 @@ ubuntu core inside test flinger machines.
 
 The default configuration of the project is ready to run beta validation process.
 
+## Smoke test execution
+
+Smoke test suite is used to validate a core snap is working on an specific channel.
+
+The initial use case for this test suite is to validate the core snap when it is promoted to stable release, but it can be
+used for validating other channels too.
+
+To run this test suite it is needed to specify the core version and channel. The following line shows how to run it:
+
+    SPREAD_CORE_VERSION=2.35 SPREAD_CORE_CHANNEL=stable spread google:tasks/smoke/
+
+The current systems are using base images with no dependencies installed on google compute engine.
+
+Next step is to extend the suite to run the same tests but on devices.
 
 ## Beta validation
 

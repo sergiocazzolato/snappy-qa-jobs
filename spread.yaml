@@ -1,0 +1,48 @@
+project: snappy-qa
+
+environment:
+    PROJECT_PATH: /root/spread
+    TESTSLIB: $PROJECT_PATH/lib
+    TESTSFILES: $PROJECT_PATH/files
+
+backends:
+    google:
+        key: "$(HOST: echo $SPREAD_GOOGLE_KEY)"
+        location: computeengine/us-east1-b
+        halt-timeout: 2h
+        systems:
+            - ubuntu-14.04-64:
+                image: ubuntu-os-cloud/ubuntu-1404-lts
+            - ubuntu-16.04-32:
+                image: ubuntu-1604-32-base
+            - ubuntu-16.04-64:
+                image: ubuntu-os-cloud/ubuntu-1604-lts
+            - ubuntu-18.04-64:
+                image: ubuntu-os-cloud/ubuntu-1804-lts
+
+path: /root/spread
+
+prepare: |
+    apt update
+    apt install -y snapd    
+
+restore: |
+    rm -rf "${PROJECT_PATH%%:*}"
+
+suites:
+    tasks/smoke/:
+        summary: Run smoke test after a core snap is promoted
+        systems: [ubuntu-14*, ubuntu-16*, ubuntu-18*]
+        environment: 
+            CORE_CHANNEL: "$(HOST: echo ${SPREAD_CORE_CHANNEL:-stable})"
+            CORE_VERSION: "$(HOST: echo ${SPREAD_CORE_VERSION:-})"
+        prepare: |
+            if ! snap list core | grep -q 'stable'; then
+                snap install core --stable
+            else
+                snap refresh core --stable
+            fi
+
+            if [ ! "$CORE_CHANNEL" == 'stable' ]; then
+                snap refresh core --$CORE_CHANNEL
+            fi
