@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Running tests on linode vm"
+echo "Running tests on google vm"
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}
 export SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -12,4 +12,4 @@ else
 	. "$SCRIPTS_DIR/utils/load_env.sh" "$1"
 fi
 
-. "$SCRIPTS_DIR/linode/$PROJECT/run_linode.sh"
+. "$SCRIPTS_DIR/google/$PROJECT/run_google_sru.sh"
