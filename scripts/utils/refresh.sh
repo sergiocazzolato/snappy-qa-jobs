@@ -34,7 +34,7 @@ wait_for_ssh(){
         retries=$(( retries - 1 ))
         if [ $retries -le 0 ]; then
             echo "Timed out waiting for ssh. Aborting!"
-            exit 1
+            break
         fi
         sleep $sleep
     done
