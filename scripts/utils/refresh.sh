@@ -114,7 +114,7 @@ if execute_remote "snap changes" | grep -q -E "Doing.*Auto-refresh snap.*"; then
     echo "Auto-refresh in progress"
     retry_while "snap changes" "Doing.*Auto-refresh.*" 120 30
     wait_for_ssh 120 30
-    retry_until "snap changes" "Done.*Auto-refresh.*" 120 2
+    retry_until "snap changes" "Done.*Auto-refresh.*" 120 4
     echo "Auto-refresh is completed"
 fi
 
