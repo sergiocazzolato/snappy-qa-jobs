@@ -21,9 +21,9 @@ CORE_CHANNEL=$6
 
 execute_remote(){
     if [ -z "$PASS" ]; then
-        ssh -p $DEVICE_PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $USER@$DEVICE_IP "$*"
+        ssh -p $DEVICE_PORT -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $USER@$DEVICE_IP "$*"
     else
-        sshpass -p $PASS ssh -p $DEVICE_PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $USER@$DEVICE_IP "$*"
+        sshpass -p $PASS ssh -p $DEVICE_PORT -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $USER@$DEVICE_IP "$*"
     fi    
 }
 
