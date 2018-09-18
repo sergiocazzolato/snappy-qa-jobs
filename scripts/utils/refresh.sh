@@ -23,7 +23,7 @@ execute_remote(){
     if [ -z "$PASS" ]; then
         ssh -p $DEVICE_PORT -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $USER@$DEVICE_IP "$*"
     else
-        sshpass -p $PASS ssh -p $DEVICE_PORT -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $USER@$DEVICE_IP "$*"
+        sshpass -p $PASS ssh -p $DEVICE_PORT 47-o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $USER@$DEVICE_IP "$*"
     fi    
 }
 
@@ -34,6 +34,19 @@ wait_for_ssh(){
         retries=$(( retries - 1 ))
         if [ $retries -le 0 ]; then
             echo "Timed out waiting for ssh. Aborting!"
+            exit 1
+        fi
+        sleep $sleep
+    done
+}
+
+wait_for_no_ssh(){
+    retries=$1
+    sleep=$2
+    while execute_remote true; do
+        retries=$(( retries - 1 ))
+        if [ $retries -le 0 ]; then
+            echo "Timed out waiting for no ssh. Aborting!"
             exit 1
         fi
         sleep $sleep
@@ -74,6 +87,7 @@ retry_while(){
 
 check_refresh(){
     refresh_channel=$1
+    wait_for_no_ssh 120 2
     wait_for_ssh 120 2
     retry_until "snap info core" "tracking: +${refresh_channel}" 10 2
 }
