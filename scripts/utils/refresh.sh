@@ -47,7 +47,7 @@ wait_for_no_ssh(){
         retries=$(( retries - 1 ))
         if [ $retries -le 0 ]; then
             echo "Timed out waiting for no ssh. Aborting!"
-            exit 1
+            break
         fi
         sleep $sleep
     done
@@ -87,7 +87,7 @@ retry_while(){
 
 check_refresh(){
     refresh_channel=$1
-    wait_for_no_ssh 120 2
+    wait_for_no_ssh 30 2
     wait_for_ssh 120 2
     retry_until "snap info core" "tracking: +${refresh_channel}" 10 2
 }
