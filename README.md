@@ -45,8 +45,15 @@ Download the images from http://cdimage.ubuntu.com/ubuntu-core/16/stable/current
 
 ### Create a vm:
 
+    old kvm:
+
     amd64: kvm -snapshot -smp 2 -m 1500 -redir tcp:8022::22 -nographic -serial mon:stdio <PATH_TO_VM_IMAGE>
     i386: kvm -snapshot -smp 2 -m 1500 -redir tcp:8023::22 -nographic -serial mon:stdio <PATH_TO_VM_IMAGE>
+
+    new kvm:
+
+    amd64: sudo kvm -snapshot -smp 2 -m 1500 -net nic,model=virtio -net user,hostfwd=tcp::8022-:22 -nographic -serial mon:stdio <PATH_TO_VM_IMAGE>
+    i386: sudo kvm -snapshot -smp 2 -m 1500 -net nic,model=virtio -net user,hostfwd=tcp::8023-:22 -nographic -serial mon:stdio <PATH_TO_VM_IMAGE>
 
 ### Access to console through screen:
 
