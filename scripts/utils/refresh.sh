@@ -114,7 +114,7 @@ do_kernel_refresh(){
     local kernel_line=$(execute_remote "snap list | grep 'kernel$'")
     local kernel_name=$(echo $kernel_line | awk '{ print $1 }')
 
-    if [ -z "$kernel_name" ];
+    if [ -z "$kernel_name" ]; then
         echo "No kernel snap to update"
         return
     fi
