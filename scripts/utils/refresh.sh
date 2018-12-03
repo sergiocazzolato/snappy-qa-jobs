@@ -106,8 +106,8 @@ do_full_refresh(){
     wait_auto_refresh
     do_kernel_refresh "$channel"
 
-    # Run update and make "|| true" to continue when the connection is closed by remote host
-    execute_remote "sudo snap refresh"
+    # Run update and make "|| true" to continue when the connection is closed by remote host or not any snap to update
+    execute_remote "sudo snap refresh" || true
 }
 
 do_kernel_refresh(){
