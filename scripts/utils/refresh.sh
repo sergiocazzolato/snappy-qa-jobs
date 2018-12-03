@@ -101,7 +101,9 @@ do_full_refresh(){
     if [ -z "$core_channel" ]; then
         core_channel="$channel"
     fi
+    wait_auto_refresh
     do_core_refresh "$core_channel"
+    wait_auto_refresh
     do_kernel_refresh "$channel"
 
     # Run update and make "|| true" to continue when the connection is closed by remote host
@@ -139,15 +141,16 @@ do_core_refresh(){
     fi
 }
 
-# Wait in case auto-refresh is finished
-if execute_remote "snap changes" | grep -q -E "Doing.*Auto-refresh snap.*"; then
-    echo "Auto-refresh in progress"
-    retry_while "snap changes" "Doing.*Auto-refresh.*" 120 30
-    wait_for_ssh 120 30
-    retry_until "snap changes" "Done.*Auto-refresh.*" 120 4
-    echo "Auto-refresh is completed"
-fi
-
+wait_auto_refresh(){
+    # Wait in case auto-refresh is finished
+    if execute_remote "snap changes" | grep -q -E "Doing.*Auto-refresh snap.*"; then
+        echo "Auto-refresh in progress"
+        retry_while "snap changes" "Doing.*Auto-refresh.*" 120 30
+        wait_for_ssh 120 30
+        retry_until "snap changes" "Done.*Auto-refresh.*" 120 4
+        echo "Auto-refresh is completed"
+    fi
+}
 
 # Refresh core
 do_full_refresh "$CHANNEL" "$CORE_CHANNEL"
