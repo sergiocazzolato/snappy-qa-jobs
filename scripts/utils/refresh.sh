@@ -111,7 +111,8 @@ do_full_refresh(){
 do_kernel_refresh(){
     local refresh_channel=$1
 
-    local kernel_name=$(execute_remote "snap list | grep 'kernel$' | awk '{ print $1 }'")
+    local list=$(execute_remote "snap list")
+    local kernel_name=$(echo $list | grep 'kernel$' | awk '{ print $1 }')
     output=$(execute_remote "sudo snap refresh --${refresh_channel} $kernel_name 2>&1" || true)
     if echo "$output" | grep "no updates available"; then
         echo "snap \"$kernel_name\" has no updates available"
