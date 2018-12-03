@@ -28,8 +28,8 @@ execute_remote(){
 }
 
 wait_for_ssh(){
-    retries=$1
-    sleep=$2
+    local retries=$1
+    local sleep=$2
     while ! execute_remote true; do
         retries=$(( retries - 1 ))
         if [ $retries -le 0 ]; then
@@ -41,8 +41,8 @@ wait_for_ssh(){
 }
 
 wait_for_no_ssh(){
-    retries=$1
-    sleep=$2
+    local retries=$1
+    local sleep=$2
     while execute_remote true; do
         retries=$(( retries - 1 ))
         if [ $retries -le 0 ]; then
@@ -54,10 +54,10 @@ wait_for_no_ssh(){
 }
 
 retry_until(){
-    command=$1
-    output=$2
-    retries=$3
-    sleep=$4
+    local command=$1
+    local output=$2
+    local retries=$3
+    local sleep=$4
 
     while ! execute_remote "$command" | grep -q -E "$output"; do
         retries=$(( retries - 1 ))
@@ -70,10 +70,10 @@ retry_until(){
 }
 
 retry_while(){
-    command=$1
-    output=$2
-    retries=$3
-    sleep=$4
+    local command=$1
+    local output=$2
+    local retries=$3
+    local sleep=$4
 
     while execute_remote "$command" | grep -q -E "$output"; do
         retries=$(( retries - 1 ))
@@ -86,27 +86,50 @@ retry_while(){
 }
 
 check_refresh(){
-    refresh_channel=$1
+    local refresh_channel=$1
+    local snap=$2
 
     wait_for_no_ssh 30 2
     wait_for_ssh 120 2
-    retry_until "snap info core" "tracking: +${refresh_channel}" 10 2
+    retry_until "snap info $snap" "tracking: +${refresh_channel}" 10 2
 }
 
 do_full_refresh(){
-    refresh_channel=$1
+    local channel=$1
+    local core_channel=$2
+
+    if [ -z "$core_channel" ]; then
+        core_channel="$channel"
+    fi
+    do_core_refresh "$core_channel"
+    do_kernel_refresh "$channel"
 
     # Run update and make "|| true" to continue when the connection is closed by remote host
-    execute_remote "sudo snap refresh" || true
-    check_refresh "$refresh_channel"
+    execute_remote "sudo snap refresh"
+}
+
+do_kernel_refresh(){
+    local refresh_channel=$1
+
+    local kernel_name=$(execute_remote "snap list | grep 'kernel$' | awk '{ print $1 }'")
+    output=$(execute_remote "sudo snap refresh --${refresh_channel} $kernel_name 2>&1" || true)
+    if echo "$output" | grep "no updates available"; then
+        echo "snap \"$kernel_name\" has no updates available"
+    else
+        check_refresh "$refresh_channel" "$kernel_name"
+    fi
 }
 
 do_core_refresh(){
-    refresh_channel=$1
+    local refresh_channel=$1
 
     # Run update and make "|| true" to continue when the connection is closed by remote host
-    execute_remote "sudo snap refresh --${refresh_channel} core" || true
-    check_refresh "$refresh_channel"
+    output=$(execute_remote "sudo snap refresh --${refresh_channel} core 2>&1" || true)
+    if echo "$output" | grep "no updates available"; then
+        echo "snap \"core\" has no updates available"
+    else
+        check_refresh "$refresh_channel" "core"
+    fi
 }
 
 # Wait in case auto-refresh is finished
@@ -118,15 +141,9 @@ if execute_remote "snap changes" | grep -q -E "Doing.*Auto-refresh snap.*"; then
     echo "Auto-refresh is completed"
 fi
 
+
 # Refresh core
-if [ -z "$CORE_CHANNEL" ]; then
-    echo "No refresh channel defined, exiting"
-    return
-elif [ "$CHANNEL" = "$CORE_CHANNEL" ]; then
-    do_full_refresh "$CHANNEL"
-else
-    do_core_refresh "$CORE_CHANNEL" "core"
-fi
+do_full_refresh "$CHANNEL" "$CORE_CHANNEL"
 
 # Retry until the core is ready to install a snap and remove it
 retry_until "sudo snap install --devmode jq" "jq .* installed" 20 10
