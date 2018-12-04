@@ -15,3 +15,4 @@ export DEVICE_PORT=${DEVICE_PORT:-22}
 export TEST_USER=${TEST_USER:-"test"}
 
 export BRANCH=${BRANCH:-"master"}
+export COMMIT=${COMMIT:-"HEAD"}

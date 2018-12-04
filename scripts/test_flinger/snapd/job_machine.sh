@@ -26,7 +26,7 @@ test_data:
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         git clone $SNAPD_URL $PROJECT
-        (cd $PROJECT && git checkout $BRANCH)
+        (cd $PROJECT && git checkout $BRANCH && git checkout $COMMIT)
         $PRE_HOOK
         . $JOBS_PROJECT/scripts/utils/add_test_user.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "generic" "ubuntu" "$TEST_USER_TYPE"
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP" || true

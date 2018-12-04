@@ -23,7 +23,7 @@ test_data:
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         git clone $SNAPD_URL $PROJECT
-        (cd $PROJECT && git checkout $BRANCH)
+        (cd $PROJECT && git checkout $BRANCH && git checkout $COMMIT)
         $PRE_HOOK
         . $PROJECT/tests/lib/external/prepare-ssh.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER"
         . $JOBS_PROJECT/scripts/utils/register_device.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$REGISTER_EMAIL"
