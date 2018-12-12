@@ -132,7 +132,10 @@ do_kernel_refresh(){
 do_core_refresh(){
     local refresh_channel=$1
 
-    local core_line=$(execute_remote "snap list | grep 'core'")
+    local core_line=$(execute_remote "snap list | grep 'core18'")
+    if [ -z $core_line ]; then
+        core_line=$(execute_remote "snap list | grep 'core'")
+    fi
     local core_name=$(echo $core_line | awk '{ print $1 }')
 
     # Run update and make "|| true" to continue when the connection is closed by remote host
