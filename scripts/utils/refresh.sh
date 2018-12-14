@@ -104,6 +104,8 @@ do_full_refresh(){
     wait_auto_refresh
     do_core_refresh "$core_channel"
     wait_auto_refresh
+    do_snapd_refresh "$core_channel"
+    wait_auto_refresh
     do_kernel_refresh "$channel"
 
     # Run update and make "|| true" to continue when the connection is closed by remote host or not any snap to update
@@ -122,10 +124,25 @@ do_kernel_refresh(){
     fi
 
     output=$(execute_remote "sudo snap refresh --${refresh_channel} $kernel_name 2>&1" || true)
-    if echo "$output" | grep -E "(no updates available|cannot refresh \"$kernel_name\")"; then
+    if echo "$output" | grep -E "(no updates available|cannot refresh \"$kernel_name\"|is not installed)"; then
         echo "snap \"$kernel_name\" has no updates available"
     else
         check_refresh "$refresh_channel" "$kernel_name"
+    fi
+}
+
+do_snapd_refresh(){
+    local refresh_channel=$1
+
+    local snapd_line=$(execute_remote "snap list | grep 'snapd'")
+    local snapd_name=$(echo $snapd_line | awk '{ print $1 }')
+
+    # Run update and make "|| true" to continue when the connection is closed by remote host
+    output=$(execute_remote "sudo snap refresh --${refresh_channel} $snapd_name 2>&1" || true)
+    if echo "$output" | grep -E "(no updates available|cannot refresh \"$snapd_name\"|is not installed)"; then
+        echo "snap \"$snapd_name\" has no updates available"
+    else
+        check_refresh "$refresh_channel" "$snapd_name"
     fi
 }
 
@@ -133,14 +150,14 @@ do_core_refresh(){
     local refresh_channel=$1
 
     local core_line=$(execute_remote "snap list | grep 'core18'")
-    if [ -z $core_line ]; then
+    if [ -z "$core_line" ]; then
         core_line=$(execute_remote "snap list | grep 'core'")
     fi
     local core_name=$(echo $core_line | awk '{ print $1 }')
 
     # Run update and make "|| true" to continue when the connection is closed by remote host
     output=$(execute_remote "sudo snap refresh --${refresh_channel} $core_name 2>&1" || true)
-    if echo "$output" | grep -E "(no updates available|cannot refresh \"$core_name\")"; then
+    if echo "$output" | grep -E "(no updates available|cannot refresh \"$core_name\"|is not installed)"; then
         echo "snap \"$core_name\" has no updates available"
     else
         check_refresh "$refresh_channel" "$core_name"
