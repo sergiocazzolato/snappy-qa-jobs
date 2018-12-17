@@ -135,6 +135,10 @@ do_snapd_refresh(){
     local refresh_channel=$1
 
     local snapd_line=$(execute_remote "snap list | grep 'snapd'")
+    if [ -z "$snapd_line" ]; then
+        echo "No snapd snap to update"
+        return
+    fi
     local snapd_name=$(echo $snapd_line | awk '{ print $1 }')
 
     # Run update and make "|| true" to continue when the connection is closed by remote host
