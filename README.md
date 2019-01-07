@@ -32,18 +32,24 @@ By running the following lines, the script will create the images for beta valid
 
     git clone https://github.com/sergiocazzolato/validator.git
     cd validator
-    sudo ./create.sh beta
+    sudo ./create.sh beta <core-number>
+
+with core-number = <16|18>
 
 ### Get stable images used to run the refresh core scenario
 
-Download the images from http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/
+Download the core 16 images from: http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/
+Download the core 18 images from: http://cdimage.ubuntu.com/ubuntu-core/18/stable/current/
 
+It is possible to use older images too to validate the refresh scenario. 
 
 ### Setup a device:
 
     sudo dd if=<PAT_TO_IMG> of=/dev/mmcblk0 bs=4M oflag=sync status=noxfer
 
 ### Create a vm:
+
+#### Core 16
 
     old kvm:
 
@@ -54,6 +60,13 @@ Download the images from http://cdimage.ubuntu.com/ubuntu-core/16/stable/current
 
     amd64: sudo kvm -snapshot -smp 2 -m 1500 -net nic,model=virtio -net user,hostfwd=tcp::8022-:22 -nographic -serial mon:stdio <PATH_TO_VM_IMAGE>
     i386: sudo kvm -snapshot -smp 2 -m 1500 -net nic,model=virtio -net user,hostfwd=tcp::8023-:22 -nographic -serial mon:stdio <PATH_TO_VM_IMAGE>
+
+#### Core 18
+
+    amd64: sudo kvm -snapshot -smp 2 -m 2000 -net nic,model=virtio -net user,hostfwd=tcp::8022-:22 -serial mon:stdio <PATH_TO_VM_IMAGE>    
+    i386: sudo kvm -snapshot -smp 2 -m 2000 -net nic,model=virtio -net user,hostfwd=tcp::8023-:22 -serial mon:stdio <PATH_TO_VM_IMAGE>
+
+    Note: it could be needed to provide initial entropy by moving the mouse and using the keyboard in the kvm window.
 
 ### Access to console through screen:
 
@@ -102,26 +115,29 @@ In case of dragonboard it can be tested on testflinger. For that it is needed to
 
 ## Examples
 
-The following section shows the examples that are used to execution beta validation
-
+The following section shows the examples that are used to execution beta validation for core 16 and core 18
 
 ### Beta Execution
 
 ##### Beta branch on amd64 using local vm
     DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64
+    DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_18
 
 ##### Beta branch on i386 using local vm
     DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386
+    DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_18
 
 ##### Beta branch on pi2/pi3
     DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi
+    DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_18
 
 ##### Beta branch on dragonboard
     DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db
+    DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_18
 
 
 ##### Beta branch on dragonboard using testflinger
-    BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db
+    BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db    
 
 ##### Beta branch on cm3 using testflinger
     BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_cm3
@@ -135,15 +151,19 @@ The following section shows the examples that are used to execution beta validat
 
 ##### Upgrade from stable on amd64 using local vm
     DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh
+    DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh_18
 
 ##### Upgrade from stable on i386 using local vm
     DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_refresh
+    DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_refresh_18
 
 ##### Upgrade from stable on pi2/3
     DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh
+    DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh_18
 
 ##### Upgrade from stable on db
     DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh
+    DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh_18
 
 ##### Upgrade from stable on dragonboard using testflinger
     BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db_refresh
@@ -156,7 +176,6 @@ The following section shows the examples that are used to execution beta validat
 
 ##### Upgrade from stable on i386 using testflinger vm
     BRANCH=2.36.3 ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_i386_refresh
-
 
 
 ### Core revert
