@@ -15,5 +15,12 @@ fi
 echo "Deleting test flinger data"
 sudo rm -f $TF_DATA/*
 
-. "$SCRIPTS_DIR/test_flinger/$PROJECT/job_device.sh"
-. "$SCRIPTS_DIR/test_flinger/run_job.sh"
+. "$SCRIPTS_DIR/test_flinger/$PROJECT/job_device.sh" | tee run.log
+. "$SCRIPTS_DIR/test_flinger/run_job.sh" | tee -a run.log
+
+if which pastebinit; then
+	echo "Uploding execution log to paste.ubuntu.com"
+	pastebinit run.log
+else
+	echo "Report not uploaded automatically, please install pastebinit for that"
+fi

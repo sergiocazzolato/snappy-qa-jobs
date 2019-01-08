@@ -12,4 +12,12 @@ else
 	. "$SCRIPTS_DIR/utils/load_env.sh" "$1"
 fi
 
-. "$SCRIPTS_DIR/external/$PROJECT/run_device_sru.sh"
+. "$SCRIPTS_DIR/external/$PROJECT/run_device_sru.sh" | tee run.log
+
+if which pastebinit; then
+	echo "Uploding execution log to paste.ubuntu.com"
+	pastebinit run.log
+else
+	echo "Report not uploaded automatically, please install pastebinit for that"
+fi
+
