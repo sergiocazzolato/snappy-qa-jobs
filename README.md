@@ -103,6 +103,12 @@ In order to run console-conf tests, it is needed to run console-conf manually on
     16.04-64: BRANCH=<BRANCH> scripts/run_google.sh goo_snapd_amd64_core_revert
 
 
+##### Running individual tests
+
+It is occasionally useful to re-run a specific test (or set of tests), or skip a test. This is supported by SPREAD_TESTS and SKIP_TESTS variables passed to the scripts along with the standard variables, e.g.
+    SPREAD_TESTS=external:ubuntu-core-16-arm-64:tests/main/interfaces-hostname-control,external:ubuntu-core-16-arm-64:tests/main/snap-logs
+    SKIP_TESTS=tests/main/revert-devmode
+
 ##### Notes
 
 <DEVICE_IP> = The ip of the device that's gonna be tested, in case there are two ips (wifi and lan), it is more reliable to use the lan.
