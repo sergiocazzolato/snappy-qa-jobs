@@ -3,7 +3,7 @@ set -x
 
 echo "Creating vm"
 
-if [ "$#" -lt 4 ]; then
+if [ "$#" -lt 3 ]; then
     echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
@@ -14,10 +14,8 @@ if [ "$#" -lt 4 ]; then
 fi
 
 ARCHITECTURE=$1
-CHANNEL=$2
-PORT=$3
-CORE_CHANNEL=$4
-SNAPD_PATH=$5
+IMAGE_URL=$2
+SNAPD_PATH=$3
 
 execute_remote(){
     sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
@@ -61,8 +59,7 @@ systemd_create_and_start_unit() {
 
 echo "installing dependencies"
 sudo apt update
-sudo apt install -y snapd qemu genisoimage sshpass
-sudo snap install --classic --beta ubuntu-image
+sudo apt install -y snapd qemu sshpass
 
 echo "Download snapd and checkout branch"
 if [ -z "$SNAPD_PATH" ] || [ ! -d $SNAPD_PATH ]; then
@@ -79,7 +76,7 @@ amd64)
     QEMU="$(which qemu-system-x86_64)"
     ;;
 i386)
-    QEMU="$(which qemu-system-x86_64)"
+    QEMU="$(which qemu-system-i386)"
     ;;
 *)
     echo "unsupported architecture"
@@ -90,14 +87,7 @@ esac
 # create ubuntu-core image
 mkdir -p /tmp/work-dir
 
-if [ $CORE_CHANNEL = "edge" ]; then
-    download_url=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/core?channel=stable | jq -j '.anon_download_url')
-else
-    download_url=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/core?channel=$CORE_CHANNEL | jq -j '.anon_download_url')
-fi
-curl -L -o core.snap "$download_url"
-
-/snap/bin/ubuntu-image --image-size 3G "$TESTSLIB/assertions/nested-${ARCHITECTURE}.model" --channel "$CHANNEL" --output ubuntu-core.img --extra-snaps core.snap
+curl -L -o ubuntu-core.img "$IMAGE_URL"
 mv ubuntu-core.img /tmp/work-dir
 
 create_assertions_disk

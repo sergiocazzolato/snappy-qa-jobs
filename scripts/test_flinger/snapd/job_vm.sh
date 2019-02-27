@@ -5,6 +5,12 @@ echo "Creating job for snapd using a vm"
 HOST=localhost
 PORT=8022
 
+if [ -z $IMAGE_URL ]; then
+    echo "Nested image needed"
+    exit 1
+fi
+
+
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 provision_data:
@@ -19,7 +25,7 @@ test_data:
         ssh $DEVICE_USER@{device_ip} "git clone $SNAPD_URL $PROJECT"
         ssh $DEVICE_USER@{device_ip} "(cd $PROJECT && git checkout $BRANCH && git checkout $COMMIT)"
         $PRE_HOOK
-        ssh $DEVICE_USER@{device_ip} "sudo $JOBS_PROJECT/scripts/utils/create_vm.sh \"$ARCHITECTURE\" \"$CHANNEL\" \"$PORT\" \"$CORE_CHANNEL\" \"./$PROJECT\""
+        ssh $DEVICE_USER@{device_ip} "sudo $JOBS_PROJECT/scripts/utils/create_vm.sh \"$ARCHITECTURE\" \"$IMAGE_URL\" \"./$PROJECT\""
         ssh $DEVICE_USER@{device_ip} ". $JOBS_PROJECT/scripts/utils/register_device.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$REGISTER_EMAIL\""
         ssh $DEVICE_USER@{device_ip} ". $JOBS_PROJECT/scripts/utils/refresh.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$CHANNEL\" \"$CORE_CHANNEL\""
         ssh $DEVICE_USER@{device_ip} ". $JOBS_PROJECT/scripts/utils/run_setup.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$SETUP\""
