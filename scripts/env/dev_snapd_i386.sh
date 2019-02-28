@@ -2,6 +2,7 @@
 
 . "$SCRIPTS_DIR/env/common.sh"
 
+export ARCH=${ARCH:-"i386"}
 export PROJECT=${PROJECT:-"snapd"}
 export CHANNEL=${CHANNEL:-"beta"}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-32"}

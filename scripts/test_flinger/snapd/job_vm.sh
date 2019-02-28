@@ -10,6 +10,12 @@ if [ -z $IMAGE_URL ]; then
     exit 1
 fi
 
+. "$SCRIPTS_DIR/utils/snap_info.sh"
+if [ "$BRANCH" = beta ]; then
+    BRANCH=$(get_beta_branch "$ARCH")
+elif [ "$BRANCH" = edge ]; then
+    BRANCH=$(get_edge_commit "$ARCH")
+fi
 
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE

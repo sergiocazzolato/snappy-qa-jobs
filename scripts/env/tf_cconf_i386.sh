@@ -2,6 +2,7 @@
 
 . "$SCRIPTS_DIR/env/common.sh"
 
+export ARCH=${ARCH:-"i386"}
 export PROJECT=${PROJECT:-"console-conf-tests"}
 export CHANNEL=${CHANNEL:-"beta"}
 export ARCHITECTURE=${ARCHITECTURE:-"i386"}
