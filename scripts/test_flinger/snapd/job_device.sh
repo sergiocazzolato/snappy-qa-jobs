@@ -11,6 +11,7 @@ else
 fi
 
 . "$SCRIPTS_DIR/utils/snap_info.sh"
+sudo apt install -y jq
 if [ "$BRANCH" = beta ]; then
     BRANCH=$(get_beta_branch "$ARCH")
 elif [ "$BRANCH" = edge ]; then
