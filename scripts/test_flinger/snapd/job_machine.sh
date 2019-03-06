@@ -29,7 +29,7 @@ test_data:
     test_cmds: |
         #!/bin/bash
         sudo apt update || ps aux | grep apt
-        sudo apt install -y git curl sshpass
+        sudo apt install -y git curl sshpass jq
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         git clone $SNAPD_URL $PROJECT
