@@ -1,1 +1,1 @@
-sudo apt install -y curl git golang
+sudo apt install -y curl git golang jq

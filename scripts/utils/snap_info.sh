@@ -14,7 +14,12 @@ get_snap_version(){
     local CHANNEL=$3
 
     version=$(curl -s -H "X-Ubuntu-Architecture: $ARCHITECTURE" -H 'X-Ubuntu-Series: 16' https://search.apps.ubuntu.com/api/v1/snaps/details/"$SNAP"?channel="$CHANNEL" | jq -j '.version')
-    echo "${version//16-/}"
+
+    # Clean version when it is like 16-2.38
+    version="${version//16-/}"
+
+    # Clean version when it is like 2.38~pre1
+    echo "$version" | cut -f1 -d "~"
 }
 
 get_snap_last_updated(){
