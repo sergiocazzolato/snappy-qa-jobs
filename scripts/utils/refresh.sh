@@ -179,9 +179,18 @@ wait_auto_refresh(){
     fi
 }
 
+check_install_snap(){
+    local core18_line=$(execute_remote "snap list | grep 'core18'")
+    local snap_name=jq-core18
+
+    if [ -z "$core18_line" ]; then
+        snap_name=jq
+    fi
+    # Retry until the core is ready to install a snap and remove it
+    retry_until "sudo snap install --devmode $snap_name" "$snap_name .* installed" 20 10
+    execute_remote "sudo snap remove $snap_name"
+}
+
 # Refresh core
 do_full_refresh "$CHANNEL" "$CORE_CHANNEL"
-
-# Retry until the core is ready to install a snap and remove it
-retry_until "sudo snap install --devmode jq" "jq .* installed" 20 10
-execute_remote "sudo snap remove jq"
+check_install_snap
