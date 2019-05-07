@@ -191,6 +191,8 @@ check_install_snap(){
     execute_remote "sudo snap remove $snap_name"
 }
 
-# Refresh core
-do_full_refresh "$CHANNEL" "$CORE_CHANNEL"
-check_install_snap
+if [ "$SKIP_REFRESH" != "true" ]; then
+    # Refresh core
+    do_full_refresh "$CHANNEL" "$CORE_CHANNEL"
+    check_install_snap
+fi
