@@ -191,8 +191,17 @@ check_install_snap(){
     execute_remote "sudo snap remove $snap_name"
 }
 
+
+echo "Snaps install before refresh"
+execute_remote "snap list"
+
 if [ "$SKIP_REFRESH" != "true" ]; then
     # Refresh core
     do_full_refresh "$CHANNEL" "$CORE_CHANNEL"
     check_install_snap
+else
+    echo "Skipping refresh..."
 fi
+
+echo "Snaps install after refresh"
+execute_remote "snap list"
