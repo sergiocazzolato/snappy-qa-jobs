@@ -10,3 +10,5 @@ export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}
 export WIFI_SSID=${WIFI_SSID:-""}
 export WIFI_PASSWORD=${WIFI_PASSWORD:-""}
 export DEVICE_IP=${DEVICE_IP:-"127.0.0.1"}
+export SKIP_REFRESH=${SKIP_REFRESH:-"true"}
+

@@ -32,11 +32,12 @@ By running the following lines, the script will create the images for beta valid
 
     git clone https://github.com/sergiocazzolato/validator.git
     cd validator
-    sudo ./create.sh beta <core-number> <snaps-by-channel> <models>
+    sudo ./create.sh beta <core-number> <snaps-by-channel> <extra-snaps> <models>
 
 with
  . core-number = Ubuntu Core system version, currently supported: 16 or 18
  . snaps-by-channel = select specific snap by channel to install, for example core=edge
+ . extra-snaps = select local snaps to be installed during the image creation, for example core18_782.snap
  . models: if not defined then images for all the models are created. Otherwise one of these can be selected:
     . dragonboard
     . pc-amd64
@@ -46,7 +47,7 @@ with
 
 This example shows how to create a core16 image using stable channel but core from beta with amd64 architecture
 
-    sudo ./create.sh stable 16 core=beta pc-amd64
+    sudo ./create.sh stable 16 "core=beta" "" pc-amd64
 
 ### Get stable images used to run the refresh core scenario
 

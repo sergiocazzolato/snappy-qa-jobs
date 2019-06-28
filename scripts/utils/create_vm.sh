@@ -40,12 +40,9 @@ prepare_ssh(){
 }
 
 create_assertions_disk(){
-    dd if=/dev/null of=assertions.disk bs=1M seek=1
-    mkfs.ext4 -F assertions.disk
-    mkdir /mnt/assertions
-    mount -t ext4 -o loop assertions.disk /mnt/assertions
-    cp "$TESTSLIB/assertions/auto-import.assert" /mnt/assertions
-    umount /mnt/assertions && rm -rf /mnt/assertions
+    dd if=/dev/null of="$WORK_DIR/assertions.disk" bs=1M seek=1
+    mkfs.ext4 -F "$WORK_DIR/assertions.disk"
+    debugfs -w -R "write $TESTSLIB/assertions/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"
 }
 
 systemd_create_and_start_unit() {
@@ -57,6 +54,21 @@ systemd_create_and_start_unit() {
     systemctl start "$1"
 }
 
+get_qemu_for_nested_vm(){
+    case "$ARCHITECTURE" in
+    amd64)
+        command -v qemu-system-x86_64
+        ;;
+    i386)
+        command -v qemu-system-i386
+        ;;
+    *)
+        echo "unsupported architecture"
+        exit 1
+        ;;
+    esac
+}
+
 echo "installing dependencies"
 sudo apt update
 sudo apt install -y snapd qemu sshpass
@@ -64,38 +76,45 @@ sudo apt install -y snapd qemu sshpass
 echo "Download snapd and checkout branch"
 if [ -z "$SNAPD_PATH" ] || [ ! -d $SNAPD_PATH ]; then
     git clone https://github.com/snapcore/snapd
-    export TESTSLIB="./snapd/tests/lib"
-else
-    export TESTSLIB="$SNAPD_PATH/tests/lib"
+    export SNAPD_PATH="./snapd"
 fi
 
-
-# determine arch related vars
-case "$ARCHITECTURE" in
-amd64)
-    QEMU="$(which qemu-system-x86_64)"
-    ;;
-i386)
-    QEMU="$(which qemu-system-i386)"
-    ;;
-*)
-    echo "unsupported architecture"
-    exit 1
-    ;;
-esac
+export PORT=8022
+export WORK_DIR=/tmp/work-dir
+export TESTSLIB="$SNAPD_PATH/tests/lib"
+export QEMU=$(get_qemu_for_nested_vm)
 
 # create ubuntu-core image
-mkdir -p /tmp/work-dir
+mkdir -p "$WORK_DIR"
 
-curl -L -o ubuntu-core.img "$IMAGE_URL"
-mv ubuntu-core.img /tmp/work-dir
+if [[ "$IMAGE_URL" == *.img.xz ]]; then
+    curl -L -o "$WORK_DIR/ubuntu-core.img.xz" "$IMAGE_URL"
+    unxz "$WORK_DIR/ubuntu-core.img.xz"
+elif [[ "$IMAGE_URL" == *.img ]]; then
+    curl -L -o "$WORK_DIR/ubuntu-core.img" "$IMAGE_URL"
+else
+    echo "Image extension not supported, exiting..."
+    exit 1
+fi
 
 create_assertions_disk
 
-systemd_create_and_start_unit nested-vm "${QEMU} -m 1024 -nographic -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 -drive file=/tmp/work-dir/ubuntu-core.img,if=virtio,cache=none -drive file=${PWD}/assertions.disk,if=virtio,cache=none -machine accel=kvm"
+systemd_create_and_start_unit nested-vm "${QEMU} -m 2048 -nographic \
+    -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 \
+    -drive file=$WORK_DIR/ubuntu-core.img,cache=none,format=raw \
+    -drive file=$WORK_DIR/assertions.disk,cache=none,format=raw \
+    -machine accel=kvm"
 
-wait_for_ssh
-prepare_ssh
+if ! wait_for_ssh; then
+    systemctl restart nested-vm
+fi
+
+if wait_for_ssh; then
+    prepare_ssh
+else
+    echo "ssh not established, exiting..."
+    exit 1
+fi
 
 echo "Wait for first boot to be done"
 while ! execute_remote "snap changes" | grep -q -E "Done.*Initialize system state"; do
