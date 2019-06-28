@@ -22,12 +22,24 @@ execute_remote(){
 }
 
 wait_for_ssh(){
-    retry=120
+    retry=150
     while ! execute_remote true; do
         retry=$(( retry - 1 ))
         if [ $retry -le 0 ]; then
             echo "Timed out waiting for ssh. Aborting!"
-            exit 1
+            return 1
+        fi
+        sleep 1
+    done
+}
+
+wait_for_no_ssh(){
+    retry=150
+    while execute_remote true; do
+        retry=$(( retry - 1 ))
+        if [ $retry -le 0 ]; then
+            echo "Timed out waiting for no ssh. Aborting!"
+            return 1
         fi
         sleep 1
     done
@@ -113,6 +125,7 @@ if wait_for_ssh; then
     prepare_ssh
 else
     echo "ssh not established, exiting..."
+    journalctl -u nested-vm
     exit 1
 fi
 
