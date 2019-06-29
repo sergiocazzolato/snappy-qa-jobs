@@ -21,7 +21,7 @@ fi
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 provision_data:
-    distro: xenial
+    distro: bionic
 test_data:
     test_cmds: |
         #!/bin/bash
