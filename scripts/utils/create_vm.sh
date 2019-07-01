@@ -15,7 +15,8 @@ fi
 
 ARCHITECTURE=$1
 IMAGE_URL=$2
-SNAPD_PATH=$3
+USER_ASSERTION_URL=$3
+SNAPD_PATH=$4
 
 execute_remote(){
     sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
@@ -51,10 +52,15 @@ prepare_ssh(){
     execute_remote "echo 'test ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/test-user"
 }
 
-create_assertions_disk(){
+create_assertions_disk() {
     dd if=/dev/null of="$WORK_DIR/assertions.disk" bs=1M seek=1
     mkfs.ext4 -F "$WORK_DIR/assertions.disk"
-    debugfs -w -R "write $TESTSLIB/assertions/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"
+    if [ -z "$USER_ASSERTION_URL" ];then
+        debugfs -w -R "write $TESTSLIB/assertions/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"    
+    else
+        curl -L -o "$WORK_DIR/auto-import.assert" "$USER_ASSERTION_URL"
+        debugfs -w -R "write $WORK_DIR/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"    
+    fi
 }
 
 systemd_create_and_start_unit() {
