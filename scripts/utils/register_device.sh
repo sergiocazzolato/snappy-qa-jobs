@@ -19,13 +19,13 @@ PASS=$4
 EMAIL=$5
 
 SCRIPT="sudo snap create-user $EMAIL || \
-        ( sudo snap install jq; \
+        ( ( snap list core &>/dev/null && sudo snap install jq ) || (snap list core18 &>/dev/null && sudo snap install jq-core18 ); \
         sudo cp /var/lib/snapd/state.json /var/lib/snapd/state.json.bak; \
         sudo cat /var/lib/snapd/state.json.bak | jq -r '.data.auth.users=[]' | sudo tee /var/lib/snapd/state.json > /dev/null; \
         sudo systemctl stop snapd.service snapd.socket; \
         sudo systemctl start snapd.service snapd.socket; \
         sudo snap create-user $EMAIL; \
-        sudo snap remove jq )"
+        ( snap list core &>/dev/null && sudo snap remove jq ) || (snap list core18 &>/dev/null && sudo snap remove jq-core18 ) )"
 
 if [ -z "$EMAIL" ]; then
     echo "No email provided to make the registration"
