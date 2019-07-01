@@ -19,7 +19,7 @@ PASS=$4
 EMAIL=$5
 
 SCRIPT="sudo snap create-user $EMAIL || \
-        ( ( snap list core &>/dev/null && sudo snap install jq ) || (snap list core18 &>/dev/null && sudo snap install jq-core18 ); \
+        ( ( snap list core &>/dev/null && sudo snap install jq ) || (snap list core18 &>/dev/null && sudo snap install jq-core18 && sudo snap alias jq-core18.jq jq); \
         sudo cp /var/lib/snapd/state.json /var/lib/snapd/state.json.bak; \
         sudo cat /var/lib/snapd/state.json.bak | jq -r '.data.auth.users=[]' | sudo tee /var/lib/snapd/state.json > /dev/null; \
         sudo systemctl stop snapd.service snapd.socket; \
