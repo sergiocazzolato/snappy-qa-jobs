@@ -5,7 +5,6 @@
 export ARCH=${ARCH:-"i386"}
 export PROJECT=${PROJECT:-"console-conf-tests"}
 export CHANNEL=${CHANNEL:-"beta"}
-export ARCHITECTURE=${ARCHITECTURE:-"i386"}
 export DEVICE_QUEUE=${DEVICE_QUEUE:-"maas-x86-node"}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-32"}
 export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}

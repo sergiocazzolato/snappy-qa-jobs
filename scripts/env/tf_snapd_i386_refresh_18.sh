@@ -6,7 +6,6 @@ export ARCH=${ARCH:-"i386"}
 export PROJECT=${PROJECT:-"snapd"}
 export CHANNEL=${CHANNEL:-"beta"}
 export CORE_CHANNEL=${CORE_CHANNEL:-"stable"}
-export ARCHITECTURE=${ARCHITECTURE:-"i386"}
 export DEVICE_QUEUE=${DEVICE_QUEUE:-"maas-x86-node"}
 export CHANNEL=${CHANNEL:-"stable"}
 export CORE_CHANNEL=${CORE_CHANNEL:-"beta"}
