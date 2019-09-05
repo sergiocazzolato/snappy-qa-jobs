@@ -18,14 +18,11 @@ if [ "$USER_TYPE" = "regular" ]; then
 	TYPE=""
 fi
 
-# Exit in case the user already exists in the device
-if execute_remote "if id $USER_NAME >/dev/null 2>&1; then echo yes; else echo no; fi" | grep yes; then
-	exit 0
+# Create teh user just when it doesn't exist in the device
+if execute_remote "if id $USER_NAME >/dev/null 2>&1; then echo yes; else echo no; fi" | grep no; then
+	execute_remote "sudo adduser --quiet $TYPE --disabled-password --gecos '' $USER_NAME"
+	if ! [ -z $USER_PASS ]; then
+		execute_remote "echo $USER_NAME:$USER_PASS | sudo chpasswd"
+	fi
+	execute_remote "echo '$USER_NAME ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/create-user-$USER_NAME"
 fi
-
-execute_remote "sudo adduser --quiet $TYPE --disabled-password --gecos '' $USER_NAME"
-if ! [ -z $USER_PASS ]; then
-	execute_remote "echo $USER_NAME:$USER_PASS | sudo chpasswd"
-fi
-execute_remote "echo '$USER_NAME ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/create-user-$USER_NAME"
-
