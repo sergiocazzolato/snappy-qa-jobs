@@ -35,17 +35,13 @@ test_data:
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         git clone $SNAPD_URL $PROJECT
         (cd $PROJECT && git checkout $BRANCH && git checkout $COMMIT)
-        $PRE_HOOK
         . $JOBS_PROJECT/scripts/utils/add_test_user.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "generic" "ubuntu" "$TEST_USER_TYPE"
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP" || true
-        $POST_SETUP
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_2" || true
-        $POST_SETUP_2
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_3" || true
         . $JOBS_PROJECT/scripts/utils/refresh.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$CHANNEL" "$CORE_CHANNEL" || true
         . $JOBS_PROJECT/scripts/utils/get_spread.sh
         . $JOBS_PROJECT/scripts/utils/run_spread.sh "{device_ip}" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
-        $POST_HOOK
 EOF
 
 export TF_JOB=$TF_DATA/job.yaml
