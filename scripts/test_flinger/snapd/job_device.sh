@@ -33,9 +33,9 @@ test_data:
         git clone $SNAPD_URL $PROJECT
         (cd $PROJECT && git checkout $BRANCH && git checkout $COMMIT)
         . $JOBS_PROJECT/scripts/utils/add_test_user.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER"
-        . $JOBS_PROJECT/scripts/utils/register_device.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$REGISTER_EMAIL"
+        . $JOBS_PROJECT/scripts/utils/register_device.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$REGISTER_EMAIL" || true
         . $JOBS_PROJECT/scripts/utils/refresh.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$CHANNEL" "$CORE_CHANNEL"
-        . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$SETUP"
+        . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$SETUP" || true
         . $JOBS_PROJECT/scripts/utils/get_spread.sh
         . $JOBS_PROJECT/scripts/utils/run_spread.sh "{device_ip}" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
 EOF
