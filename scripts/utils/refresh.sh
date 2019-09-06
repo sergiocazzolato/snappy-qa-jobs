@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 echo "Refresh core on device"
 

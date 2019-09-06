@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 echo "Running setup command"
 
