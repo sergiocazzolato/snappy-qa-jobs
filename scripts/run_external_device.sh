@@ -4,6 +4,7 @@ echo "Running tests on external device"
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}
 export SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export PROJECT_DIR="$SCRIPTS_DIR/.."
 
 if [ "$#" -ne 1 ]; then
     echo "Illegal number of parameters"

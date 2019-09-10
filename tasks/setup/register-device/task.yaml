@@ -1,0 +1,25 @@
+summary: Register the device
+
+priority: 800
+
+condition: |
+    [ -n "$REGISTER_EMAIL" ]
+
+prepare: |
+    . "$TESTSLIB"/snaps.sh
+    ensure_jq
+
+restore: |
+    . "$TESTSLIB"/snaps.sh
+    remove_jq
+
+execute: |
+    if cat /var/lib/snapd/state.json | jq '.data.auth.users' | MATCH "$REGISTER_EMAIL"; then
+        echo "Email already registered, exiting"
+        exit
+    fi
+
+    cp /var/lib/snapd/state.json /var/lib/snapd/state.json.bak
+    cat /var/lib/snapd/state.json.bak | jq -r '.data.auth.users=[]' | tee /var/lib/snapd/state.json > /dev/null
+    systemctl restart snapd.service snapd.socket
+    snap create-user "$REGISTER_EMAIL"

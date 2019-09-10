@@ -1,7 +1,6 @@
 #!/bin/bash
 
-git clone $SNAPD_URL $PROJECT
-
+git clone "$SNAPD_URL" "$PROJECT"
 
 . "$SCRIPTS_DIR/utils/snap_info.sh"
 sudo apt install -y jq
@@ -12,9 +11,6 @@ elif [ "$BRANCH" = edge ]; then
 fi
 
 (cd $PROJECT && git reset --hard origin && git fetch origin && git checkout $BRANCH && git pull && git checkout $COMMIT)
-. "$SCRIPTS_DIR/scripts/utils/add_test_user.sh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER"
-. "$SCRIPTS_DIR/utils/register_device.sh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "$DEVICE_PASS" "$REGISTER_EMAIL" || true
-. "$SCRIPTS_DIR/utils/refresh.sh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "$DEVICE_PASS" "$CHANNEL" "$CORE_CHANNEL"
-. "$SCRIPTS_DIR/utils/run_setup.sh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "$DEVICE_PASS" "$SETUP" || true
-. "$SCRIPTS_DIR/utils/get_spread.sh"
-. "$SCRIPTS_DIR/utils/run_spread.sh" "$DEVICE_IP" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
+"$PROJECT_DIR/scripts/utils/get_spread.sh"
+"$PROJECT_DIR/scripts/utils/run_setup.sh" "$DEVICE_IP" "$DEVICE_PORT" "$PROJECT" "$SPREAD_SETUP" "$SPREAD_ENV" "$SPREAD_PARAMS"
+"$PROJECT_DIR/scripts/utils/run_tests.sh" "$DEVICE_IP" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"

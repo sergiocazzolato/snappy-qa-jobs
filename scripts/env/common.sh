@@ -16,3 +16,6 @@ export TEST_USER=${TEST_USER:-"test"}
 
 export BRANCH=${BRANCH:-"master"}
 export COMMIT=${COMMIT:-"HEAD"}
+
+export SPREAD_URL=${SPREAD_URL:-"https://cachio.s3.amazonaws.com/spread/spread2"}
+export SPREAD_BIN=${SPREAD_BIN:-"spread2"}

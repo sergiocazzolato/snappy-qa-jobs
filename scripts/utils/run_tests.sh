@@ -35,18 +35,18 @@ if [ ! -z "$SPREAD_ENV" ]; then
 fi
 export SPREAD_EXTERNAL_ADDRESS=$DEVICE_IP:$DEVICE_PORT
 
-if [[ $(which spread) ]]; then
+if command -v "$SPREAD_BIN"; then
     echo "Spread found"
 else
-    if [ -f "$WORKSPACE/spread/spread" ]; then
-        export PATH=$PATH:$WORKSPACE/spread
+    if [ -f "$WORKSPACE/spread/$SPREAD_BIN" ]; then
+        export PATH="$PATH:$WORKSPACE/spread/$SPREAD_BIN"
     else
         echo "Spread not found"
     fi
 fi
 
 # Run spread
-cd $PROJECT_PATH
+cd "$PROJECT_PATH"
 
 echo "Moving to manual all the tests to skip: $SKIP_TESTS"
 tests_skip="$(echo $SKIP_TESTS | tr ',' ' ')"
@@ -60,7 +60,7 @@ done
 spread_params="$(echo $SPREAD_PARAMS | tr ',' ' ')"
 spread_tests="$(echo $SPREAD_TESTS | tr ',' ' ')"
 echo "Running command: spread $spread_params $spread_tests"
-spread $spread_params $spread_tests
+"$SPREAD_BIN" "$spread_params" "$spread_tests"
 
 echo "Restoring skipped tests"
 for test in $tests_skip; do

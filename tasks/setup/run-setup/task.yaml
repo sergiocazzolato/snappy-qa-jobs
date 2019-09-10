@@ -1,0 +1,11 @@
+summary: Run a custom setup for the tests
+
+priority: 500
+
+condition: |
+    [ -n "$SETUP_SCRIPT" ]
+
+execute: |
+    echo "Running setup command"
+    "$SETUP_SCRIPT"
+    

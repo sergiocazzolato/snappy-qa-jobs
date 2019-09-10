@@ -1,0 +1,27 @@
+summary: Wait until auto-refresh is done or disable it if it is not in progress
+
+priority: 900
+
+condition: |
+    [ "$SKIP_REFRESH" != "true" ]
+
+prepare: |
+    echo "Show snaps install before refresh"
+    snap list
+
+restore: |
+    echo "Show snaps install after refresh"
+    snap list
+
+execute: |
+    . "$TESTSLIB/reboot.sh"
+    . "$TESTSLIB/refresh.sh"
+
+    if [ "$SPREAD_REBOOT" = 0 ]; then
+        wait_auto_refresh
+        if is_waiting_for_reboot; then
+            REBOOT
+        fi
+    fi
+
+    disable_refreshes

@@ -1,0 +1,21 @@
+summary: Do the refresh for the snapd snap in case it is required
+
+priority: 600
+
+condition: |
+    . "$TESTSLIB/snaps.sh"
+    [ "$SKIP_REFRESH" != "true" ] && is_snap_installed snapd
+
+prepare: |
+    echo "Show snaps install before refresh"
+    snap list
+
+restore: |
+    echo "Show snaps install after refresh"
+    snap list
+
+execute: |
+    . "$TESTSLIB/reboot.sh"
+    . "$TESTSLIB/refresh.sh"
+
+    do_snapd_refresh "$CORE_CHANNEL"

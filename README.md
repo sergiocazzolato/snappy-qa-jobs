@@ -159,6 +159,9 @@ The following section shows the examples that are used to execution beta validat
 ##### Beta branch on dragonboard using testflinger
     BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db
 
+##### Beta branch on pi3 using testflinger
+    BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_pi
+
 ##### Beta branch on cm3 using testflinger
     BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_cm3
 

@@ -1,0 +1,25 @@
+summary: Do the refresh for the kernel snap in case it is required
+
+priority: 600
+
+condition: |
+    [ "$SKIP_REFRESH" != "true" ]
+
+prepare: |
+    echo "Show snaps install before refresh"
+    snap list
+
+restore: |
+    echo "Show snaps install after refresh"
+    snap list
+
+execute: |
+    . "$TESTSLIB/reboot.sh"
+    . "$TESTSLIB/refresh.sh"
+
+    if [ "$SPREAD_REBOOT" = 0 ]; then
+        do_kernel_refresh "$CORE_CHANNEL"
+        if is_waiting_for_reboot; then
+            REBOOT
+        fi
+    fi    
