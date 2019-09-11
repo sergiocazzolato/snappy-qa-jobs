@@ -74,6 +74,82 @@ backends:
                 username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
                 cert: true
 
+    testflinger:
+        key: "$(HOST: echo $SPREAD_LP_KEY:-lp:sergio-j-cazzolato)"
+        systems:
+            - dragonboard-16-stable:
+                image: http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/ubuntu-core-16-dragonboard.img.xz
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-16-beta:
+                image: https://cachio.s3.amazonaws.com/images/dragonboard-16-beta/dragonboard.img.xz
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-16-refresh:
+                image: https://cachio.s3.amazonaws.com/images/dragonboard-16-stable-core_beta/dragonboard.img.xz
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-18:
+                image: http://cdimage.ubuntu.com/ubuntu-core/18/stable/current/ubuntu-core-18-arm64+snapdragon.img.xz
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-18-beta:
+                image: https://cachio.s3.amazonaws.com/images/dragonboard-18-beta/dragonboard.img.xz
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-18-refresh:
+                image: https://cachio.s3.amazonaws.com/images/dragonboard-18-stable-snapd_beta/dragonboard.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi3-16:
+                image: http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/ubuntu-core-16-pi3.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi3-16-beta:
+                image: https://cachio.s3.amazonaws.com/images/pi3-16-beta/pi3.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi3-16-refresh:
+                image: https://cachio.s3.amazonaws.com/images/pi3-16-stable-core_beta/pi3.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi3-18:
+                image: http://cdimage.ubuntu.com/ubuntu-core/18/stable/current/ubuntu-core-18-armhf+raspi3.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi3-18-beta:
+                image: https://cachio.s3.amazonaws.com/images/pi3-18-beta/pi.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi3-18-refresh:
+                image: https://cachio.s3.amazonaws.com/images/pi3-18-stable-snapd_beta/pi.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi2-16:
+                image: http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/ubuntu-core-16-pi2.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi2-16-beta:
+                image: https://cachio.s3.amazonaws.com/images/pi2-16-beta/pi2.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi2-16-refresh:
+                image: https://cachio.s3.amazonaws.com/images/pi2-16-stable-core_beta/pi2.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi2-18:
+                image: http://cdimage.ubuntu.com/ubuntu-core/18/stable/current/ubuntu-core-18-armhf+raspi2.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi2-18-beta:
+                image: https://cachio.s3.amazonaws.com/images/pi2-18-beta/pi.img.xz
+                username: ubuntu
+                password: ubuntu
+            - rpi2-18-refresh:
+                image: https://cachio.s3.amazonaws.com/images/pi2-18-stable-snapd_beta/pi.img.xz
+                username: ubuntu
+                password: ubuntu
+
 path: /root/spread
 
 restore: |
@@ -101,7 +177,7 @@ suites:
 
     tasks/setup/:
         summary: Setup an ubuntu core external device to execute a test suite on it
-        backends: [external]
+        backends: [external, testflinger]
         environment:
             # Configuration for the paths
             PATH: $PATH:$PROJECT_PATH/tasks/bin

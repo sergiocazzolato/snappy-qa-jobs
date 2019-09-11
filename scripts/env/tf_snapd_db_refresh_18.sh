@@ -10,5 +10,5 @@ export DEVICE_QUEUE=${DEVICE_QUEUE:-"dragonboard"}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-18-arm-64:tests/"}
 export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}
 export TEST_PASS=${TEST_PASS:-"ubuntu"}
-export SKIP_TESTS=${SKIP_TESTS:-"tests/main/interfaces-content,tests/main/install-sideload"}
+export SPREAD_TESTS_SKIP=${SPREAD_TESTS_SKIP:-"tests/main/interfaces-content,tests/main/install-sideload"}
 export SETUP=${SETUP:-""}

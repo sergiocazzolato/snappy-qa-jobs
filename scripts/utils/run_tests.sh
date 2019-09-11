@@ -20,7 +20,7 @@ DEVICE_PORT=$2
 PROJECT_PATH=$3
 SPREAD_TESTS=$4
 SPREAD_ENV=$5
-SKIP_TESTS=$6
+SPREAD_TESTS_SKIP=$6
 SPREAD_PARAMS=$7
 
 if [ -z "$SPREAD_TESTS" ]; then
@@ -48,8 +48,8 @@ fi
 # Run spread
 cd "$PROJECT_PATH"
 
-echo "Moving to manual all the tests to skip: $SKIP_TESTS"
-tests_skip="$(echo $SKIP_TESTS | tr ',' ' ')"
+echo "Moving to manual all the tests to skip: $SPREAD_TESTS_SKIP"
+tests_skip="$(echo $SPREAD_TESTS_SKIP | tr ',' ' ')"
 for test in $tests_skip; do
     if [ -f $test/task.yaml ]; then
         cp $test/task.yaml $test/task.yaml.back
@@ -57,7 +57,7 @@ for test in $tests_skip; do
     fi
 done
 
-spread_params="$(echo $SPREAD_PARAMS | tr ',' ' ')"
+spread_params="$(echo $SPREAD_TESTS_PARAMS | tr ',' ' ')"
 spread_tests="$(echo $SPREAD_TESTS | tr ',' ' ')"
 echo "Running command: spread $spread_params $spread_tests"
 "$SPREAD_BIN" "$spread_params" "$spread_tests"

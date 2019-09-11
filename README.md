@@ -118,9 +118,9 @@ In order to run console-conf tests, it is needed to run console-conf manually on
 
 ##### Running individual tests
 
-It is occasionally useful to re-run a specific test (or set of tests), or skip a test. This is supported by SPREAD_TESTS and SKIP_TESTS variables passed to the scripts along with the standard variables, e.g.
+It is occasionally useful to re-run a specific test (or set of tests), or skip a test. This is supported by SPREAD_TESTS and SPREAD_TESTS_SKIP variables passed to the scripts along with the standard variables, e.g.
     SPREAD_TESTS=external:ubuntu-core-16-arm-64:tests/main/interfaces-hostname-control,external:ubuntu-core-16-arm-64:tests/main/snap-logs
-    SKIP_TESTS=tests/main/revert-devmode
+    SPREAD_TESTS_SKIP=tests/main/revert-devmode
 
 ##### Notes
 

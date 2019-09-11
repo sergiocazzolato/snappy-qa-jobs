@@ -9,4 +9,4 @@ export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-18-arm-64"}
 export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}
 export DEVICE_IP=${DEVICE_IP:-"127.0.0.1"}
 export SETUP=${SETUP:-"sudo rm -rf /home/gopath"}
-export SKIP_TESTS=${SKIP_TESTS:-"tests/core18/snapd-failover,tests/main/interfaces-broadcom-asic-control"}
+export SPREAD_TESTS_SKIP=${SPREAD_TESTS_SKIP:-"tests/core18/snapd-failover,tests/main/interfaces-broadcom-asic-control"}

@@ -44,8 +44,8 @@ else
     fi
 fi
 
-spread_params="$(echo $SPREAD_PARAMS | tr ',' ' ')"
-spread_tests="$(echo $SPREAD_TESTS | tr ',' ' ')"
+spread_params="$(echo $SPREAD_SETUP_PARAMS | tr ',' ' ')"
+spread_tests="$(echo $SPREAD_SETUP | tr ',' ' ')"
 
 # Run spread
 echo "Running command: spread $spread_params $spread_tests"
