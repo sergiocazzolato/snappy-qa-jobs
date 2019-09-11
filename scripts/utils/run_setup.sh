@@ -49,4 +49,4 @@ spread_tests="$(echo $SPREAD_SETUP | tr ',' ' ')"
 
 # Run spread
 echo "Running command: spread $spread_params $spread_tests"
-( cd "$PROJECT_DIR" && "$SPREAD_BIN" "$spread_params" "$spread_tests" )
+( cd "$PROJECT_DIR" && $SPREAD_BIN $spread_params $spread_tests )

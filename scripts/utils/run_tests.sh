@@ -60,7 +60,7 @@ done
 spread_params="$(echo $SPREAD_TESTS_PARAMS | tr ',' ' ')"
 spread_tests="$(echo $SPREAD_TESTS | tr ',' ' ')"
 echo "Running command: spread $spread_params $spread_tests"
-"$SPREAD_BIN" "$spread_params" "$spread_tests"
+$SPREAD_BIN $spread_params $spread_tests
 
 echo "Restoring skipped tests"
 for test in $tests_skip; do
