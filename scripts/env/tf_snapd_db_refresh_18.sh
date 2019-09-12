@@ -3,12 +3,13 @@
 . "$SCRIPTS_DIR/env/common.sh"
 
 export ARCH=${ARCH:-"arm64"}
-export PROJECT=${PROJECT:-"snapd"}
 export CHANNEL=${CHANNEL:-"stable"}
 export CORE_CHANNEL=${CORE_CHANNEL:-"beta"}
-export DEVICE_QUEUE=${DEVICE_QUEUE:-"dragonboard"}
+
+export SPREAD_SETUP=${SPREAD_SETUP:-"testflinger:dragonboard-18-refresh:tasks/setup/"}
+export SPREAD_SETUP_PARAMS=${SPREAD_SETUP_PARAMS:-"-reuse"}
+
+export PROJECT=${PROJECT:-"snapd"}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-18-arm-64:tests/"}
-export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}
-export TEST_PASS=${TEST_PASS:-"ubuntu"}
-export SPREAD_TESTS_SKIP=${SPREAD_TESTS_SKIP:-"tests/main/interfaces-content,tests/main/install-sideload"}
-export SETUP=${SETUP:-""}
+export SPREAD_TESTS_PARAMS=${SPREAD_TESTS_PARAMS:-""}
+export SPREAD_TESTS_SKIP=${SPREAD_TESTS_SKIP:-""}
