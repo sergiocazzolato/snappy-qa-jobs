@@ -3,18 +3,6 @@ set -ex
 
 echo "Running spread"
 
-if [ "$#" -ne 7 ]; then
-    echo "Illegal number of parameters: $#"
-    i=1
-    for param in $*; do
-        echo "param $i: $param"
-        i=$(( i + 1 ))
-    done
-    exit 1
-fi
-
-export WORKSPACE=${WORKSPACE:-$(pwd)}
-
 DEVICE_IP=$1
 DEVICE_PORT=$2
 PROJECT_PATH=$3
@@ -22,6 +10,8 @@ SPREAD_TESTS=$4
 SPREAD_ENV=$5
 SPREAD_TESTS_SKIP=$6
 SPREAD_PARAMS=$7
+
+WORKSPACE=${WORKSPACE:-$(pwd)}
 
 if [ -z "$SPREAD_TESTS" ]; then
     echo "Spread tests not defined, skipping execution"

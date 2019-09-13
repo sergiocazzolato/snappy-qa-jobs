@@ -3,7 +3,7 @@ set -x
 
 echo "Creating vm"
 
-if [ "$#" -lt 3 ]; then
+if [ "$#" -lt 4 ]; then
     echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
@@ -16,6 +16,7 @@ fi
 ARCHITECTURE=$1
 IMAGE_URL=$2
 USER_ASSERTION_URL=$3
+PORT=$4
 
 execute_remote(){
     sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
@@ -86,7 +87,6 @@ echo "installing dependencies"
 sudo apt update
 sudo apt install -y snapd qemu sshpass
 
-export PORT=8022
 export WORK_DIR=/tmp/work-dir
 export QEMU=$(get_qemu_for_nested_vm)
 
