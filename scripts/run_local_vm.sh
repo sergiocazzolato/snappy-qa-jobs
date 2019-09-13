@@ -1,9 +1,10 @@
 #!/bin/bash
 
-echo "Running tests on a vm in a test flinger desktop device"
+echo "Running tests on google vm"
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}
 export SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export PROJECT_DIR="$SCRIPTS_DIR/.."
 
 if [ "$#" -ne 1 ]; then
     echo "Illegal number of parameters"
@@ -12,11 +13,7 @@ else
 	. "$SCRIPTS_DIR/utils/load_env.sh" "$1"
 fi
 
-echo "Deleting test flinger data"
-sudo rm -f $TF_DATA/*
-
-. "$SCRIPTS_DIR/test_flinger/$PROJECT/job_vm.sh"
-. "$SCRIPTS_DIR/test_flinger/run_job.sh" | tee run.log
+. "$SCRIPTS_DIR/local/run_vm.sh" | tee run.log
 
 if which pastebinit; then
 	echo "Uploding execution log to paste.ubuntu.com"
@@ -24,3 +21,4 @@ if which pastebinit; then
 else
 	echo "Report not uploaded automatically, please install pastebinit for that"
 fi
+

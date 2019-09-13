@@ -16,7 +16,6 @@ fi
 ARCHITECTURE=$1
 IMAGE_URL=$2
 USER_ASSERTION_URL=$3
-SNAPD_PATH=$4
 
 execute_remote(){
     sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
@@ -55,12 +54,8 @@ prepare_ssh(){
 create_assertions_disk() {
     dd if=/dev/null of="$WORK_DIR/assertions.disk" bs=1M seek=1
     mkfs.ext4 -F "$WORK_DIR/assertions.disk"
-    if [ -z "$USER_ASSERTION_URL" ];then
-        debugfs -w -R "write $TESTSLIB/assertions/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"    
-    else
-        curl -L -o "$WORK_DIR/auto-import.assert" "$USER_ASSERTION_URL"
-        debugfs -w -R "write $WORK_DIR/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"    
-    fi
+    curl -L -o "$WORK_DIR/auto-import.assert" "$USER_ASSERTION_URL"
+    debugfs -w -R "write $WORK_DIR/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"    
 }
 
 systemd_create_and_start_unit() {
@@ -91,15 +86,8 @@ echo "installing dependencies"
 sudo apt update
 sudo apt install -y snapd qemu sshpass
 
-echo "Download snapd and checkout branch"
-if [ -z "$SNAPD_PATH" ] || [ ! -d $SNAPD_PATH ]; then
-    git clone https://github.com/snapcore/snapd
-    export SNAPD_PATH="./snapd"
-fi
-
 export PORT=8022
 export WORK_DIR=/tmp/work-dir
-export TESTSLIB="$SNAPD_PATH/tests/lib"
 export QEMU=$(get_qemu_for_nested_vm)
 
 # create ubuntu-core image

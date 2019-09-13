@@ -13,7 +13,7 @@ else
     . "$SCRIPTS_DIR/utils/load_env.sh" "$1"
 fi
 
-. "$SCRIPTS_DIR/test_flinger/$PROJECT/run_device.sh" | tee run.log
+. "$SCRIPTS_DIR/test_flinger/run_device.sh" | tee run.log
 
 if which pastebinit; then
     echo "Uploding execution log to paste.ubuntu.com"

@@ -17,10 +17,9 @@ export WORKSPACE=${WORKSPACE:-$(pwd)}
 
 DEVICE_IP=$1
 DEVICE_PORT=$2
-PROJECT_PATH=$3
-SPREAD_TESTS=$4
-SPREAD_ENV=$5
-SPREAD_PARAMS=$7
+SPREAD_SETUP=$3
+SPREAD_ENV=$4
+SPREAD_SETUP_PARAMS=$5
 
 if [ -z "$SPREAD_TESTS" ]; then
     echo "Spread tests not defined, skipping execution"

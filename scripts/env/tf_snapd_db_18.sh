@@ -9,6 +9,7 @@ export SPREAD_SETUP=${SPREAD_SETUP:-"testflinger:dragonboard-18-beta:tasks/setup
 export SPREAD_SETUP_PARAMS=${SPREAD_SETUP_PARAMS:-"-reuse"}
 
 export PROJECT=${PROJECT:-"snapd"}
+export PROJECT_URL=$SNAPD_URL
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-18-arm-64:tests/"}
 export SPREAD_TESTS_PARAMS=${SPREAD_TESTS_PARAMS:-""}
 export SPREAD_TESTS_SKIP=${SPREAD_TESTS_SKIP:-""}

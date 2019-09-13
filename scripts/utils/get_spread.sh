@@ -14,3 +14,4 @@ else
     echo "Spread downloaded and ready to use"
 fi
 
+chmod +x "$SPREAD_DIR/$SPREAD_BIN"
