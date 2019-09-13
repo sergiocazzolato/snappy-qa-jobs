@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo snap install testflinger-cli --devmode || sudo snap refresh testflinger-cli
+sudo snap install jq
+git clone https://github.com/sergiocazzolato/snappy-qa-jobs.git
+
