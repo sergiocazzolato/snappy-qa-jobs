@@ -1,26 +1,23 @@
 #!/bin/bash
 
-echo "Running tests on a test flinger device"
+echo "Running tests on external device"
 
 export WORKSPACE=${WORKSPACE:-$(pwd)}
 export SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export PROJECT_DIR="$SCRIPTS_DIR/.."
 
 if [ "$#" -ne 1 ]; then
     echo "Illegal number of parameters"
     exit 1
 else
-	. "$SCRIPTS_DIR/utils/load_env.sh" "$1"
+    . "$SCRIPTS_DIR/utils/load_env.sh" "$1"
 fi
 
-echo "Deleting test flinger data"
-sudo rm -f $TF_DATA/*
-
-. "$SCRIPTS_DIR/test_flinger/$PROJECT/job_device.sh"
-. "$SCRIPTS_DIR/test_flinger/run_job.sh" | tee run.log
+. "$SCRIPTS_DIR/test_flinger/run_device.sh" | tee run.log
 
 if which pastebinit; then
-	echo "Uploding execution log to paste.ubuntu.com"
-	pastebinit run.log
+    echo "Uploding execution log to paste.ubuntu.com"
+    pastebinit run.log
 else
-	echo "Report not uploaded automatically, please install pastebinit for that"
+    echo "Report not uploaded automatically, please install pastebinit for that"
 fi

@@ -1,15 +1,14 @@
 project: snappy-qa
 
 environment:
-    PROJECT_PATH: /root/spread
-    TESTSLIB: $PROJECT_PATH/lib
-    TESTSFILES: $PROJECT_PATH/files
+    PROJECT_PATH: /root/spread    
 
 backends:
     google:
         key: "$(HOST: echo $SPREAD_GOOGLE_KEY)"
         location: computeengine/us-east1-b
-        halt-timeout: 2h
+        plan: n1-standard-2
+        halt-timeout: 4h
         systems:
             - ubuntu-14.04-64:
                 image: ubuntu-os-cloud/ubuntu-1404-lts
@@ -20,11 +19,157 @@ backends:
             - ubuntu-18.04-64:
                 image: ubuntu-os-cloud/ubuntu-1804-lts
 
-path: /root/spread
+    external:
+        type: adhoc
+        environment:
+            SPREAD_EXTERNAL_ADDRESS: '$(HOST: echo "${SPREAD_EXTERNAL_ADDRESS:-localhost:8022}")'            
+        allocate: |
+            ADDRESS $SPREAD_EXTERNAL_ADDRESS
+        systems:
+            - ubuntu-core-16-64:
+                username: test
+                password: ubuntu
+            - ubuntu-core-16-64-cert:
+                username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
+                cert: true
+            - ubuntu-core-16-32:
+                username: test
+                password: ubuntu
+            - ubuntu-core-16-32-cert:
+                username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
+                cert: true
+            - ubuntu-core-16-arm-64:
+                username: test
+                password: ubuntu
+            - ubuntu-core-16-arm-64-cert:
+                username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
+                cert: true
+            - ubuntu-core-16-arm-32:
+                username: test
+                password: ubuntu
+            - ubuntu-core-16-arm-32-cert:
+                username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
+                cert: true
+            - ubuntu-core-18-64:
+                username: test
+                password: ubuntu
+            - ubuntu-core-18-64-cert:
+                username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
+                cert: true
+            - ubuntu-core-18-32:
+                username: test
+                password: ubuntu
+            - ubuntu-core-18-32-cert:
+                username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
+                cert: true
+            - ubuntu-core-18-arm-64:
+                username: test
+                password: ubuntu
+            - ubuntu-core-18-arm-64-cert:
+                username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
+                cert: true
+            - ubuntu-core-18-arm-32:
+                username: test
+                password: ubuntu
+            - ubuntu-core-18-arm-32-cert:
+                username: '$(HOST: echo "${SPREAD_USERNAME:-}")'
+                cert: true
 
-prepare: |
-    apt update
-    apt install -y snapd    
+    testflinger:
+        key: '$(HOST: echo "${SPREAD_LP_KEY:-}")'
+        systems:
+            - dragonboard-16-stable:
+                image: http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/ubuntu-core-16-dragonboard.img.xz
+                queue: dragonboard
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-16-beta:
+                image: https://cachio.s3.amazonaws.com/images/dragonboard-16-beta/dragonboard.img.xz
+                queue: dragonboard
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-16-refresh:
+                image: https://cachio.s3.amazonaws.com/images/dragonboard-16-stable-core_beta/dragonboard.img.xz
+                queue: dragonboard
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-18:
+                image: http://cdimage.ubuntu.com/ubuntu-core/18/stable/current/ubuntu-core-18-arm64+snapdragon.img.xz
+                queue: dragonboard
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-18-beta:
+                image: https://cachio.s3.amazonaws.com/images/dragonboard-18-beta/dragonboard.img.xz
+                queue: dragonboard
+                username: ubuntu
+                password: ubuntu
+            - dragonboard-18-refresh:
+                image: https://cachio.s3.amazonaws.com/images/dragonboard-18-stable-snapd_beta/dragonboard.img.xz
+                queue: dragonboard
+                username: ubuntu
+                password: ubuntu
+            - rpi3-16:
+                image: http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/ubuntu-core-16-pi3.img.xz
+                queue: rpi3b
+                username: ubuntu
+                password: ubuntu
+            - rpi3-16-beta:
+                image: https://cachio.s3.amazonaws.com/images/pi3-16-beta/pi3.img.xz
+                queue: rpi3b
+                username: ubuntu
+                password: ubuntu
+            - rpi3-16-refresh:
+                image: https://cachio.s3.amazonaws.com/images/pi3-16-stable-core_beta/pi3.img.xz
+                queue: rpi3b
+                username: ubuntu
+                password: ubuntu
+            - rpi3-18:
+                image: http://cdimage.ubuntu.com/ubuntu-core/18/stable/current/ubuntu-core-18-armhf+raspi3.img.xz
+                queue: rpi3b
+                username: ubuntu
+                password: ubuntu
+            - rpi3-18-beta:
+                image: https://cachio.s3.amazonaws.com/images/pi3-18-beta/pi.img.xz
+                queue: rpi3b
+                username: ubuntu
+                password: ubuntu
+            - rpi3-18-refresh:
+                image: https://cachio.s3.amazonaws.com/images/pi3-18-stable-snapd_beta/pi.img.xz
+                queue: rpi3b
+                username: ubuntu
+                password: ubuntu
+            - rpi2-16:
+                image: http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/ubuntu-core-16-pi2.img.xz
+                queue: rpi2
+                username: ubuntu
+                password: ubuntu
+            - rpi2-16-beta:
+                image: https://cachio.s3.amazonaws.com/images/pi2-16-beta/pi2.img.xz
+                queue: rpi2
+                username: ubuntu
+                password: ubuntu
+            - rpi2-16-refresh:
+                image: https://cachio.s3.amazonaws.com/images/pi2-16-stable-core_beta/pi2.img.xz
+                queue: rpi2
+                username: ubuntu
+                password: ubuntu
+            - rpi2-18:
+                image: http://cdimage.ubuntu.com/ubuntu-core/18/stable/current/ubuntu-core-18-armhf+raspi2.img.xz
+                queue: rpi2
+                username: ubuntu
+                password: ubuntu
+            - rpi2-18-beta:
+                image: https://cachio.s3.amazonaws.com/images/pi2-18-beta/pi.img.xz
+                queue: rpi2
+                username: ubuntu
+                password: ubuntu
+            - rpi2-18-refresh:
+                image: https://cachio.s3.amazonaws.com/images/pi2-18-stable-snapd_beta/pi.img.xz
+                queue: rpi2
+                username: ubuntu
+                password: ubuntu
+
+path: /root/spread
 
 restore: |
     rm -rf "${PROJECT_PATH%%:*}"
@@ -33,10 +178,12 @@ suites:
     tasks/smoke/:
         summary: Run smoke test after a core snap is promoted
         systems: [ubuntu-14*, ubuntu-16*, ubuntu-18*]
-        environment: 
+        environment:
             CORE_CHANNEL: "$(HOST: echo ${SPREAD_CORE_CHANNEL:-stable})"
             CORE_VERSION: "$(HOST: echo ${SPREAD_CORE_VERSION:-})"
         prepare: |
+            apt update
+            apt install -y snapd
             if ! snap list core | grep -q 'stable'; then
                 snap install core --stable
             else
@@ -46,3 +193,32 @@ suites:
             if [ ! "$CORE_CHANNEL" == 'stable' ]; then
                 snap refresh core --$CORE_CHANNEL
             fi
+
+    tasks/setup/:
+        summary: Setup an ubuntu core external device to execute a test suite on it
+        backends: [external, testflinger]
+        environment:
+            # Configuration for the paths
+            PATH: $PATH:$PROJECT_PATH/tasks/bin
+            TESTSLIB: $PROJECT_PATH/tasks/lib
+            RUNTIME_STATE_PATH: $PROJECT_PATH/tasks/state
+            JOURNALCTL_CURSOR_FILE: $RUNTIME_STATE_PATH/journalctl_cursor
+            
+            # Setup configuration
+            REGISTER_EMAIL: "$(HOST: echo ${REGISTER_EMAIL:-})"
+            SETUP_SCRIPT: "$(HOST: echo ${SETUP_SCRIPT:-})"
+
+            # Refresh configuration
+            SKIP_REFRESH: "$(HOST: echo ${SKIP_REFRESH:-false})"
+            CORE_CHANNEL: "$(HOST: echo ${CORE_CHANNEL:-beta})"
+
+            # Configuration for the test user
+            USER_TYPE: "$(HOST: echo ${USER_TYPE:-extrauser})"
+            TEST_USER: "$(HOST: echo ${TEST_USER:-test})"
+            TEST_PASS: "$(HOST: echo ${TEST_PASS:-ubuntu})"
+        prepare: |
+            mkdir -p "$RUNTIME_STATE_PATH"
+        prepare-each: |
+            . "$TESTSLIB"/journalctl.sh
+            start_new_journalctl_log
+            check_journalctl_ready

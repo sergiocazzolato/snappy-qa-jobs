@@ -3,14 +3,14 @@
 . "$SCRIPTS_DIR/env/common.sh"
 
 export ARCH=${ARCH:-"i386"}
-export PROJECT=${PROJECT:-"snapd"}
 export CHANNEL=${CHANNEL:-"beta"}
-export CORE_CHANNEL=${CORE_CHANNEL:-"stable"}
-export DEVICE_QUEUE=${DEVICE_QUEUE:-"maas-x86-node"}
-export CHANNEL=${CHANNEL:-"stable"}
 export CORE_CHANNEL=${CORE_CHANNEL:-"beta"}
-export SETUP=${SETUP:-""}
-export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-18-32"}
-export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}
-export TEST_PASS=${TEST_PASS:-"ubuntu"}
-export SKIP_TESTS=${SKIP_TESTS:-"tests/main/auto-refresh,tests/main/auto-refresh-retry"}
+
+export SPREAD_SETUP=${SPREAD_SETUP:-"testflinger:pc-i386-18-refresh:tasks/setup/"}
+export SPREAD_SETUP_PARAMS=${SPREAD_SETUP_PARAMS:-"-reuse"}
+
+export PROJECT=${PROJECT:-"snapd"}
+export PROJECT_URL=$SNAPD_URL
+export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-18-32:tests/"}
+export SPREAD_TESTS_PARAMS=${SPREAD_TESTS_PARAMS:-""}
+export SPREAD_TESTS_SKIP=${SPREAD_TESTS_SKIP:-"tests/main/auto-refresh,tests/main/auto-refresh-retry"}

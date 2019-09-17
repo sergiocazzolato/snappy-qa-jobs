@@ -1,0 +1,18 @@
+summary: Add the test user in the device
+
+priority: 1000
+
+execute: |
+    . "$TESTSLIB/users.sh"
+
+    TYPE="--extrausers"
+    if [ "$USER_TYPE" = "regular" ]; then
+      TYPE=""
+    fi
+
+    # Create teh user just when it doesn't exist in the device  
+    if ! is_user_created "$TEST_USER"; then
+        adduser --quiet $TYPE --disabled-password --gecos '' "$TEST_USER"
+    fi
+    echo "$TEST_USER:$TEST_PASS" | chpasswd
+    echo "$TEST_USER ALL=(ALL) NOPASSWD:ALL" | tee "/etc/sudoers.d/create-user-$TEST_USER"
