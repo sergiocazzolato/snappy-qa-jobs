@@ -21,6 +21,8 @@ elif [ "$BRANCH" = edge ]; then
     BRANCH=$(get_edge_commit "$ARCH")
 fi
 
+DEVICE_IP='$DEVICE_IP'
+
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 global_timeout: 36000
@@ -36,15 +38,15 @@ test_data:
         git clone $SNAPD_URL $PROJECT
         (cd $PROJECT && git checkout $BRANCH && git checkout $COMMIT)
         $PRE_HOOK
-        . $JOBS_PROJECT/scripts/utils/add_test_user.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "generic" "ubuntu" "$TEST_USER_TYPE"
-        . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP" || true
+        . $JOBS_PROJECT/scripts/utils/add_test_user.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "generic" "ubuntu" "$TEST_USER_TYPE"
+        . $JOBS_PROJECT/scripts/utils/run_setup.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP" || true
         $POST_SETUP
-        . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_2" || true
+        . $JOBS_PROJECT/scripts/utils/run_setup.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_2" || true
         $POST_SETUP_2
-        . $JOBS_PROJECT/scripts/utils/run_setup.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_3" || true
-        . $JOBS_PROJECT/scripts/utils/refresh.sh "{device_ip}" "$DEVICE_PORT" "$DEVICE_USER" "" "$CHANNEL" "$CORE_CHANNEL" || true
+        . $JOBS_PROJECT/scripts/utils/run_setup.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_3" || true
+        . $JOBS_PROJECT/scripts/utils/refresh.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "" "$CHANNEL" "$CORE_CHANNEL" || true
         . $JOBS_PROJECT/scripts/utils/get_spread.sh
-        . $JOBS_PROJECT/scripts/utils/run_spread.sh "{device_ip}" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
+        . $JOBS_PROJECT/scripts/utils/run_spread.sh "$DEVICE_IP" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
         $POST_HOOK
 EOF
 
