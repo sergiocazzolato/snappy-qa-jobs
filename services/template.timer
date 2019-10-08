@@ -1,0 +1,10 @@
+[Unit]
+Description=Trigger checks to run tests
+ 
+[Timer]
+OnCalendar=*:0/30
+Unit={SERVICE_PATH}
+Persistent=false
+
+[Install]
+WantedBy=multi-user.target

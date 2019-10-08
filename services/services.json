@@ -1,0 +1,113 @@
+{
+	"core-16-beta": [{
+			"name": "pi2-beta",
+			"env": {
+				"IMAGE_URL": "https://cachio.s3.amazonaws.com/images/pi2-16-beta/pi2.img.xz",
+				"DEVICE_QUEUE": "rpi2-006",
+				"CHANNEL": "beta",
+				"CORE_CHANNEL": "beta",
+				"REGISTER_EMAIL": "sergio.cazzolato@canonical.com",
+				"BRANCH": "beta"
+			},
+			"run_script": "run_tf_device",
+			"config_file": "tf_snapd_pi2",
+			"trigger": {
+				"url": "https://cachio.s3.amazonaws.com/images/pi2-16-beta/image.json",
+				"type": "json",
+				"field": "manifest.core"
+			}
+		},
+		{
+			"name": "pi3-beta",
+			"env": {
+				"IMAGE_URL": "https://cachio.s3.amazonaws.com/images/pi3-16-beta/pi3.img.xz",
+				"DEVICE_QUEUE": "rpi3",
+				"CHANNEL": "beta",
+				"CORE_CHANNEL": "beta",
+				"REGISTER_EMAIL": "sergio.cazzolato@canonical.com",
+				"BRANCH": "beta"
+			},
+			"run_script": "run_tf_device",
+			"config_file": "tf_snapd_pi3",
+			"trigger": {
+				"url": "https://cachio.s3.amazonaws.com/images/pi3-16-beta/image.json",
+				"type": "json",
+				"field": "manifest.core"
+			}
+		}
+	],
+	"core-18-beta": [{
+			"name": "pi2-beta-18",
+			"env": {
+				"IMAGE_URL": "https://cachio.s3.amazonaws.com/images/pi2-18-beta/pi2.img.xz",
+				"DEVICE_QUEUE": "rpi2-006",
+				"CHANNEL": "beta",
+				"CORE_CHANNEL": "beta",
+				"REGISTER_EMAIL": "sergio.cazzolato@canonical.com",
+				"BRANCH": "beta"
+			},
+			"run_script": "run_tf_device",
+			"config_file": "tf_snapd_pi2_18",
+			"trigger": {
+				"url": "https://cachio.s3.amazonaws.com/images/pi2-18-beta/image.json",
+				"type": "json",
+				"field": "manifest.core"
+			}
+		},
+		{
+			"name": "pi3-beta",
+			"env": {
+				"IMAGE_URL": "https://cachio.s3.amazonaws.com/images/pi3-18-beta/pi3.img.xz",
+				"DEVICE_QUEUE": "rpi3",
+				"CHANNEL": "beta",
+				"CORE_CHANNEL": "beta",
+				"REGISTER_EMAIL": "sergio.cazzolato@canonical.com",
+				"BRANCH": "beta"
+			},
+			"run_script": "run_tf_device",
+			"config_file": "tf_snapd_pi3",
+			"trigger": {
+				"url": "https://cachio.s3.amazonaws.com/images/pi3-18-beta/image.json",
+				"type": "json",
+				"field": "manifest.core"
+			}
+		}
+	],
+	"core-edge": [{
+			"name": "pi3-edge",
+			"env": {
+				"IMAGE_URL": "http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/ubuntu-core-16-pi3.img.xz",
+				"DEVICE_QUEUE": "rpi3",
+				"CHANNEL": "stable",
+				"CORE_CHANNEL": "edge",
+				"REGISTER_EMAIL": "sergio.cazzolato@canonical.com",
+				"BRANCH": "edge"
+			},
+			"run_script": "run_tf_device",
+			"config_file": "tf_snapd_pi3",
+			"trigger": {
+				"url": "https://cachio.s3.amazonaws.com/images/pi3-16-edge/image.json",
+				"type": "json",
+				"field": "manifest.core"
+			}
+		},
+		{
+			"name": "dragonboard-edge",
+			"env": {
+				"IMAGE_URL": "http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/ubuntu-core-16-dragonboard-410c.img.xz",
+				"DEVICE_QUEUE": "dragonboard",
+				"CHANNEL": "stable",
+				"CORE_CHANNEL": "edge",
+				"REGISTER_EMAIL": "sergio.cazzolato@canonical.com",
+				"BRANCH": "edge"
+			},
+			"run_script": "run_tf_device",
+			"config_file": "tf_snapd_db",
+			"trigger": {
+				"url": "https://cachio.s3.amazonaws.com/images/dragonboard-16-edge/image.json",
+				"type": "json",
+				"field": "manifest.core"
+			}
+		}
+	]
+}

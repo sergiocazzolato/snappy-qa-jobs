@@ -1,0 +1,245 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+import time
+
+ERROR_TYPE = 'Error'
+DEBUG_TYPE = 'Debug'
+WARN_TYPE = 'WARNING:'
+
+EXEC_VERBS = ['Preparing', 'Executing', 'Restoring']
+DETAIL_TYPES = [ERROR_TYPE, DEBUG_TYPE, WARN_TYPE]
+OPERATIONS = ['Rebooting', 'Discarding', 'Allocating', 'Waiting', 'Allocated', 'Connecting', 'Connected', 'Sending']
+RESULTS = ['Successful', 'Aborted', 'Failed']
+
+
+class Action:
+    def __init__(self, verb, task, date, time):
+        self.verb = verb
+        self.time = time
+        self.date = date
+        self.task = task
+
+    def __repr__(self):
+        return str(self.__dict__())
+
+    def __dict__(self):
+        return {'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task}
+
+class Detail:
+    def __init__(self, detail_type, verb, task, extra, date, time, lines, lines_limit):
+        self.detail_type = detail_type
+        self.verb = verb
+        self.time = time
+        self.date = date
+        self.task = task
+        self.extra = extra 
+        self.lines = lines
+        self.lines_limit = lines_limit
+
+    def __repr__(self):
+        return str(self.__dict__())
+
+    def __dict__(self):
+        return {'date': self.date, 'time': self.time, 'type': self.detail_type, 'verb': self.verb, 'task': self.task, 'extra': self.extra, 'lines': self.lines[-1*self.lines_limit:]}
+
+
+class Operation:
+    def __init__(self, verb, task, extra, date, time):
+        self.verb = verb
+        self.time = time
+        self.extra = extra
+        self.date = date
+        self.task = task
+
+    def __repr__(self):
+        return str(self.__dict__())
+
+    def __dict__(self):
+        return {'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task, 'extra': self.extra}
+
+
+class LogReader:
+    def __init__(self, filepath, output_type, lines_limit):
+        self.filepath = filepath
+        self.output_type = output_type
+        self.lines_limit = lines_limit
+        self.lines = []
+        self.iter = 0
+        self.full_log = []
+
+    def __repr__(self):
+        return str(self.__dict__())
+
+    def __dict__(self):
+        return {'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task}
+
+    def print_log(self):
+        for entry in self.full_log:
+            print(entry) 
+
+    def next_line(self):
+        self.iter = self.iter + 1
+        return self.lines[self.iter-1]
+
+    def check_log_exists(self):
+        return os.path.exists(self.filepath)
+
+    def read_spread_log(self):
+        with open(self.filepath) as fp:
+            self.lines = fp.readlines()
+            self.iter = 0
+            while self.iter < len(self.lines):
+                line = self.next_line()
+
+                if self.match_task(line):
+                    action = self.get_action(line)
+                    if action:
+                        self.full_log.append(action)
+                    continue
+
+                if self.match_detail(line): 
+                    detail = self.get_detail(line)
+                    if detail:
+                        self.full_log.append(detail)
+                    continue
+
+                if self.match_operation(line): 
+                    operation = self.get_operation(line)
+                    if operation:
+                        self.full_log.append(operation)
+                    continue
+
+    def match_detail(self, line):
+        parts = line.split(' ')
+        return len(parts) > 3 and parts[2] in DETAIL_TYPES
+
+    def match_task(self, line):
+        parts = line.split(' ')
+        return len(parts) > 2 and parts[2] in EXEC_VERBS
+
+    def match_operation(self, line):
+        parts = line.split(' ')
+        return len(parts) > 2 and parts[2] in OPERATIONS
+
+    def go_to_end_of_detail(self):
+        while self.iter < len(self.lines):
+            line = self.next_line()
+            if self.match_task(line) or self.match_detail(line) or self.match_operation(line):
+                break
+
+    def get_detail(self, line):
+        parts = line.split(' ')
+        if len(parts) < 3:
+            print(parts)
+            return None 
+        date = parts[0]
+        time = parts[1]
+        detail_type = parts[2]
+        verb = None
+        task = None
+        if detail_type in DETAIL_TYPES:
+            if detail_type == WARN_TYPE:
+                detail_type = detail_type.split(':')[0]
+                verb = None
+                task = None
+                extra = ' '.join(parts[3:])
+            elif detail_type == ERROR_TYPE:
+                verb = parts[3]
+                task = parts[4]
+                extra = None
+            elif detail_type == DEBUG_TYPE:
+                verb = parts[3]
+                task = parts[4]
+                extra = None
+            else:
+                print('Detail type not recognized: {}'.format(detail_type))
+
+        initial_iter = self.iter
+        self.go_to_end_of_detail()
+
+        return Detail(detail_type, verb, task, extra, date, time, self.lines[initial_iter:self.iter-1], 10)
+
+    def get_action(self, line):
+        # type: (str) -> Action
+        parts = line.split(' ')
+        if len(parts) < 3:
+            return None
+        date = parts[0]
+        time = parts[1]
+        verb = parts[2]
+        if verb in EXEC_VERBS:
+            task = parts[3]
+            return Action(verb, task.split('...')[0], date, time)
+
+        return None
+
+    def get_operation(self, line):
+        # type: (str) -> Action
+        parts = line.split(' ')
+        if len(parts) < 3:
+            return None
+        date = parts[0]
+        time = parts[1]
+        verb = parts[2]
+        task = None
+        if verb in OPERATIONS:
+            extra = ' '.join(parts[3:])
+            return Operation(verb, task, extra, date, time)
+
+        return None
+
+
+def _make_parser():
+    # type: () -> argparse.ArgumentParser
+    parser = argparse.ArgumentParser(
+        description="""
+Analyze the spread log and generates a file with a standarized output
+"""
+    )
+    parser.add_argument(
+        "-c",
+        "--cut",
+        metavar="N",
+        type=int,
+        default=100,
+        help="maximun number of lines for logs on errors and debug sections",
+    )
+    parser.add_argument(
+        "-f",
+        "--format",
+        type=str,
+        default="json",
+        choices=['json','xml'],
+        help="format for the output",
+    )
+    parser.add_argument(
+        "logpath", metavar="PATH", help="path to the log to be analyzed"
+    )
+    return parser
+
+
+def main():
+    # type: () -> None
+    parser = _make_parser()
+    ns = parser.parse_args()
+    # The command cannot be empty but it is difficult to express in argparse itself.
+    if len(ns.logpath) == 0:
+        parser.print_usage()
+        parser.exit(0)
+    
+    reader = LogReader(ns.logpath, ns.format, ns.cut)
+    if not reader.check_log_exists():
+        print("Log not found")
+        sys.exit(1)
+
+    reader.read_spread_log()
+    reader.print_log()
+    
+
+if __name__ == "__main__":
+    main()

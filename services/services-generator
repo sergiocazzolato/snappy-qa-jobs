@@ -1,0 +1,300 @@
+#!/usr/bin/env python3
+
+from argparse import ArgumentParser
+import json
+from jsonpath_ng import jsonpath, parse
+import os
+import shutil
+import subprocess
+import urllib.request
+
+SERVICES_FILE = 'services.json'
+SERVICE_TEMPLATE = 'template.service'
+TIMER_TEMPLATE = 'template.timer'
+
+RUNNER_PREFIX = 'test-runner'
+RUNTIME_USER = 'ubuntu'
+
+
+class SystemdManager:
+
+    @staticmethod
+    def get_service_status_active(service):
+        cmd = 'systemctl status -o short {} | grep "Active:"'.format(service)
+        lines = subprocess.check_output(cmd, shell=True, encoding='utf8').splitlines()
+        if not len(lines) == 1:
+            logging.error('Incorrect out(service)put format for systemctl status: {}'.format(lines))
+            return
+        return lines[0].split(' ')[1]
+
+    @staticmethod
+    def stop_service(service):
+        cmd = 'systemctl stop {}'.format(service)
+        subprocess.call(cmd, shell=True)
+        SystemdManager.check_service_status_active(service, 'inactive')
+
+    @staticmethod
+    def start_service(service):
+        cmd = 'systemctl start {}'.format(service)
+        subprocess.call(cmd, shell=True)
+        SystemdManager.check_service_status_active(service, 'active')
+
+    @staticmethod
+    def restart_service(service):
+        cmd = 'systemctl restart {}'.format(service)
+        subprocess.call(cmd, shell=True)
+        SystemdManager.check_service_status_active(service, 'active')
+
+    @staticmethod
+    def enable_service(service):
+        cmd = 'systemctl enable {}'.format(service)
+        subprocess.call(cmd, shell=True)
+
+    @staticmethod
+    def disable_service(service):
+        cmd = 'systemctl disable {}'.format(service)
+        subprocess.call(cmd, shell=True)
+
+    @staticmethod
+    def check_service_status_active(service, status):
+        return SystemdManager.get_service_status_active(service) == status
+
+    @staticmethod
+    def daemon_reload(service, status):
+        cmd = 'systemctl daemon-reload'.format(service)
+        subprocess.call(cmd, shell=True)
+
+
+class ServiceTrigger:
+    def __init__(self, definition):
+        self.url = definition.get('url')
+        self.type = definition.get('type')
+        self.field = definition.get('field')
+
+    def __repr__(self):
+        return str(self.__dict__())
+
+    def __dict__(self):
+        return {'url': self.url, 'type': self.type, 'field': self.field}
+
+    def __eq__(self, other):
+        return self.url == other.url and self.type == other.type and self.field == other.field
+
+    def __hash__(self):
+        return hash((self.url, self.type, self.field))
+
+    def read():
+        if self.type == 'json':
+            return self._read_json()
+        else:
+          raise RuntimeError('Trigger type not supported: {}'.format(self.type)) 
+
+    def _read_json():        
+        with urllib.request.urlopen(self.url) as url:
+            data = json.loads(url.read().decode())
+
+        jsonpath_expr = parse(self.field)
+        matches = jsonpath_expr.find(data)
+  
+        if len(matches) != 1:
+            raise RuntimeError('Trigger just to match just 1 value, currently it is matching: {}'.format(len(matches))) 
+
+        return matches[0].value
+
+
+class ServiceDefinition:
+    def __init__(self, definition):
+        self.name = definition.get('name')
+        self.env = definition.get('env', {})
+        self.run_script = definition.get('run_script')
+        self.config_file = definition.get('config_file')
+        self.trigger = ServiceTrigger(definition.get('trigger'))
+
+    def __repr__(self):
+        return str(self.__dict__())
+
+    def __dict__(self):
+        return {
+            'name': self.name, 
+            'env': self.env, 
+            'run_script': self.run_script,
+            'config_file': self.config_file,
+            'trigger': self.trigger.__dict__()
+            }
+
+    def __eq__(self, other):
+        return self.name == other.name and \
+            self.env == other.env and \
+            self.run_script == other.run_script and \
+            self.config_file == other.config_file and \
+            self.trigger.equals(other.trigger)
+
+
+class ServicesDefinition:
+    def __init__(self, definition):
+        self.services = []
+        for service_definition in definition:
+            self.services.append(ServiceDefinition(service_definition))
+
+    def __repr__(self):
+        return str(self.services)
+
+    def get_services(self):
+        return self.services
+
+
+class ServicesSetDefinition:
+    def __init__(self):
+        self.services_sets = {}
+
+        definition = self._read_service_definition()
+        for services_set_name, services_set_definition in definition.items():
+            self.services_sets[services_set_name] = ServicesDefinition(services_set_definition)
+
+    def _read_service_definition(self):
+        if not os.path.exists(SERVICES_FILE):
+            raise RuntimeError('Services file not found: {}'.format(SERVICES_FILE))
+
+        with open(SERVICES_FILE) as json_file:  
+            return json.load(json_file)
+
+    def get_definitions(self, name):
+        if name == 'all':
+            definitions = []
+
+            for definition_set in self.services_sets.values():
+                definitions.extend(definition_set.get_services())
+            return definitions
+        else:
+            return self.services_sets.get(name, [])
+
+class ActionManager:
+    def __init__(self):
+        self.services = ServicesSetDefinition()
+
+    def _get_service_filename(self, service_name):
+        return '{}-{}.service'.format(RUNNER_PREFIX, service_name)
+
+    def _get_timer_filename(self, service):
+        return '{}-{}.timer'.format(RUNNER_PREFIX, service_name)
+
+    def _get_services_directory(self):
+        return os.path.join('/', 'etc', 'systemd', 'system')
+
+    def _get_tests_directory(self):
+        return os.path.join('/', 'home', RUNTIME_USER, 'runtimes')
+
+    def _get_runtime_name(self, name):
+        return 'runtimes-{}'.format(name)    
+
+    def _update_template(self, template_path, tag, value):
+        formatted_tag = '{' + tag + '}'
+        cmd = 'sed  "s/{}/{}/g" -i {}'.format(formatted_tag, value, service)
+        subprocess.call(cmd, shell=True)
+        
+    def delete_services(self, name):
+        services = services.get_definitions(name)
+
+        for service in services:
+            service_filename = self._get_service_filename(service.name)
+            timer_filename = self._get_timer_filename(service.name)
+
+            SystemdManager.stop_service(timer_filename)
+            SystemdManager.disable_service(timer_filename)
+
+            SystemdManager.stop_service(service_filename)
+            SystemdManager.disable_service(service_filename)
+
+            os.remove(os.path.join(self._get_services_directory(), service.name))
+            os.remove(os.path.join(self._get_services_directory(), service.name))
+            os.rmdir(os.path.join(self._get_tests_directory(), self._get_runtime_name()))
+
+        SystemdManager.daemon_reload()
+
+
+    def create_services(self, name):
+        services = services.get_definitions(name)
+
+        for service in services:
+            service_filename = self._get_service_filename(service.name)
+            timer_filename = self._get_timer_filename(service.name)
+
+            service_path = os.path.join(self._get_services_directory(), service_filename)
+            timer_path = os.path.join(self._get_services_directory(), timer_filename)
+
+            # Copy the service and timer templates to its final destination
+            shutil.copyfile(SERVICE_TEMPLATE, service_path)
+            shutil.copyfile(TIMER_TEMPLATE, timer_name)
+
+            # Update the templates with  
+            self._update_template(service_path, 'RUNTIME_USER', RUNTIME_USER)
+            self._update_template(service_path, 'RUNTIME_NAME', service.name)
+            self._update_template(timer_path, 'SERVICE_PATH', service_path)
+            
+            SystemdManager.enable_service(timer_filename)
+            SystemdManager.enable_service(service_filename)            
+
+        SystemdManager.daemon_reload()
+
+
+    def services_status(self): 
+        pass
+
+
+def _make_parser():
+    parser = ArgumentParser(
+        description="""
+Creates or deletes a set of services which run sprad tests 
+"""
+    )
+    parser.add_argument(
+        "--create",
+        type=str,
+        default="all",
+        help="Wich set of services has to be created",
+    )
+    parser.add_argument(
+        "--delete",
+        type=str,
+        default="all",
+        help="Wich set of services has to be deleted",
+    )
+    parser.add_argument(
+        "--status",
+        type=str,
+        default="all",
+        help="Displays the status of a set of services",
+    )
+    return parser
+
+
+def main():
+    # type: () -> None
+    parser = _make_parser()
+    ns = parser.parse_args()
+
+    if len(ns.create) == 0 and len(ns.delete) == 0 and len(ns.status) == 0:
+        parser.print_usage()
+        parser.exit(0)
+
+    action = ActionManager()    
+
+    try:
+        retcode = action.delete_services(ns.delete)
+    except Exception as exc:
+        print(
+            "Failed to delete services {} with error {}".format(ns.delete, exc)
+        )
+        raise SystemExit(1)
+
+    try:
+        retcode = action.create_services(ns.create)
+    except Exception as exc:
+        print(
+            "Failed to create services {} with error {}".format(ns.create, exc)
+        )
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()
