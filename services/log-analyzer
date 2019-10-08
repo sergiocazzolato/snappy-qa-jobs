@@ -95,22 +95,24 @@ class LogReader:
             self.iter = 0
             while self.iter < len(self.lines):
                 line = self.next_line()
-
                 if self.match_task(line):
                     action = self.get_action(line)
                     if action:
+                        print(action)
                         self.full_log.append(action)
                     continue
 
                 if self.match_detail(line): 
                     detail = self.get_detail(line)
                     if detail:
+                        print(detail)
                         self.full_log.append(detail)
                     continue
 
                 if self.match_operation(line): 
                     operation = self.get_operation(line)
                     if operation:
+                        print(operation)
                         self.full_log.append(operation)
                     continue
 
@@ -131,6 +133,7 @@ class LogReader:
             line = self.next_line()
             if self.match_task(line) or self.match_detail(line) or self.match_operation(line):
                 break
+        self.iter = self.iter - 1
 
     def get_detail(self, line):
         parts = line.split(' ')
@@ -165,7 +168,6 @@ class LogReader:
         return Detail(detail_type, verb, task, extra, date, time, self.lines[initial_iter:self.iter-1], 10)
 
     def get_action(self, line):
-        # type: (str) -> Action
         parts = line.split(' ')
         if len(parts) < 3:
             return None
@@ -179,7 +181,6 @@ class LogReader:
         return None
 
     def get_operation(self, line):
-        # type: (str) -> Action
         parts = line.split(' ')
         if len(parts) < 3:
             return None
@@ -238,7 +239,7 @@ def main():
         sys.exit(1)
 
     reader.read_spread_log()
-    reader.print_log()
+    #reader.print_log()
     
 
 if __name__ == "__main__":
