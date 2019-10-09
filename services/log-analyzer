@@ -10,9 +10,10 @@ import time
 ERROR_TYPE = 'Error'
 DEBUG_TYPE = 'Debug'
 WARN_TYPE = 'WARNING:'
+FAILED_RESULT = 'Failed'
 
 EXEC_VERBS = ['Preparing', 'Executing', 'Restoring']
-DETAIL_TYPES = [ERROR_TYPE, DEBUG_TYPE, WARN_TYPE]
+INFO_TYPES = [ERROR_TYPE, DEBUG_TYPE, WARN_TYPE]
 OPERATIONS = ['Rebooting', 'Discarding', 'Allocating', 'Waiting', 'Allocated', 'Connecting', 'Connected', 'Sending']
 RESULTS = ['Successful', 'Aborted', 'Failed']
 
@@ -28,24 +29,52 @@ class Action:
         return str(self.__dict__())
 
     def __dict__(self):
-        return {'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task}
+        return {'type': 'action', 'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task}
 
-class Detail:
-    def __init__(self, detail_type, verb, task, extra, date, time, lines, lines_limit):
-        self.detail_type = detail_type
-        self.verb = verb
+
+class Result:
+    def __init__(self, result_type, level, number, date, time, detail):
+        self.result_type = result_type
+        self.level = level
+        self.number = number
         self.time = time
         self.date = date
-        self.task = task
-        self.extra = extra 
-        self.lines = lines
-        self.lines_limit = lines_limit
+        self.detail = detail
 
     def __repr__(self):
         return str(self.__dict__())
 
     def __dict__(self):
-        return {'date': self.date, 'time': self.time, 'type': self.detail_type, 'verb': self.verb, 'task': self.task, 'extra': self.extra, 'lines': self.lines[-1*self.lines_limit:]}
+        return {'type': 'result', 'date': self.date, 'time': self.time, 'result_type': self.result_type, 'level': self.level,  'number': self.number, 'detail': self.detail}
+
+
+class Info:
+    def __init__(self, info_type, verb, task, extra, date, time, detail):
+        self.info_type = info_type
+        self.verb = verb
+        self.time = time
+        self.date = date
+        self.task = task
+        self.extra = extra 
+        self.detail = detail
+
+    def __repr__(self):
+        return str(self.__dict__())
+
+    def __dict__(self):
+        return {'type': 'info', 'date': self.date, 'time': self.time, 'info_type': self.info_type, 'verb': self.verb, 'task': self.task, 'extra': self.extra, 'detail': self.detail}
+
+
+class Detail:
+    def __init__(self, lines_limit, lines):
+        self.lines_limit = lines_limit
+        self.lines = lines
+
+    def __repr__(self):
+        return str(self.__dict__())
+
+    def __dict__(self):
+        return {'type': 'detail', 'lines': self.lines[-1*self.lines_limit:]}
 
 
 class Operation:
@@ -60,7 +89,7 @@ class Operation:
         return str(self.__dict__())
 
     def __dict__(self):
-        return {'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task, 'extra': self.extra}
+        return {'type': 'operation', 'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task, 'extra': self.extra}
 
 
 class LogReader:
@@ -102,11 +131,11 @@ class LogReader:
                         self.full_log.append(action)
                     continue
 
-                if self.match_detail(line): 
-                    detail = self.get_detail(line)
-                    if detail:
-                        print(detail)
-                        self.full_log.append(detail)
+                if self.match_info(line):
+                    info = self.get_info(line)
+                    if info:
+                        print(info)
+                        self.full_log.append(info)
                     continue
 
                 if self.match_operation(line): 
@@ -116,9 +145,16 @@ class LogReader:
                         self.full_log.append(operation)
                     continue
 
-    def match_detail(self, line):
+                if self.match_result(line):
+                    result = self.get_result(line)
+                    if result:
+                        print(result)
+                        self.full_log.append(result)
+                    continue
+
+    def match_info(self, line):
         parts = line.split(' ')
-        return len(parts) > 3 and parts[2] in DETAIL_TYPES
+        return len(parts) > 3 and parts[2] in INFO_TYPES
 
     def match_task(self, line):
         parts = line.split(' ')
@@ -128,44 +164,65 @@ class LogReader:
         parts = line.split(' ')
         return len(parts) > 2 and parts[2] in OPERATIONS
 
-    def go_to_end_of_detail(self):
+    def match_result(self, line):
+        parts = line.split(' ')
+        return len(parts) > 2 and parts[2] in RESULTS
+
+    def get_detail(self):
+        initial_iter = self.iter
         while self.iter < len(self.lines):
             line = self.next_line()
-            if self.match_task(line) or self.match_detail(line) or self.match_operation(line):
+            if self.match_task(line) or self.match_info(line) or self.match_operation(line) or self.match_result(line):
                 break
         self.iter = self.iter - 1
+        return Detail(self.lines_limit, self.lines[initial_iter:self.iter])
 
-    def get_detail(self, line):
+    def get_info(self, line):
         parts = line.split(' ')
         if len(parts) < 3:
             print(parts)
             return None 
         date = parts[0]
         time = parts[1]
-        detail_type = parts[2]
+        info_type = parts[2]
         verb = None
         task = None
-        if detail_type in DETAIL_TYPES:
-            if detail_type == WARN_TYPE:
-                detail_type = detail_type.split(':')[0]
-                verb = None
-                task = None
-                extra = ' '.join(parts[3:])
-            elif detail_type == ERROR_TYPE:
-                verb = parts[3]
-                task = parts[4]
-                extra = None
-            elif detail_type == DEBUG_TYPE:
-                verb = parts[3]
-                task = parts[4]
-                extra = None
-            else:
-                print('Detail type not recognized: {}'.format(detail_type))
+        if info_type == WARN_TYPE:
+            info_type = info_type.split(':')[0]
+            verb = None
+            task = None
+            extra = ' '.join(parts[3:])
+        elif info_type == ERROR_TYPE:
+            verb = parts[3]
+            task = parts[4]
+            extra = None
+        elif info_type == DEBUG_TYPE:
+            verb = parts[3]
+            task = parts[4]
+            extra = None
+        else:
+            print('Detail type not recognized: {}'.format(info_type))
 
-        initial_iter = self.iter
-        self.go_to_end_of_detail()
+        detail = self.get_detail()
+        return Info(info_type, verb, task, extra, date, time, detail)
 
-        return Detail(detail_type, verb, task, extra, date, time, self.lines[initial_iter:self.iter-1], 10)
+    def get_result(self, line):
+        parts = line.split(' ')
+        if len(parts) < 3:
+            print(parts)
+            return None
+        date = parts[0]
+        time = parts[1]
+        result_type = parts[2]
+        level = parts[3].split(':')[0]
+        number = parts[4]
+
+        if result_type == FAILED_RESULT:
+            detail = self.get_detail()
+        else:
+            detail = None
+
+        return Result(result_type, level, number.strip(), date, time, detail)
 
     def get_action(self, line):
         parts = line.split(' ')
