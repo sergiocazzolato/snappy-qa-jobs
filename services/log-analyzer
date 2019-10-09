@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -12,6 +13,13 @@ DEBUG_TYPE = 'Debug'
 WARN_TYPE = 'WARNING:'
 FAILED_RESULT = 'Failed'
 
+ALL = 'all'
+NONE = 'none'
+ACTION = 'action'
+OPERATION = 'operation'
+INFO = 'info'
+RESULT = 'result'
+
 EXEC_VERBS = ['Preparing', 'Executing', 'Restoring']
 INFO_TYPES = [ERROR_TYPE, DEBUG_TYPE, WARN_TYPE]
 OPERATIONS = ['Rebooting', 'Discarding', 'Allocating', 'Waiting', 'Allocated', 'Connecting', 'Connected', 'Sending']
@@ -19,40 +27,48 @@ RESULTS = ['Successful', 'Aborted', 'Failed']
 
 
 class Action:
-    def __init__(self, verb, task, date, time):
+    def __init__(self, verb, task, date, time, source_line):
+        self.type = ACTION
         self.verb = verb
         self.time = time
         self.date = date
         self.task = task
+        self.source_line = source_line
 
     def __repr__(self):
-        return str(self.__dict__())
+        return self.source_line
 
     def __dict__(self):
         return {'type': 'action', 'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task}
 
 
 class Result:
-    def __init__(self, result_type, level, number, date, time, detail):
+    def __init__(self, result_type, level, number, date, time, detail, source_line):
+        self.type = RESULT
         self.result_type = result_type
         self.level = level
         self.number = number
         self.time = time
         self.date = date
         self.detail = detail
+        self.source_line = source_line
 
     def __repr__(self):
-        return str(self.__dict__())
+        if self.detail:
+            return '{}{}'.format(self.source_line, str(self.detail))
+        else:
+            return self.source_line
 
     def __dict__(self):
         prepared_detail = None
         if self.detail:
             prepared_detail = self.detail.__dict__()
-        return {'type': 'result', 'date': self.date, 'time': self.time, 'result_type': self.result_type, 'level': self.level,  'number': self.number, 'detail': prepared_detail}
+        return {'type': self.type, 'date': self.date, 'time': self.time, 'result_type': self.result_type, 'level': self.level,  'number': self.number, 'detail': prepared_detail}
 
 
 class Info:
-    def __init__(self, info_type, verb, task, extra, date, time, detail):
+    def __init__(self, info_type, verb, task, extra, date, time, detail, source_line):
+        self.type = INFO
         self.info_type = info_type
         self.verb = verb
         self.time = time
@@ -60,15 +76,19 @@ class Info:
         self.task = task
         self.extra = extra 
         self.detail = detail
+        self.source_line = source_line
 
     def __repr__(self):
-        return str(self.__dict__())
+        if self.detail:
+            return '{}{}'.format(self.source_line, self.detail)
+        else:
+            return self.source_line
 
     def __dict__(self):
         prepared_detail = None
         if self.detail:
             prepared_detail = self.detail.__dict__()
-        return {'type': 'info', 'date': self.date, 'time': self.time, 'info_type': self.info_type, 'verb': self.verb, 'task': self.task, 'extra': self.extra, 'detail': prepared_detail}
+        return {'type': self.type, 'date': self.date, 'time': self.time, 'info_type': self.info_type, 'verb': self.verb, 'task': self.task, 'extra': self.extra, 'detail': prepared_detail}
 
 
 class Detail:
@@ -76,26 +96,33 @@ class Detail:
         self.lines_limit = lines_limit
         self.lines = lines
 
+    def _get_lines(self):
+        if self.lines_limit < 0 or self.lines_limit > len(self.lines):
+            return self.lines
+        return self.lines[-1*self.lines_limit:]
+
     def __repr__(self):
-        return str(self.__dict__())
+        return ''.join(self._get_lines())
 
     def __dict__(self):
-        return {'type': 'detail', 'lines': self.lines[-1*self.lines_limit:]}
+        return {'type': self.type, 'lines': self.lines[-1*self.lines_limit:]}
 
 
 class Operation:
-    def __init__(self, verb, task, extra, date, time):
+    def __init__(self, verb, task, extra, date, time, source_line):
+        self.type = OPERATION
         self.verb = verb
         self.time = time
         self.extra = extra
         self.date = date
         self.task = task
+        self.source_line = source_line
 
     def __repr__(self):
-        return str(self.__dict__())
+        return self.source_line
 
     def __dict__(self):
-        return {'type': 'operation', 'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task, 'extra': self.extra}
+        return {'type': self.type, 'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task, 'extra': self.extra}
 
 
 class LogReader:
@@ -113,9 +140,13 @@ class LogReader:
     def __dict__(self):
         return {'full_log': self.full_log}
 
-    def print_log(self):
-        for entry in self.full_log:
-            print(entry)
+    def print_log(self, filter):
+        if filter == ALL:
+            print(''.join(str(x) for x in self.full_log))
+        elif filter == NONE:
+            return
+        else:
+            print(''.join(str(x) for x in self.full_log if x.type == filter))
 
     def export_log(self, filepath):
         prepared_log = []
@@ -165,35 +196,42 @@ class LogReader:
                         self.full_log.append(result)
                     continue
 
+    def _match_date(self, date):
+        return re.findall(r'\d{4}-\d{2}-\d{2}', date)
+
+    def _match_time(self, time):
+        return re.findall(r'\d{2}:\d{2}:\d{2}', time)
+
     def _match_info(self, line):
         parts = line.split(' ')
-        return len(parts) > 3 and parts[2] in INFO_TYPES
+        return len(parts) > 3 and parts[2] in INFO_TYPES and self._match_date(parts[0]) and self._match_time(parts[1])
 
     def _match_task(self, line):
         parts = line.split(' ')
-        return len(parts) > 2 and parts[2] in EXEC_VERBS
+        return len(parts) > 2 and parts[2] in EXEC_VERBS and self._match_date(parts[0]) and self._match_time(parts[1])
 
     def _match_operation(self, line):
         parts = line.split(' ')
-        return len(parts) > 2 and parts[2] in OPERATIONS
+        return len(parts) > 2 and parts[2] in OPERATIONS and self._match_date(parts[0]) and self._match_time(parts[1])
 
     def _match_result(self, line):
         parts = line.split(' ')
-        return len(parts) > 2 and parts[2] in RESULTS
+        return len(parts) > 2 and parts[2] in RESULTS and self._match_date(parts[0]) and self._match_time(parts[1])
 
-    def _get_detail(self):
+    def _get_detail(self, other_limit=None):
         initial_iter = self.iter
         while self.iter < len(self.lines):
             line = self._next_line()
             if self._match_task(line) or self._match_info(line) or self._match_operation(line) or self._match_result(line):
                 break
         self.iter = self.iter - 1
-        return Detail(self.lines_limit, self.lines[initial_iter:self.iter])
+        if not other_limit:
+            other_limit = self.lines_limit
+        return Detail(other_limit, self.lines[initial_iter:self.iter])
 
     def _get_info(self, line):
         parts = line.split(' ')
         if len(parts) < 3:
-            print(parts)
             return None 
         date = parts[0]
         time = parts[1]
@@ -217,7 +255,7 @@ class LogReader:
             print('Detail type not recognized: {}'.format(info_type))
 
         detail = self._get_detail()
-        return Info(info_type, verb, task, extra, date, time, detail)
+        return Info(info_type, verb, task, extra, date, time, detail, line)
 
     def _get_result(self, line):
         parts = line.split(' ')
@@ -231,11 +269,11 @@ class LogReader:
         number = parts[4]
 
         if result_type == FAILED_RESULT:
-            detail = self._get_detail()
+            detail = self._get_detail(other_limit=-1)
         else:
             detail = None
 
-        return Result(result_type, level, number.strip(), date, time, detail)
+        return Result(result_type, level, number.strip(), date, time, detail, line)
 
     def _get_action(self, line):
         parts = line.split(' ')
@@ -244,11 +282,8 @@ class LogReader:
         date = parts[0]
         time = parts[1]
         verb = parts[2]
-        if verb in EXEC_VERBS:
-            task = parts[3]
-            return Action(verb, task.split('...')[0], date, time)
-
-        return None
+        task = parts[3]
+        return Action(verb, task.split('...')[0], date, time, line)
 
     def _get_operation(self, line):
         parts = line.split(' ')
@@ -258,26 +293,24 @@ class LogReader:
         time = parts[1]
         verb = parts[2]
         task = None
-        if verb in OPERATIONS:
-            extra = ' '.join(parts[3:])
-            return Operation(verb, task, extra, date, time)
-
-        return None
+        extra = ' '.join(parts[3:])
+        return Operation(verb, task, extra, date, time, line)
 
 
 def _make_parser():
     # type: () -> argparse.ArgumentParser
     parser = argparse.ArgumentParser(
         description="""
-Analyze the spread log and generates a file with a standarized output
+Analyze the spread log and generates a file with a standarized output. Il also
+allows to filter the output by type and define the number of lines to show
+for the error/debug/warning output.
 """
     )
     parser.add_argument(
         "-c",
         "--cut",
-        metavar="N",
         type=int,
-        default=100,
+        default=1000,
         help="maximun number of lines for logs on errors and debug sections",
     )
     parser.add_argument(
@@ -289,11 +322,12 @@ Analyze the spread log and generates a file with a standarized output
         help="format for the output",
     )
     parser.add_argument(
-        "-q",
-        "--quiet",
-        action="store_true",
-        default=False,
-        help="refrain from printing any output",
+        "-p",
+        "--print",
+        type=str,
+        default=ALL,
+        choices=[ALL, RESULT, OPERATION, ACTION, INFO, NONE],
+        help="Filter which info print",
     )
     parser.add_argument(
         "-o",
@@ -326,8 +360,7 @@ def main():
     if ns.output:
         reader.export_log(ns.output)
 
-    if not ns.quiet:
-        reader.print_log()
+    reader.print_log(ns.print)
     
 
 if __name__ == "__main__":
