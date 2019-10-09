@@ -45,7 +45,10 @@ class Result:
         return str(self.__dict__())
 
     def __dict__(self):
-        return {'type': 'result', 'date': self.date, 'time': self.time, 'result_type': self.result_type, 'level': self.level,  'number': self.number, 'detail': self.detail}
+        prepared_detail = None
+        if self.detail:
+            prepared_detail = self.detail.__dict__()
+        return {'type': 'result', 'date': self.date, 'time': self.time, 'result_type': self.result_type, 'level': self.level,  'number': self.number, 'detail': prepared_detail}
 
 
 class Info:
@@ -62,7 +65,10 @@ class Info:
         return str(self.__dict__())
 
     def __dict__(self):
-        return {'type': 'info', 'date': self.date, 'time': self.time, 'info_type': self.info_type, 'verb': self.verb, 'task': self.task, 'extra': self.extra, 'detail': self.detail}
+        prepared_detail = None
+        if self.detail:
+            prepared_detail = self.detail.__dict__()
+        return {'type': 'info', 'date': self.date, 'time': self.time, 'info_type': self.info_type, 'verb': self.verb, 'task': self.task, 'extra': self.extra, 'detail': prepared_detail}
 
 
 class Detail:
@@ -105,13 +111,20 @@ class LogReader:
         return str(self.__dict__())
 
     def __dict__(self):
-        return {'date': self.date, 'time': self.time, 'verb': self.verb, 'task': self.task}
+        return {'full_log': self.full_log}
 
     def print_log(self):
         for entry in self.full_log:
-            print(entry) 
+            print(entry)
 
-    def next_line(self):
+    def export_log(self, filepath):
+        prepared_log = []
+        for item in self.full_log:
+            prepared_log.append(item.__dict__())
+        with open(filepath, 'w') as json_file:
+            json.dump(prepared_log, json_file)
+
+    def _next_line(self):
         self.iter = self.iter + 1
         return self.lines[self.iter-1]
 
@@ -123,61 +136,61 @@ class LogReader:
             self.lines = fp.readlines()
             self.iter = 0
             while self.iter < len(self.lines):
-                line = self.next_line()
-                if self.match_task(line):
-                    action = self.get_action(line)
+                line = self._next_line()
+                if self._match_task(line):
+                    action = self._get_action(line)
                     if action:
-                        print(action)
+                        #print(action)
                         self.full_log.append(action)
                     continue
 
-                if self.match_info(line):
-                    info = self.get_info(line)
+                if self._match_info(line):
+                    info = self._get_info(line)
                     if info:
-                        print(info)
+                        #print(info)
                         self.full_log.append(info)
                     continue
 
-                if self.match_operation(line): 
-                    operation = self.get_operation(line)
+                if self._match_operation(line): 
+                    operation = self._get_operation(line)
                     if operation:
-                        print(operation)
+                        #print(operation)
                         self.full_log.append(operation)
                     continue
 
-                if self.match_result(line):
-                    result = self.get_result(line)
+                if self._match_result(line):
+                    result = self._get_result(line)
                     if result:
-                        print(result)
+                        #print(result)
                         self.full_log.append(result)
                     continue
 
-    def match_info(self, line):
+    def _match_info(self, line):
         parts = line.split(' ')
         return len(parts) > 3 and parts[2] in INFO_TYPES
 
-    def match_task(self, line):
+    def _match_task(self, line):
         parts = line.split(' ')
         return len(parts) > 2 and parts[2] in EXEC_VERBS
 
-    def match_operation(self, line):
+    def _match_operation(self, line):
         parts = line.split(' ')
         return len(parts) > 2 and parts[2] in OPERATIONS
 
-    def match_result(self, line):
+    def _match_result(self, line):
         parts = line.split(' ')
         return len(parts) > 2 and parts[2] in RESULTS
 
-    def get_detail(self):
+    def _get_detail(self):
         initial_iter = self.iter
         while self.iter < len(self.lines):
-            line = self.next_line()
-            if self.match_task(line) or self.match_info(line) or self.match_operation(line) or self.match_result(line):
+            line = self._next_line()
+            if self._match_task(line) or self._match_info(line) or self._match_operation(line) or self._match_result(line):
                 break
         self.iter = self.iter - 1
         return Detail(self.lines_limit, self.lines[initial_iter:self.iter])
 
-    def get_info(self, line):
+    def _get_info(self, line):
         parts = line.split(' ')
         if len(parts) < 3:
             print(parts)
@@ -203,10 +216,10 @@ class LogReader:
         else:
             print('Detail type not recognized: {}'.format(info_type))
 
-        detail = self.get_detail()
+        detail = self._get_detail()
         return Info(info_type, verb, task, extra, date, time, detail)
 
-    def get_result(self, line):
+    def _get_result(self, line):
         parts = line.split(' ')
         if len(parts) < 3:
             print(parts)
@@ -218,13 +231,13 @@ class LogReader:
         number = parts[4]
 
         if result_type == FAILED_RESULT:
-            detail = self.get_detail()
+            detail = self._get_detail()
         else:
             detail = None
 
         return Result(result_type, level, number.strip(), date, time, detail)
 
-    def get_action(self, line):
+    def _get_action(self, line):
         parts = line.split(' ')
         if len(parts) < 3:
             return None
@@ -237,7 +250,7 @@ class LogReader:
 
         return None
 
-    def get_operation(self, line):
+    def _get_operation(self, line):
         parts = line.split(' ')
         if len(parts) < 3:
             return None
@@ -272,8 +285,21 @@ Analyze the spread log and generates a file with a standarized output
         "--format",
         type=str,
         default="json",
-        choices=['json','xml'],
+        choices=['json'],
         help="format for the output",
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        default=False,
+        help="refrain from printing any output",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        help="output file to save the result",
     )
     parser.add_argument(
         "logpath", metavar="PATH", help="path to the log to be analyzed"
@@ -296,7 +322,12 @@ def main():
         sys.exit(1)
 
     reader.read_spread_log()
-    #reader.print_log()
+
+    if ns.output:
+        reader.export_log(ns.output)
+
+    if not ns.quiet:
+        reader.print_log()
     
 
 if __name__ == "__main__":
