@@ -2,7 +2,7 @@
 
 echo "Refresh core on device"
 
-if [ "$#" -ne 6 ]; then
+if [ "$#" -ne 7 ]; then
     echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
@@ -18,6 +18,7 @@ USER=$3
 PASS=$4
 CHANNEL=$5
 CORE_CHANNEL=$6
+SNAPD_CHANNEL=$7
 
 execute_remote(){
     if [ -z "$PASS" ]; then
@@ -97,14 +98,18 @@ check_refresh(){
 do_full_refresh(){
     local channel=$1
     local core_channel=$2
+    local snapd_channel=$3
 
     if [ -z "$core_channel" ]; then
         core_channel="$channel"
     fi
+    if [ -z "$snapd_channel" ]; then
+        snapd_channel="$core_channel"
+    fi
     wait_auto_refresh
     do_core_refresh "$core_channel"
     wait_auto_refresh
-    do_snapd_refresh "$core_channel"
+    do_snapd_refresh "$snapd_channel"
     wait_auto_refresh
     do_kernel_refresh "$channel"
 
@@ -197,7 +202,7 @@ execute_remote "snap list"
 
 if [ "$SKIP_REFRESH" != "true" ]; then
     # Refresh core
-    do_full_refresh "$CHANNEL" "$CORE_CHANNEL"
+    do_full_refresh "$CHANNEL" "$CORE_CHANNEL" "$SNAPD_CHANNEL"
     check_install_snap
 else
     echo "Skipping refresh..."

@@ -10,4 +10,5 @@ export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}
 export TEST_PASS=${TEST_PASS:-"ubuntu"}
 export SKIP_TESTS=${SKIP_TESTS:-"tests/main/interfaces-content,tests/main/install-sideload"}
 export CORE_CHANNEL=${CORE_CHANNEL:-"beta"}
+export SNAPD_CHANNEL=${SNAPD_CHANNEL:-"beta"}
 export SETUP=${SETUP:-""}

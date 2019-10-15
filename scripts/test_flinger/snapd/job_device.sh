@@ -37,7 +37,7 @@ test_data:
         $PRE_HOOK
         . $PROJECT/tests/lib/external/prepare-ssh.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER"
         . $JOBS_PROJECT/scripts/utils/register_device.sh "$DEVICE_IP" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$REGISTER_EMAIL"
-        . $JOBS_PROJECT/scripts/utils/refresh.sh "$DEVICE_IP" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$CHANNEL" "$CORE_CHANNEL"
+        . $JOBS_PROJECT/scripts/utils/refresh.sh "$DEVICE_IP" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$CHANNEL" "$CORE_CHANNEL" "$SNAPD_CHANNEL"
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "$DEVICE_IP" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$SETUP"
         . $JOBS_PROJECT/scripts/utils/get_spread.sh
         . $JOBS_PROJECT/scripts/utils/run_spread.sh "$DEVICE_IP" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
