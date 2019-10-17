@@ -1,0 +1,35 @@
+name: testing snap workflow
+checklists:
+    Sign-Off:
+        clear:      
+            name: Clear for Landing
+            default: true
+        edge:
+            name: Ready for Edge
+            default: true
+        beta:
+            name: Ready for Beta
+            default: false
+        candidate:
+            name: Ready for Candidate
+            default: false
+        stable:
+            name: Ready for Stable
+            default: false
+        archive:
+            name: Can be Archived
+            default: false
+
+    Testflinger:
+        arm32:
+            name: pi3
+            required: true
+        arm64:
+            name: dragonboard
+            required: false
+        amd64:
+            name: pc-amd64
+            required: false
+        i386:
+            name: pc-i386
+            required: false
