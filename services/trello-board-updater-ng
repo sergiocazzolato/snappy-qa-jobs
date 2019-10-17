@@ -29,9 +29,11 @@ def _make_parser():
     parser_move = subparser.add_parser("move")
     parser_configure = subparser.add_parser("configure")
     parser_add_result = subparser.add_parser("add-result")
+    parser_complete = subparser.add_parser("complete")
+    parser_delete = subparser.add_parser("delete")
 
     # Adding common parameters to identify a card
-    for subp in [parser_create, parser_move, parser_search, parser_configure, parser_add_result]:
+    for subp in [parser_create, parser_move, parser_search, parser_configure, parser_add_result, parser_delete]:
         subp.add_argument('-s', '--snap', help="snap name", required=True)
         subp.add_argument('-v', '--version', help="snap version", required=True)
         subp.add_argument('-r', '--revision', help="snap revision", default="")
@@ -43,7 +45,7 @@ def _make_parser():
     parser_move.add_argument('-c', '--channel', help="snap channel to move the card", required=True)
 
     # Arguments for configure command
-    parser_configure.add_argument('--config', help="Card skeleton", required=True)
+    parser_configure.add_argument('--config', help="Config file where the card skeleton is defined", required=True)
 
     # Arguments for configure command
     parser_add_result.add_argument('-n', '--name', help="results name", required=True)
@@ -51,7 +53,10 @@ def _make_parser():
     parser_add_result.add_argument('--checklist', help="which checklist to use", default="Testflinger")
     parser_add_result.add_argument('--passed', help="indicates if the tests passed", action="store_true")
     parser_add_result.add_argument('--summary', help="test results sumary file")
-    parser_add_result.add_argument('--link', help="test results link")    
+    parser_add_result.add_argument('--link', help="test results link")
+
+    # Arguments for complete command
+    parser_complete.add_argument('--config', help="Config file where the card skeleton is defined", required=True)
 
     return parser
 
@@ -227,6 +232,18 @@ def add_result(board, snap, version, revision, name, arch, checklist_name, passe
         card.comment(header + summary)
  
 
+def complete(board, snap, version, revision, configfile):
+    pass
+
+
+def delete(board, snap, version, revision):
+    card = search(board, snap, version, revision)
+    if not card:
+        print('error:card does not exist')
+        return
+    card.delete()
+
+
 def main():
     parser = _make_parser()
     args = parser.parse_args()
@@ -277,6 +294,21 @@ def main():
             args.passed,
             args.summary,
             args.link)
+
+    if args.command == 'complete':
+        complete(
+            board,
+            args.snap,
+            args.version,
+            args.revision,
+            args.config)
+
+    if args.command == 'delete':
+        delete(
+            board,
+            args.snap,
+            args.version,
+            args.revision)
 
 
 if __name__ == "__main__":
