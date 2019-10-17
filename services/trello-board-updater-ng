@@ -26,23 +26,29 @@ def _make_parser():
     subparser = parser.add_subparsers(help='commands', dest='command')
     parser_search = subparser.add_parser("search")
     parser_create = subparser.add_parser("create")
+    parser_move = subparser.add_parser("move")
     parser_configure = subparser.add_parser("configure")
     parser_add_result = subparser.add_parser("add-result")
 
     # Adding common parameters to identify a card
-    for subp in [parser_create, parser_search, parser_configure, parser_add_result]:
+    for subp in [parser_create, parser_move, parser_search, parser_configure, parser_add_result]:
         subp.add_argument('-s', '--snap', help="snap name", required=True)
         subp.add_argument('-v', '--version', help="snap version", required=True)
         subp.add_argument('-r', '--revision', help="snap revision", default="")
 
     # Arguments for create command
-    parser_create.add_argument('-c', '--channel', help="snap channel", required=True)
+    parser_create.add_argument('-c', '--channel', help="snap channel to create the card", required=True)
+
+    # Arguments for move command
+    parser_move.add_argument('-c', '--channel', help="snap channel to move the card", required=True)
 
     # Arguments for configure command
     parser_configure.add_argument('--config', help="Card skeleton", required=True)
 
     # Arguments for configure command
+    parser_add_result.add_argument('-n', '--name', help="results name", required=True)
     parser_add_result.add_argument('-a', '--arch', help="snap architecture", required=True)
+    parser_add_result.add_argument('--checklist', help="which checklist to use", default="Testflinger")
     parser_add_result.add_argument('--passed', help="indicates if the tests passed", action="store_true")
     parser_add_result.add_argument('--summary', help="test results sumary file")
     parser_add_result.add_argument('--link', help="test results link")    
@@ -87,13 +93,14 @@ def search(board, snap, version, revision):
     return card
 
 
-def _create_card(board, snap, version, revision, channel):
+def _get_list(board, listname):
     lane = None
     for l in board.open_lists():
-        if channel == l.name:
-            lane = l
-            break
+        if listname == l.name:
+            return l
 
+def _create_card(board, snap, version, revision, channel):
+    lane = _get_list(board, channel)
     if lane:
         if revision:
             card_name = '{} - {} - ({})'.format(snap, version, revision)
@@ -116,12 +123,109 @@ def create(board, snap, version, revision, channel):
     return card
 
 
-def configure(board, snap, version, revision, config):
-    pass
+def move(board, snap, version, revision, channel):
+    lane = _get_list(board, channel.capitalize())
+    if not lane:
+        print('error:list does not exist')
+        return
+
+    card = search(board, snap, version, revision)
+    if not card:
+        print('error:card does not exist')
+        return
+
+    card.change_list(lane.id)
 
 
-def add_results(board, snap, version, revision, arch, passed, summary, link):
-    pass
+def _find_or_create_card(board, snap, version, revision, channel='edge'):
+    card = search(board, snap, version, revision)
+    if card:        
+        return card
+
+    card = _create_card(board, snap, version, revision, channel.capitalize())
+    if card:
+        print('id:{}'.format(card.id))
+    return card
+
+
+def _load_config(configfile):
+    if not _check_file(configfile):
+        print('error:config file does not exist')
+        return
+
+    try:
+        with open(configfile) as handle:
+            data = yaml.safe_load(handle)
+    except (yaml.parser.ParserError, yaml.scanner.ScannerError):
+        print('error:config file failed to be parsed')
+        return
+
+    return data
+
+
+def _check_file(file):
+    return os.path.exists(file)
+
+
+def _search_checklist(card, checklist_name):
+    for checklist in card.fetch_checklists():
+        if checklist.name == checklist_name:
+            return checklist
+
+
+def _find_or_create_checklist(card, checklist_name, items=[]):
+    checklist = _search_checklist(card, checklist_name)
+
+    if not checklist:
+        print('adding checklist {}'.format(checklist_name))
+        checklist = card.add_checklist(checklist_name, [])
+        for item in items:
+            checklist.add_checklist_item(item + ' (NO RESULTS)')
+    return checklist
+
+
+def configure(board, snap, version, revision, configfile):
+    config = _load_config(configfile)
+    card = _find_or_create_card(board, snap, version, revision)
+
+    checklists = config.get('checklists', {})
+    for checklist_name in checklists.keys():
+            checklist = _find_or_create_checklist(card, checklist_name)
+            for checklist_items in checklists.get(checklist_name):
+                checklist.add_checklist_item(checklist_items.get('name'), checklist_items.get('default', False))
+
+
+def _create_comment_results_header(name, arch, passed):
+    res = 'PASS'
+    if not passed:
+        res = 'FAIL'
+
+    header = '### Test results summary' + '\n'
+    header += '----' + '\n'
+    header += 'name: {}'.format(name) + '\n'
+    header += 'arch: {}'.format(arch) + '\n'
+    header += 'result: {}'.format(res) + '\n'
+    header += '----' + '\n'
+    return header
+
+
+def add_result(board, snap, version, revision, name, arch, checklist_name, passed, summaryfile, link):
+    card = _find_or_create_card(board, snap, version, revision)
+    checklist = _find_or_create_checklist(card, checklist_name)
+    checklist.set_checklist_item(name, passed)
+
+    # Attach el link to the results checklist
+    if link:
+        new_name = '{} [[Results]({})]'.format(checklist_name, link)
+        checklist.rename_checklist_item(name, new_name)
+
+    # Add a comment with the results summary
+    if summaryfile:
+        with open(summaryfile) as sf:
+            summary = sf.read()
+        header = _create_comment_results_header(name, arch, passed)
+        card.comment(header + summary)
+ 
 
 def main():
     parser = _make_parser()
@@ -131,16 +235,48 @@ def main():
     board = client.get_board(args.board)
 
     if args.command == 'search':
-        search(board, args.snap, args.version, args.revision)
+        search(
+            board,
+            args.snap,
+            args.version,
+            args.revision)
 
     if args.command == 'create':
-        create(board, args.snap, args.version, args.revision, args.channel)
+        create(
+            board,
+            args.snap,
+            args.version,
+            args.revision,
+            args.channel)
+
+    if args.command == 'move':
+        move(
+            board,
+            args.snap,
+            args.version,
+            args.revision,
+            args.channel)
 
     if args.command == 'configure':
-        configure(board, args.snap, args.version, args.revision, args.config)
+        configure(
+            board,
+            args.snap,
+            args.version,
+            args.revision,
+            args.config)
 
     if args.command == 'add-result':
-        add_results(board, args.snap, args.version, args.revision, args.arch, args.passed, args.summary, args.link)
+        add_result(
+            board,
+            args.snap,
+            args.version,
+            args.revision,
+            args.name, 
+            args.arch,
+            args.checklist,
+            args.passed,
+            args.summary,
+            args.link)
 
 
 if __name__ == "__main__":
