@@ -52,11 +52,28 @@ prepare_ssh(){
     execute_remote "echo 'test ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/test-user"
 }
 
+create_seed_image(){
+    cat <<EOF > seed
+#cloud-config
+  ssh_pwauth: True
+  users:
+   - name: ubuntu
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+  chpasswd:
+   list: |
+    ubuntu:ubuntu
+   expire: False
+EOF
+}
+
 create_assertions_disk() {
     dd if=/dev/null of="$WORK_DIR/assertions.disk" bs=1M seek=1
     mkfs.ext4 -F "$WORK_DIR/assertions.disk"
     if [ -z "$USER_ASSERTION_URL" ];then
-        debugfs -w -R "write $TESTSLIB/assertions/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"    
+        # Prepare the cloud-init configuration and configure image
+        create_seed_image
+        cloud-localds -H "$(hostname)" "$WORK_DIR/seed.img" "$WORK_DIR/seed"
     else
         curl -L -o "$WORK_DIR/auto-import.assert" "$USER_ASSERTION_URL"
         debugfs -w -R "write $WORK_DIR/auto-import.assert auto-import.assert" "$WORK_DIR/assertions.disk"    
@@ -89,7 +106,7 @@ get_qemu_for_nested_vm(){
 
 echo "installing dependencies"
 sudo apt update
-sudo apt install -y snapd qemu sshpass
+sudo apt install -y snapd qemu sshpass cloud-init
 
 echo "Download snapd and checkout branch"
 if [ -z "$SNAPD_PATH" ] || [ ! -d $SNAPD_PATH ]; then
@@ -117,10 +134,15 @@ fi
 
 create_assertions_disk
 
+CONFIG_FILE="$WORK_DIR/assertions.disk"
+if [ -f "$WORK_DIR/seed.img" ]; then
+    CONFIG_FILE="$WORK_DIR/seed.img"
+fi
+
 systemd_create_and_start_unit nested-vm "${QEMU} -m 2048 -nographic \
     -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 \
     -drive file=$WORK_DIR/ubuntu-core.img,cache=none,format=raw \
-    -drive file=$WORK_DIR/assertions.disk,cache=none,format=raw \
+    -drive file=$CONFIG_FILE,cache=none,format=raw \
     -machine accel=kvm"
 
 if ! wait_for_ssh; then
