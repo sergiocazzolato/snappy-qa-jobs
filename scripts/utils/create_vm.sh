@@ -52,7 +52,7 @@ prepare_ssh(){
 }
 
 create_seed_image(){
-    cat <<EOF > seed
+    cat <<EOF > "$WORK_DIR/seed"
 #cloud-config
   ssh_pwauth: True
   users:
