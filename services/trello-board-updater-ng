@@ -180,12 +180,21 @@ def _search_checklist(card, checklist_name):
 
 def _create_checklist(card, checklist_name, items=[]):
     checklist = _search_checklist(card, checklist_name)
+    if checklist:
+        print('error:checklist already exists')
+        return
+
+    checklist = card.add_checklist(checklist_name, [])
+    for item in items:
+        checklist.add_checklist_item(item + ' (NO RESULTS)')
+    return checklist
+
+
+def _find_or_create_checklist(card, checklist_name, items=[]):
+    checklist = _search_checklist(card, checklist_name)
 
     if not checklist:
-        print('adding checklist {}'.format(checklist_name))
-        checklist = card.add_checklist(checklist_name, [])
-        for item in items:
-            checklist.add_checklist_item(item + ' (NO RESULTS)')
+        checklist = _create_checklist(card, checklist_name, items)
     return checklist
 
 
