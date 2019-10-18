@@ -178,7 +178,7 @@ def _search_checklist(card, checklist_name):
             return checklist
 
 
-def _find_or_create_checklist(card, checklist_name, items=[]):
+def _create_checklist(card, checklist_name, items=[]):
     checklist = _search_checklist(card, checklist_name)
 
     if not checklist:
@@ -195,9 +195,11 @@ def configure(board, snap, version, revision, configfile):
 
     checklists = config.get('checklists', {})
     for checklist_name in checklists.keys():
-            checklist = _find_or_create_checklist(card, checklist_name)
+            checklist = _search_checklist(card, checklist_name)
+            if checklist:
+                continue
+            checklist = _create_checklist(card, checklist_name)
             for checklist_items in checklists.get(checklist_name):
-                checklist.delete_checklist_item(checklist_items.get('name'))
                 checklist.add_checklist_item(checklist_items.get('name'), checklist_items.get('default', False))
 
 
