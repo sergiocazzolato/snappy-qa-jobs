@@ -3,7 +3,7 @@ set -x
 
 echo "Creating vm"
 
-if [ "$#" -lt 3 ]; then
+if [ "$#" -ne 3 ]; then
     echo "Illegal number of parameters: $#"
     i=1
     for param in $*; do
@@ -16,7 +16,6 @@ fi
 ARCHITECTURE=$1
 IMAGE_URL=$2
 USER_ASSERTION_URL=$3
-SNAPD_PATH=$4
 
 execute_remote(){
     sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
@@ -106,17 +105,10 @@ get_qemu_for_nested_vm(){
 
 echo "installing dependencies"
 sudo apt update
-sudo apt install -y snapd qemu sshpass cloud-init
-
-echo "Download snapd and checkout branch"
-if [ -z "$SNAPD_PATH" ] || [ ! -d $SNAPD_PATH ]; then
-    git clone https://github.com/snapcore/snapd
-    export SNAPD_PATH="./snapd"
-fi
+sudo apt install -y snapd qemu sshpass cloud-image-utils
 
 export PORT=8022
 export WORK_DIR=/tmp/work-dir
-export TESTSLIB="$SNAPD_PATH/tests/lib"
 export QEMU=$(get_qemu_for_nested_vm)
 
 # create ubuntu-core image
