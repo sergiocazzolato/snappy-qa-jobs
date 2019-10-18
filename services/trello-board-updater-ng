@@ -197,6 +197,7 @@ def configure(board, snap, version, revision, configfile):
     for checklist_name in checklists.keys():
             checklist = _find_or_create_checklist(card, checklist_name)
             for checklist_items in checklists.get(checklist_name):
+                checklist.delete_checklist_item(checklist_items.get('name'))
                 checklist.add_checklist_item(checklist_items.get('name'), checklist_items.get('default', False))
 
 

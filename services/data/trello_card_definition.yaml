@@ -22,7 +22,7 @@ checklists:
           default: true
         - name: pc-amd64
           arch: amd64
-          default: true
+          default: false
         - name: pc-i386
           arch: i386
           default: true
