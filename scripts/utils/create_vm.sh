@@ -53,18 +53,18 @@ prepare_ssh(){
 
 create_cloud_init_config(){
     cat <<EOF > "$WORK_DIR/user-data"
-    #cloud-config
-    password: ubuntu
-    chpasswd:
-        list:
-            - ubuntu:ubuntu
-        expire: False
-    ssh_pwauth: True
-    EOF
+#cloud-config
+password: ubuntu
+chpasswd:
+    list:
+        - ubuntu:ubuntu
+    expire: False
+ssh_pwauth: True
+EOF
 
     cat <<EOF > "$WORK_DIR/meta-data"
-    instance_id: cloud-images
-    EOF
+instance_id: cloud-images
+EOF
 
     loops=$(kpartx -avs "$WORK_DIR/ubuntu-core.img"  | cut -d' ' -f 3)
     part=$(echo "$loops" | tail -1)
@@ -131,10 +131,6 @@ systemd_create_and_start_unit nested-vm "${QEMU} -m 2048 -nographic \
     -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 \
     -serial mon:stdio -machine accel=kvm \
     $WORK_DIR/ubuntu-core.img"
-
-if ! wait_for_ssh; then
-    systemctl restart nested-vm
-fi
 
 if wait_for_ssh; then
     prepare_ssh
