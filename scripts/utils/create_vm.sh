@@ -31,6 +31,7 @@ wait_for_ssh(){
         fi
         sleep 1
     done
+    return 0
 }
 
 wait_for_no_ssh(){
@@ -43,6 +44,7 @@ wait_for_no_ssh(){
         fi
         sleep 1
     done
+    return 0
 }
 
 prepare_ssh(){
@@ -57,7 +59,7 @@ create_cloud_init_config(){
 password: ubuntu
 chpasswd:
     list:
-        - ubuntu:ubuntu
+        - user1:ubuntu
     expire: False
 ssh_pwauth: True
 EOF
