@@ -127,14 +127,10 @@ fi
 
 create_cloud_init_config
 
-systemd_create_and_start_unit nested-vm "${QEMU} -m 2048 -nographic \
+systemd_create_and_start_unit nested-vm "${QEMU} -m 2048 -nographic -snapshot \
     -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 \
     -serial mon:stdio -machine accel=kvm \
     $WORK_DIR/ubuntu-core.img"
-
-if ! wait_for_ssh; then
-    systemctl restart nested-vm
-fi
 
 if wait_for_ssh; then
     prepare_ssh
