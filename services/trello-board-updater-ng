@@ -33,7 +33,7 @@ def _make_parser():
     parser_delete = subparser.add_parser("delete")
 
     # Adding common parameters to identify a card
-    for subp in [parser_create, parser_move, parser_search, parser_configure, parser_add_result, parser_delete]:
+    for subp in [parser_create, parser_move, parser_search, parser_configure, parser_add_result, parser_delete, parser_complete]:
         subp.add_argument('-s', '--snap', help="snap name", required=True)
         subp.add_argument('-v', '--version', help="snap version", required=True)
         subp.add_argument('-r', '--revision', help="snap revision", default="")
@@ -47,7 +47,7 @@ def _make_parser():
     # Arguments for configure command
     parser_configure.add_argument('--config', help="Config file where the card skeleton is defined", required=True)
 
-    # Arguments for configure command
+    # Arguments for add-result command
     parser_add_result.add_argument('-n', '--name', help="results name", required=True)
     parser_add_result.add_argument('-a', '--arch', help="snap architecture", required=True)
     parser_add_result.add_argument('--checklist', help="which checklist to use", default="Testflinger")
@@ -144,7 +144,7 @@ def move(board, snap, version, revision, channel):
 
 def _find_or_create_card(board, snap, version, revision, channel='edge'):
     card = search(board, snap, version, revision)
-    if card:        
+    if card:
         return card
 
     card = _create_card(board, snap, version, revision, channel.capitalize())
@@ -245,7 +245,35 @@ def add_result(board, snap, version, revision, name, arch, checklist_name, passe
  
 
 def complete(board, snap, version, revision, configfile):
-    pass
+    config = _load_config(configfile)
+    card = search(board, snap, version, revision)
+    if not card:
+        print('error:card does not exist')
+        return
+
+    complete = config.get('complete', {})
+    sign = complete.get('sign', {})
+
+    sign_checklist = sign.get('sign-checklist', None)
+    sign_actions = sign.get('sign-actions', [])
+
+    if not sign_checklist or not sign_actions:
+       print('info:no sign directives')
+       return
+
+    for action in sign_actions:
+        source = action.get('source')
+        target = action.get('target')
+
+        source_checklist = _search_checklist(card, source)
+        target_checklist = _search_checklist(card, sign_checklist)
+        is_ready = True
+        for checklist_item in source_checklist.items:
+            if not checklist_item.get('checked'):
+                is_ready = False
+                break
+
+        target_checklist.set_checklist_item(target, is_ready)
 
 
 def delete(board, snap, version, revision):

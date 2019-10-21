@@ -15,14 +15,16 @@ checklists:
           default: false
     Testflinger:
         - name: pi3
-          arch: arm32
           default: false
         - name: dragonboard
-          arch: arm64
           default: true
         - name: pc-amd64
-          arch: amd64
-          default: false
-        - name: pc-i386
-          arch: i386
           default: true
+        - name: pc-i386
+          default: true
+complete:
+    sign:
+        sign-checklist: Sign-Off
+        sign-actions:
+            - source: Testflinger
+              target: Ready for Beta
