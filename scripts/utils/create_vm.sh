@@ -72,16 +72,11 @@ EOF
     mount "/dev/mapper/$part" "$tmp"
 
     mkdir -p "$tmp/system-data/var/lib/cloud/seed/nocloud-net/"
-    echo "Using user dada"
-    cat "$WORK_DIR/user-data"
     cp "$WORK_DIR/user-data" "$tmp/system-data/var/lib/cloud/seed/nocloud-net/"
-    echo "Using meta dada"
-    cat "$WORK_DIR/meta-data"
     cp "$WORK_DIR/meta-data" "$tmp/system-data/var/lib/cloud/seed/nocloud-net/"
 
     umount "$tmp"
-    rm -rf "$tmp"
-    kpartx -ds "$WORK_DIR/ubuntu-core.img"
+    kpartx -d "$WORK_DIR/ubuntu-core.img"
 }
 
 systemd_create_and_start_unit() {
@@ -110,6 +105,7 @@ get_qemu_for_nested_vm(){
 
 echo "installing dependencies"
 sudo apt update
+sudo apt upgrade -y
 sudo apt install -y snapd qemu sshpass cloud-image-utils kpartx
 
 export PORT=8022
