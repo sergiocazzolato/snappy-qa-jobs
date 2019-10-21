@@ -132,6 +132,10 @@ systemd_create_and_start_unit nested-vm "${QEMU} -m 2048 -nographic \
     -serial mon:stdio -machine accel=kvm \
     $WORK_DIR/ubuntu-core.img"
 
+if ! wait_for_ssh; then
+    systemctl restart nested-vm
+fi
+
 if wait_for_ssh; then
     prepare_ssh
 else
