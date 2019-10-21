@@ -56,12 +56,15 @@ prepare_ssh(){
 create_cloud_init_config(){
     cat <<EOF > "$WORK_DIR/user-data"
 #cloud-config
-password: ubuntu
-chpasswd:
-    list:
-        - user1:ubuntu
-    expire: False
-ssh_pwauth: True
+  ssh_pwauth: True
+  users:
+   - name: user1
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+  chpasswd:
+   list: |
+    user1:ubuntu
+   expire: False
 EOF
 
     cat <<EOF > "$WORK_DIR/meta-data"
