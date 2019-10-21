@@ -72,7 +72,11 @@ EOF
     mount "/dev/mapper/$part" "$tmp"
 
     mkdir -p "$tmp/system-data/var/lib/cloud/seed/nocloud-net/"
+    echo "Using user dada"
+    cat "$WORK_DIR/user-data"
     cp "$WORK_DIR/user-data" "$tmp/system-data/var/lib/cloud/seed/nocloud-net/"
+    echo "Using meta dada"
+    cat "$WORK_DIR/meta-data"
     cp "$WORK_DIR/meta-data" "$tmp/system-data/var/lib/cloud/seed/nocloud-net/"
 
     umount "$tmp"
