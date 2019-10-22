@@ -19,7 +19,7 @@ checklists:
         - name: dragonboard
           default: true
         - name: pc-amd64
-          default: true
+          default: false
         - name: pc-i386
           default: true
 complete:
