@@ -1,0 +1,35 @@
+#!/bin/bash
+
+SNAP_UT=$1
+CHANNEL_UT=$2
+CONFIG=$3
+BOARD_UT=$4
+ARCH_UT=$5
+SPREAD_LOG=$6
+SUMMARY_LOG=$7
+
+
+# Generate the summary of the test execution
+./log-analyzer "$SPREAD_LOG" -p result | tee "$SUMMARY_LOG"
+
+# Create card in trello
+version=$(snap info "$SNAP_UT" | grep "${CHANNEL_UT}:" | awk '{print $2}')
+revision=$(snap info "$SNAP_UT" | grep "${CHANNEL_UT}:" | awk '{print $4}')
+
+./trello-board-updater-ng create -s "$SNAP_UT" -v "$version" -r "$revision" -c "$TARGET_CHANNEL"
+./trello-board-updater-ng configure -s "$SNAP_UT" -v "$version" --config "./data/$CONFIG"
+
+# Calculate the results to upload to trello
+if grep -vq "Successful tasks:" "$SPREAD_LOG"; then
+    RESULT="--passed"
+fi
+
+if grep -q "error: unsuccessful run" "$SPREAD_LOG"; then
+    RESULT=""
+fi
+
+# Upload the results to trello
+./trello-board-updater-ng add-result -s "$SNAP_UT" -v "$version" -n "$BOARD_UT" -a "$ARCH_UT" --summary "$SUMMARY_LOG" "$RESULT"
+./trello-board-updater-ng complete -s "$SNAP_UT" -v "$version" --config "./data/$CONFIG"
+
+
