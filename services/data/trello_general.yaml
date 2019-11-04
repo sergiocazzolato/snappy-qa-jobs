@@ -2,14 +2,14 @@ name: general configuration for snaps
 
 archive-time:
     Edge: 1w3d
-    Beta: 3w
-    Candidate: 20s
-    Stable: 4w
+    Beta: 2w
+    Candidate: 2w
+    Stable: 2w
 
 archive-list: Complete
 
 delete-time:
-    Complete: 1s
+    Complete: 1w
 
 move-sequence:
     Edge: Beta
