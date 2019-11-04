@@ -3,12 +3,13 @@
 import argparse
 import logging
 import os
+import pytz
 import re
 import requests
 import sys
 import yaml
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from trello import TrelloClient
 from trello.exceptions import ResourceUnavailable
 
@@ -31,6 +32,7 @@ def _make_parser():
     parser_add_result = subparser.add_parser("add-result")
     parser_complete = subparser.add_parser("complete")
     parser_delete = subparser.add_parser("delete")
+    parser_auto_clean = subparser.add_parser("auto-clean")
 
     # Adding common parameters to identify a card
     for subp in [parser_create, parser_move, parser_search, parser_configure, parser_add_result, parser_delete, parser_complete]:
@@ -57,6 +59,9 @@ def _make_parser():
 
     # Arguments for complete command
     parser_complete.add_argument('--config', help="Config file where the card skeleton is defined", required=True)
+
+    # Arguments for auto archive command
+    parser_auto_clean.add_argument('--config', help="Config file where the archive and delete policy is stored", required=True)
 
     return parser
 
@@ -284,6 +289,50 @@ def delete(board, snap, version, revision):
     card.delete()
 
 
+def _string_to_seconds(expression):
+    units = {'s':'seconds', 'm':'minutes', 'h':'hours', 'd':'days', 'w':'weeks'}
+
+    return int(timedelta(**{
+        units.get(m.group('unit').lower(), 'seconds'): int(m.group('val'))
+        for m in re.finditer(r'(?P<val>\d+)(?P<unit>[smhdw]?)', expression, flags=re.I)
+    }).total_seconds())
+
+
+def _get_seconds_for_action(config, config_tag):
+    dict_strings = config.get(config_tag, {})
+    dict_seconds = {}
+    for key in dict_strings.keys():
+        dict_seconds[key] = _string_to_seconds(dict_strings.get(key))
+    return dict_seconds
+
+
+def auto_clean(board, configfile):
+    config = _load_config(configfile)
+
+    archive = _get_seconds_for_action(config, 'archive-time')
+    delete = _get_seconds_for_action(config, 'delete-time')
+
+    archive_list_name = config.get('archive-list')
+    archive_list = _get_list(board, archive_list_name)
+    if not archive_list:
+        print('error:archive list {} not exist'.format(archive_list_name))
+
+    for card in board.get_cards():
+        # Get las activity registered on the card
+        last_activity = card.date_last_activity.replace()
+        last_activity_seconds = (datetime.now(pytz.utc) - last_activity).total_seconds()
+
+        card_list = card.get_list()
+        if card_list.name in archive.keys() and last_activity_seconds > archive.get(card_list.name):
+            card.change_list(archive_list.id)
+            print('archiving card {}'.format(card))
+        elif card_list.name in delete.keys() and last_activity_seconds > delete.get(card_list.name):
+            card.delete()
+            print('deleting card {}'.format(card))
+        else:
+            print('skiping card {}'.format(card))
+
+
 def main():
     parser = _make_parser()
     args = parser.parse_args()
@@ -349,6 +398,11 @@ def main():
             args.snap,
             args.version,
             args.revision)
+
+    if args.command == 'auto-clean':
+        auto_clean(
+            board,
+            args.config)
 
 
 if __name__ == "__main__":

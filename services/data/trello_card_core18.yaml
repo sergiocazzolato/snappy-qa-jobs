@@ -1,4 +1,4 @@
-name: testing snap workflow
+name: testing snap workflow for core18 snap
 checklists:
     Sign-Off:
         - name: Clear for Landing

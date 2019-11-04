@@ -1,0 +1,22 @@
+name: general configuration for snaps
+
+archive-time:
+    Edge: 1w3d
+    Beta: 3w
+    Candidate: 20s
+    Stable: 4w
+
+archive-list: Complete
+
+delete-time:
+    Complete: 1s
+
+move-sequence:
+    Edge: Beta
+    Beta: Candidate
+    Candidate: Stable
+
+
+
+
+
