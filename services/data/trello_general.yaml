@@ -16,7 +16,8 @@ move-sequence:
     Beta: Candidate
     Candidate: Stable
 
-
-
-
-
+snaps-auto-move:
+  - core
+  - core16
+  - core18
+  - snapd
