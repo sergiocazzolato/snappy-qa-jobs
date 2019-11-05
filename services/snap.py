@@ -16,7 +16,7 @@ class Snap:
 
     def _get_info(self):
         line = 'snap info {}'.format(self.name)
-        return subprocess.check_output(line, shell=True).splitlines()
+        return subprocess.check_output(line, shell=True, universal_newlines=True).splitlines()
 
     def _get_channel_info(self, line, channel):
         parts = line.split()
@@ -47,6 +47,6 @@ class Snap:
             for channel in Snap.SUPPORTED_CHANNELS:
                 channel_id = '{}:'.format(channel)
                 if line.strip().startswith(channel_id):
-                    info[channel] = self._get_channel_info(line, channel)
+                    info[channel] = self._get_channel_info(line.strip(), channel)
 
         return info
