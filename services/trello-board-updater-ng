@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from trello import TrelloClient
 from trello.exceptions import ResourceUnavailable
 
+from snap import Snap
+
 
 def _make_parser():
     parser = argparse.ArgumentParser()
@@ -33,6 +35,7 @@ def _make_parser():
     parser_complete = subparser.add_parser("complete")
     parser_delete = subparser.add_parser("delete")
     parser_auto_clean = subparser.add_parser("auto-clean")
+    parser_auto_move = subparser.add_parser("auto-move")
     parser_attach = subparser.add_parser("attach")
 
     # Adding common parameters to identify a card
@@ -61,8 +64,11 @@ def _make_parser():
     # Arguments for complete command
     parser_complete.add_argument('--config', help="config file where the card skeleton is defined", required=True)
 
-    # Arguments for auto archive command
+    # Arguments for auto clean command
     parser_auto_clean.add_argument('--config', help="config file where the archive and delete policy is stored", required=True)
+
+    # Arguments for auto move command
+    parser_auto_move.add_argument('--config', help="config file where the informartion needed for auto move snaps", required=True)
 
     # Arguments for attach command
     parser_attach.add_argument('-n', '--name', help="attachment name", required=True)
@@ -295,6 +301,19 @@ def delete(board, snap, version, revision):
     card.delete()
 
 
+def attach(board, snap, version, revision, name, file=None, url=None):
+    card = search(board, snap, version, revision)
+    if not card:
+        print('error:card does not exist')
+        return
+
+    if not file and not url:
+        print('error:at least one file or url needed')
+        return
+
+    card.attach(name=name, file=file, url=url)
+
+
 def _string_to_seconds(expression):
     units = {'s':'seconds', 'm':'minutes', 'h':'hours', 'd':'days', 'w':'weeks'}
 
@@ -331,25 +350,47 @@ def auto_clean(board, configfile):
         card_list = card.get_list()
         if card_list.name in archive.keys() and last_activity_seconds > archive.get(card_list.name):
             card.change_list(archive_list.id)
-            print('archiving card {}'.format(card))
+            print('info:archiving card {}'.format(card))
         elif card_list.name in delete.keys() and last_activity_seconds > delete.get(card_list.name):
             card.delete()
-            print('deleting card {}'.format(card))
+            print('info:deleting card {}'.format(card))
         else:
-            print('skiping card {}'.format(card))
+            print('info:skiping card {}'.format(card))
 
 
-def attach(board, snap, version, revision, name, file=None, url=None):
-    card = search(board, snap, version, revision)
-    if not card:
-        print('error:card does not exist')
-        return
+def _get_snap_info_by_channel(snapname):
+    snap = Snap(snapname)
+    return snap.get_info_by_channel()
 
-    if not file and not url:
-        print('error:at least one file or url needed')
-        return
 
-    card.attach(name=name, file=file, url=url)
+def auto_move(board, configfile):
+    config = _load_config(configfile)
+    snaps_auto_move = config.get('snaps-auto-move', {})
+
+    movements = {}
+    for snap in snaps_auto_move:
+        snap_channels_info = _get_snap_info_by_channel(snap)
+
+        for channel in Snap.SUPPORTED_CHANNELS:
+            channel_info = snap_channels_info.get(channel, {})
+            if not channel_info:
+                continue
+
+            version = channel_info.get('version')
+            revision = channel_info.get('revision')
+            card = search(board, snap, version, revision)
+            if not card:
+                continue
+
+            movements[card] = _get_list(board, channel.capitalize())
+
+    for card in movements:
+        lane = card.get_list()
+        if lane.name != channel.capitalize():
+            print('info: moving card {} to list {}'.format(card, channel))
+            card.change_list(movements.get(card).id)
+        else:
+            print('info:kipping card in list {}'.format(lane))
 
 
 def main():
@@ -420,6 +461,11 @@ def main():
 
     if args.command == 'auto-clean':
         auto_clean(
+            board,
+            args.config)
+
+    if args.command == 'auto-move':
+        auto_move(
             board,
             args.config)
 

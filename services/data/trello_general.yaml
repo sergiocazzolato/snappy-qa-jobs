@@ -11,11 +11,6 @@ archive-list: Complete
 delete-time:
     Complete: 1w
 
-move-sequence:
-    Edge: Beta
-    Beta: Candidate
-    Candidate: Stable
-
 snaps-auto-move:
   - core
   - core16
