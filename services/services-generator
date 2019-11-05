@@ -21,7 +21,7 @@ class SystemdManager:
     @staticmethod
     def get_service_status_active(service):
         cmd = 'systemctl status -o short {} | grep "Active:"'.format(service)
-        lines = subprocess.check_output(cmd, shell=True, encoding='utf8').splitlines()
+        lines = subprocess.check_output(cmd, shell=True).splitlines()
         if not len(lines) == 1:
             logging.error('Incorrect out(service)put format for systemctl status: {}'.format(lines))
             return

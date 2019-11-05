@@ -16,7 +16,7 @@ class Snap:
 
     def _get_info(self):
         line = 'snap info {}'.format(self.name)
-        return subprocess.check_output(line, shell=True, encoding='utf8').splitlines()
+        return subprocess.check_output(line, shell=True).splitlines()
 
     def _get_channel_info(self, line, channel):
         parts = line.split()
