@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 WORKSPACE=${1:-$(pwd)}
 

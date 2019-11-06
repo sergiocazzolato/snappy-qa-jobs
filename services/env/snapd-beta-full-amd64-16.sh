@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 export SNAP_UT=core
 export ARCH_UT=amd64

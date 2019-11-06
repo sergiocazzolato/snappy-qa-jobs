@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 export SNAP_UT=core18
 export ARCH_UT=arm32
