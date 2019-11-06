@@ -311,7 +311,16 @@ def attach(board, snap, version, revision, name, file=None, url=None):
         print('error:at least one file or url needed')
         return
 
-    card.attach(name=name, file=file, url=url)
+    if file:
+        if not os.path.exists(file):
+            print('error:file {} does not exist'.format(file))
+            return
+
+        with open(file) as f:
+            card.attach(name=name, file=f)
+
+    if url:
+        card.attach(name=name, url=url)
 
 
 def _string_to_seconds(expression):
