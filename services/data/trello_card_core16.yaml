@@ -13,7 +13,7 @@ checklists:
           default: false
         - name: Can be Archived
           default: false
-    Testflinger:
+    Results:
         - name: pi3
           default: false
         - name: dragonboard
@@ -22,6 +22,15 @@ checklists:
           default: false
         - name: pc-i386
           default: true
+    Executions:
+        - name: pi3
+          default: false
+        - name: dragonboard
+          default: false
+        - name: pc-amd64
+          default: false
+        - name: pc-i386
+          default: false
 complete:
     sign:
         sign-checklist: Sign-Off

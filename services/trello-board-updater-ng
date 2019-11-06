@@ -56,7 +56,8 @@ def _make_parser():
     # Arguments for add-result command
     parser_add_result.add_argument('-n', '--name', help="results name", required=True)
     parser_add_result.add_argument('-a', '--arch', help="snap architecture", required=True)
-    parser_add_result.add_argument('--checklist', help="which checklist to use", default="Testflinger")
+    parser_add_result.add_argument('--checklist-executions', help="which checklist to mark the execution is done", default="Executions")
+    parser_add_result.add_argument('--checklist-results', help="which checklist to mark the execution results", default="Results")
     parser_add_result.add_argument('--passed', help="indicates if the tests passed", action="store_true")
     parser_add_result.add_argument('--summary', help="test results sumary file")
     parser_add_result.add_argument('--link', help="test results link")
@@ -243,15 +244,20 @@ def _create_comment_results_header(name, arch, passed):
     return header
 
 
-def add_result(board, snap, version, revision, name, arch, checklist_name, passed, summaryfile, link):
+def add_result(board, snap, version, revision, name, arch, checklist_name_executions, checklist_name_results, passed, summaryfile, link):
     card = _find_or_create_card(board, snap, version, revision)
-    checklist = _find_or_create_checklist(card, checklist_name)
-    checklist.set_checklist_item(name, passed)
+
+    # Mark the execution in the executions checklist
+    checklist_executions = _find_or_create_checklist(card, checklist_name_executions)
+    checklist_executions.set_checklist_item(name, passed)
+    # Mark the result in the executions checklist
+    checklist_results = _find_or_create_checklist(card, checklist_name_results)
+    checklist_results.set_checklist_item(name, passed)
 
     # Attach el link to the results checklist
     if link:
-        new_name = '{} [[Results]({})]'.format(checklist_name, link)
-        checklist.rename_checklist_item(name, new_name)
+        new_name = '{} [[Results]({})]'.format(checklist_name_results, link)
+        checklist_results.rename_checklist_item(name, new_name)
 
     # Add a comment with the results summary
     if summaryfile:
@@ -448,7 +454,8 @@ def main():
             args.revision,
             args.name, 
             args.arch,
-            args.checklist,
+            args.checklist_executions,
+            args.checklist_results,
             args.passed,
             args.summary,
             args.link)
