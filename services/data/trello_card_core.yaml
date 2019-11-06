@@ -79,5 +79,5 @@ complete:
     sign:
         sign-checklist: Sign-Off
         sign-actions:
-            - source: Testflinger
+            - source: Results
               target: Ready for Candidate
