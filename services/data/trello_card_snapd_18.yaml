@@ -1,0 +1,42 @@
+name: testing snap workflow for snapd snap
+checklists:
+    Sign-Off:
+        - name: Clear for Landing
+          default: true
+        - name: Ready for Edge
+          default: true
+        - name: Ready for Beta
+          default: true
+        - name: Ready for Candidate
+          default: false
+        - name: Ready for Stable
+          default: false
+        - name: Can be Archived
+          default: false
+    Testflinger:
+        - name: pi2-18
+          default: false
+        - name: pi2-refresh-18
+          default: false
+        - name: pi3-18
+          default: false
+        - name: pi3-refresh-18
+          default: false
+        - name: dragonboard-18
+          default: false
+        - name: dragonboard-refresh-18
+          default: false
+        - name: pc-amd64-18
+          default: false
+        - name: pc-amd64-refresh-18
+          default: false
+        - name: pc-i386-18
+          default: false
+        - name: pc-i386-refresh-18
+          default: false
+complete:
+    sign:
+        sign-checklist: Sign-Off
+        sign-actions:
+            - source: Testflinger
+              target: Ready for Candidate
