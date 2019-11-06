@@ -1,0 +1,12 @@
+#!/bin/bash	
+
+VERSION=$1
+
+if git ls-remote --tags https://github.com/snapcore/snapd.git "$VERSION" | grep "$VERSION"; then
+    export BRANCH="$VERSION"
+elif git ls-remote --heads https://github.com/snapcore/snapd.git "release/$VERSION" | grep "$VERSION"; then
+    export BRANCH="release/$VERSION"
+else
+    echo "branch not found"
+    exit 1
+fi
