@@ -20,7 +20,7 @@ sudo rm -f $TF_DATA/*
 
 if which pastebinit; then
 	echo "Uploding execution log to paste.ubuntu.com"
-	pastebinit run.log
+	pastebinit run.log || true
 else
 	echo "Report not uploaded automatically, please install pastebinit for that"
 fi
