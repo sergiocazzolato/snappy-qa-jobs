@@ -2,7 +2,7 @@
 
 sudo apt update
 sudo apt install -y python3-pip
-pip3 install jsonpath-ng py-trello
+pip3 install jsonpath-ng py-trello pyOpenSSL urllib3 pytz
 
 git clone https://github.com/sergiocazzolato/snappy-qa-jobs.git
 ( cd snappy-qa-jobs && ./service-generator -h )

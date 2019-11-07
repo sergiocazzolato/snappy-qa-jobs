@@ -2,10 +2,10 @@
 
 echo "Creating job for snapd using a device"
 
-if ! [ -z $IMAGE_URL ]; then
+if ! [ -z "$IMAGE_URL" ]; then
     PROVISION_METHOD="url"
     PROVISION_VAR="$IMAGE_URL"
-elif ! [ -z $DISTRO ]; then
+elif ! [ -z "$DISTRO" ]; then
     PROVISION_METHOD="distro"
     PROVISION_VAR="$DISTRO"
 else

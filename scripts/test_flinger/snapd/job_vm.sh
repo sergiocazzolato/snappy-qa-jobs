@@ -5,7 +5,7 @@ echo "Creating job for snapd using a vm"
 HOST=localhost
 PORT=8022
 
-if [ -z $IMAGE_URL ]; then
+if [ -z "$IMAGE_URL" ]; then
     echo "Nested image needed"
     exit 1
 fi

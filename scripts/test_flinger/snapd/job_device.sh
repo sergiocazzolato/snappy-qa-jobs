@@ -2,7 +2,7 @@
 
 echo "Creating job for snapd using a device"
 
-if [ -z $IMAGE_URL ]; then
+if [ -z "$IMAGE_URL" ]; then
     PROVISION_METHOD="channel"
     PROVISION_VAR="$CHANNEL"
 else
