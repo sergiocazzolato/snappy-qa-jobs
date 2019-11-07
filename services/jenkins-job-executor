@@ -1,0 +1,31 @@
+#!/bin/bash
+
+PROJECT=$1
+SERVICE_ENV=$2
+TESTS_ENV=$3
+TESTS_SCRIPT=$4
+TESTS_CONFIG=$5
+WORKSPACE=$6
+
+if [ ! "$PROJECT" ]; then
+	echo "Porject not defined, exiting..."
+	exit 1
+fi
+
+# Load environment variables
+. "${WORKSPACE}/snappy-qa-jobs/services/env/common.sh" "$WORKSPACE"
+. "${WORKSPACE}/snappy-qa-jobs/services/env/${SERVICE_ENV}.sh"
+
+if [ "$PROJECT" == snapd ]; then
+	VERSION=$("${WORKSPACE}/snappy-qa-jobs/services/utils/get_version" "$SNAP_UT" "$TARGET_CHANNEL")
+	export HTTPS_PROXY=https://squid.internal:3128
+	BRANCH=$("${WORKSPACE}/snappy-qa-jobs/services/utils/get_branch" "$VERSION")
+else
+	export HTTPS_PROXY=https://squid.internal:3128	
+fi
+
+# Run spread tests 
+sudo "$TESTS_ENV" "${WORKSPACE}/snappy-qa-jobs/scripts/${TESTS_SCRIPT}.sh" "$TESTS_CONFIG" | tee "$SPREAD_LOG"
+
+# Integrate results with trello board
+"${WORKSPACE}/snappy-qa-jobs/services/trello-integrator" "$SNAP_UT" "$TARGET_CHANNEL" "$TRELLO_CONFIG" "$BOARD_UT" "$ARCH_UT" "$SPREAD_LOG" "$SUMMARY_LOG" "$ATTACH_LOG"
