@@ -14,6 +14,10 @@ fi
 
 # Load environment variables
 . "${WORKSPACE}/snappy-qa-jobs/services/env/common.sh" "$WORKSPACE"
+if [ ! -f "${WORKSPACE}/snappy-qa-jobs/services/env/${SERVICE_ENV}.sh" ]; then
+	echo "configuration file does not exist, exiting"
+	exit 1
+fi
 . "${WORKSPACE}/snappy-qa-jobs/services/env/${SERVICE_ENV}.sh"
 
 if [ "$PROJECT" == snapd ]; then
