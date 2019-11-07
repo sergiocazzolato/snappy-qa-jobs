@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 SNAP_UT=$1
 CHANNEL=$2
