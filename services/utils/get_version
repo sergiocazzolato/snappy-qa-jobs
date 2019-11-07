@@ -8,3 +8,5 @@ CHANNEL=$2
 version=$(snap info "$SNAP_UT" | grep "${CHANNEL}:" | awk '{print $2}')
 version="${version//16-/}"
 version=$(echo "$version" | cut -f1 -d "~")
+
+echo "$version"
