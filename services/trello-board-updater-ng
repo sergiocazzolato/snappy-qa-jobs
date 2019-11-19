@@ -29,6 +29,7 @@ def _make_parser():
     subparser = parser.add_subparsers(help='commands', dest='command')
     parser_search = subparser.add_parser("search")
     parser_create = subparser.add_parser("create")
+    parser_create_sru = subparser.add_parser("create-sru")
     parser_move = subparser.add_parser("move")
     parser_configure = subparser.add_parser("configure")
     parser_add_result = subparser.add_parser("add-result")
@@ -46,6 +47,12 @@ def _make_parser():
 
     # Arguments for create command
     parser_create.add_argument('-c', '--channel', help="snap channel to create the card", required=True)
+
+    # Arguments for create-sru command
+    parser_create_sru.add_argument('-p', '--package', help="package name", required=True)
+    parser_create_sru.add_argument('-v', '--version', help="package version", required=True)
+    parser_create_sru.add_argument('-l', '--list', help="trello list to create the card", default="SRU")
+    parser_create_sru.add_argument('--config', help="config file where the card skeleton is defined", required=True)
 
     # Arguments for move command
     parser_move.add_argument('-c', '--channel', help="snap channel to move the card", required=True)
@@ -108,9 +115,24 @@ def _search_card(board, query, card_filter="open"):
         if re.match(query, card.name):
             return card
 
-def search(board, snap, version, revision):
+
+def _search_card_on_list(lane, query, card_filter="open"):
+    for card in lane.list_cards(card_filter=card_filter):
+        if re.match(query, card.name):
+            return card
+
+
+def search(board, snap, version, revision=None):
     pattern = get_pattern(snap, version, revision)
     card = _search_card(board, pattern)
+    if card:
+        print('id:{}'.format(card.id))
+    return card
+
+
+def search_on_list(lane, snap, version, revision=None):
+    pattern = get_pattern(snap, version, revision)
+    card = _search_card_on_list(lane, pattern)
     if card:
         print('id:{}'.format(card.id))
     return card
@@ -144,6 +166,28 @@ def create(board, snap, version, revision, channel):
     if card:
         print('id:{}'.format(card.id))
     return card
+
+
+def create_sru(board, package, version, srulist, configfile):
+    config = _load_config(configfile)
+    lane = _get_list(board, srulist)
+    if not lane:
+        print('info:list {} created on trello board'.format(srulist))
+        board.add_list(-1)
+
+    card = search_on_list(lane, package, version)
+    if card:
+        print('error:card already exists')
+        return
+
+    revision = None
+    card = _create_card(board, package, version, revision, srulist)
+    if not card:
+        print('error:card cannot be created')
+        return
+
+    print('id:{}'.format(card.id))
+    _configure_card(card, config)
 
 
 def move(board, snap, version, revision, channel):
@@ -216,10 +260,7 @@ def _find_or_create_checklist(card, checklist_name, items=[]):
     return checklist
 
 
-def configure(board, snap, version, revision, configfile):
-    config = _load_config(configfile)
-    card = _find_or_create_card(board, snap, version, revision)
-
+def _configure_card(card, config):
     checklists = config.get('checklists', {})
     for checklist_name in checklists.keys():
             checklist = _search_checklist(card, checklist_name)
@@ -228,6 +269,11 @@ def configure(board, snap, version, revision, configfile):
             checklist = _create_checklist(card, checklist_name)
             for checklist_items in checklists.get(checklist_name):
                 checklist.add_checklist_item(checklist_items.get('name'), checklist_items.get('default', False))
+
+def configure(board, snap, version, revision, configfile):
+    config = _load_config(configfile)
+    card = _find_or_create_card(board, snap, version, revision)
+    _configure_card(card, config)    
 
 
 def _create_comment_results_header(name, arch, passed):
@@ -429,6 +475,14 @@ def main():
             args.version,
             args.revision,
             args.channel)
+
+    if args.command == 'create-sru':
+        create_sru(
+            board,
+            args.package,
+            args.version,
+            args.list,
+            args.config)
 
     if args.command == 'move':
         move(

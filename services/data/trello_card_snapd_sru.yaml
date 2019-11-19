@@ -1,0 +1,28 @@
+name: sru validation workflow for snapd package
+checklists:
+    Autopkgtest tests:
+        - name: Xenial
+          default: false
+        - name: Bionic
+          default: false
+        - name: Disco
+          default: false
+    Manual checks:
+        - name: Review changelog
+          default: false
+        - name: Verify associated bugs
+          default: false
+    Automated tests:
+        - name: Xenial
+          default: false
+        - name: Bionic
+          default: false
+        - name: Disco
+          default: false
+    Manual tests:
+        - name: Xenial
+          default: false
+        - name: Bionic
+          default: false
+        - name: Disco
+          default: false
