@@ -1,11 +1,16 @@
 name: sru validation workflow for snapd package
 checklists:
+    Sign-Off:
+        - name: Approved
+          default: false
+        - name: Rejected
+          default: false
     Autopkgtest tests:
-        - name: Xenial
+        - name: Xenial - http://people.canonical.com/~ubuntu-archive/proposed-migration/xenial/update_excuses.html#snapd
           default: false
-        - name: Bionic
+        - name: Bionic - http://people.canonical.com/~ubuntu-archive/proposed-migration/bionic/update_excuses.html#snapd
           default: false
-        - name: Disco
+        - name: Disco - http://people.canonical.com/~ubuntu-archive/proposed-migration/disco/update_excuses.html#snapd
           default: false
     Manual checks:
         - name: Review changelog
