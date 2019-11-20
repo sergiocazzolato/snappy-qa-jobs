@@ -47,7 +47,11 @@ if grep -q "error: unsuccessful run" "$SPREAD_LOG"; then
 fi
 
 # Upload the results to trello
-"${DIR}"/trello-board-updater-ng add-result -s "$SNAP_UT" -v "$version" -r "$revision" -n "$BOARD_UT" -a "$ARCH_UT" --summary "$SUMMARY_LOG" "$RESULT"
+if [ -z "$RESULT" ]; then
+	"${DIR}"/trello-board-updater-ng add-result -s "$SNAP_UT" -v "$version" -r "$revision" -n "$BOARD_UT" -a "$ARCH_UT" --summary "$SUMMARY_LOG"
+else
+	"${DIR}"/trello-board-updater-ng add-result -s "$SNAP_UT" -v "$version" -r "$revision" -n "$BOARD_UT" -a "$ARCH_UT" --summary "$SUMMARY_LOG" "$RESULT"
+fi
 "${DIR}"/trello-board-updater-ng complete -s "$SNAP_UT" -v "$version" -r "$revision" --config "${DIR}/data/${CONFIG}"
 
 # Generate the reduced log and upload to trello as an attachment
