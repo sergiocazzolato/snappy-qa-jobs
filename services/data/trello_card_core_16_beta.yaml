@@ -1,4 +1,4 @@
-name: testing snap workflow for core snap
+name: testing snap workflow for core snap on beta channel
 checklists:
     Sign-Off:
         - name: Clear for Landing
