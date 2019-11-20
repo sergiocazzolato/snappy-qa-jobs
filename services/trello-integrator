@@ -19,8 +19,8 @@ version=$(snap info "$SNAP_UT" | grep "${CHANNEL_UT}:" | awk '{print $2}')
 revision=$(snap info "$SNAP_UT" | grep "${CHANNEL_UT}:" | awk '{print $4}')
 
 # Exit in case important data is not defined
-if [ ! -f "$SPREAD_LOG" ]; then
-    echo "Spread log does not exist: $SPREAD_LOG"
+if [ ! -s "$SPREAD_LOG" ]; then
+    echo "Spread log does not exist or is empty: $SPREAD_LOG"
     exit 1
 fi
 
@@ -37,10 +37,12 @@ fi
 "${DIR}"/trello-board-updater-ng configure -s "$SNAP_UT" -v "$version" -r "$revision" --config "${DIR}/data/${CONFIG}"
 
 # Calculate the results to upload to trello
-if grep -vq "Successful tasks:" "$SPREAD_LOG"; then
+# If "Successful tasks:" is found it means the spread execution was done
+if grep -q "Successful tasks:" "$SPREAD_LOG"; then
     RESULT="--passed"
 fi
 
+# If "error: unsuccessful run" is found it means the spread execution failed
 if grep -q "error: unsuccessful run" "$SPREAD_LOG"; then
     RESULT=""
 fi

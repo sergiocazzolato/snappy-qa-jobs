@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 PROJECT=$1
 SERVICE_ENV=$2
 TESTS_ENV=$3

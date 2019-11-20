@@ -12,6 +12,8 @@ checklists:
           default: false
         - name: Disco - http://people.canonical.com/~ubuntu-archive/proposed-migration/disco/update_excuses.html#snapd
           default: false
+        - name: Eoan - http://people.canonical.com/~ubuntu-archive/proposed-migration/eoan/update_excuses.html#snapd
+          default: false
     Manual checks:
         - name: Review changelog
           default: false
@@ -24,10 +26,14 @@ checklists:
           default: false
         - name: Disco
           default: false
+        - name: Eoan
+          default: false
     Manual tests:
         - name: Xenial
           default: false
         - name: Bionic
           default: false
         - name: Disco
+          default: false
+        - name: Eoan
           default: false
