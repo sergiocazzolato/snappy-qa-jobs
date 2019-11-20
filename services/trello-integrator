@@ -33,8 +33,7 @@ fi
 "${DIR}"/log-analyzer "$SPREAD_LOG" -p result | tee "$SUMMARY_LOG"
 
 # Create card in trello
-"${DIR}"/trello-board-updater-ng create -s "$SNAP_UT" -v "$version" -r "$revision" -c "$TARGET_CHANNEL"
-"${DIR}"/trello-board-updater-ng configure -s "$SNAP_UT" -v "$version" -r "$revision" --config "${DIR}/data/${CONFIG}"
+"${DIR}"/trello-board-updater-ng create -s "$SNAP_UT" -v "$version" -r "$revision" --channel "$TARGET_CHANNEL" --config "${DIR}/data/${CONFIG}"
 
 # Calculate the results to upload to trello
 # If "Successful tasks:" is found it means the spread execution was done
