@@ -296,7 +296,7 @@ def add_result(board, snap, version, revision, name, arch, checklist_name_execut
 
     # Mark the execution in the executions checklist
     checklist_executions = _find_or_create_checklist(card, checklist_name_executions)
-    checklist_executions.set_checklist_item(name, passed)
+    checklist_executions.set_checklist_item(name, True)
     # Mark the result in the executions checklist
     checklist_results = _find_or_create_checklist(card, checklist_name_results)
     checklist_results.set_checklist_item(name, passed)
