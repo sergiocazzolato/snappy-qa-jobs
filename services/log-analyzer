@@ -19,6 +19,8 @@ ACTION = 'action'
 OPERATION = 'operation'
 INFO = 'info'
 RESULT = 'result'
+START = 'Found'
+SPREAD_FILE = 'spread.yaml'
 
 EXEC_VERBS = ['Preparing', 'Executing', 'Restoring']
 INFO_TYPES = [ERROR_TYPE, DEBUG_TYPE, WARN_TYPE]
@@ -126,10 +128,11 @@ class Operation:
 
 
 class LogReader:
-    def __init__(self, filepath, output_type, lines_limit):
+    def __init__(self, filepath, output_type, lines_limit, store_setup):
         self.filepath = filepath
         self.output_type = output_type
         self.lines_limit = lines_limit
+        self.store_setup = store_setup
         self.lines = []
         self.iter = 0
         self.full_log = []
@@ -141,6 +144,8 @@ class LogReader:
         return {'full_log': self.full_log}
 
     def print_log(self, filter):
+        if not self.full_log:
+            return
         if filter == ALL:
             print(''.join(str(x) for x in self.full_log))
         elif filter == NONE:
@@ -166,6 +171,17 @@ class LogReader:
         with open(self.filepath) as fp:
             self.lines = fp.readlines()
             self.iter = 0
+
+            if self.store_setup:
+                while self.iter < len(self.lines):
+                    line = self._next_line()
+                    if not self._match_start(line):
+                        self.full_log.append(line)
+
+                if self.iter >= len(self.lines):
+                    # Start not found, the log could be either empty, corrupted or cut
+                    self.iter = 0
+
             while self.iter < len(self.lines):
                 line = self._next_line()
                 if self._match_task(line):
@@ -209,6 +225,10 @@ class LogReader:
     def _match_task(self, line):
         parts = line.split(' ')
         return len(parts) > 2 and parts[2] in EXEC_VERBS and self._match_date(parts[0]) and self._match_time(parts[1])
+
+    def _match_start(self, line):
+        parts = line.split(' ')
+        return len(parts) > 2 and parts[2] == START and self._match_date(parts[0]) and self._match_time(parts[1]) and SPREAD_FILE in parts[3]
 
     def _match_operation(self, line):
         parts = line.split(' ')
@@ -336,6 +356,11 @@ for the error/debug/warning output.
         help="output file to save the result",
     )
     parser.add_argument(
+        "--store-setup",
+        action="store_true",
+        help="will save all the text before the spread run is started",
+    )
+    parser.add_argument(
         "logpath", metavar="PATH", help="path to the log to be analyzed"
     )
     return parser
@@ -350,7 +375,7 @@ def main():
         parser.print_usage()
         parser.exit(0)
     
-    reader = LogReader(ns.logpath, ns.format, ns.cut)
+    reader = LogReader(ns.logpath, ns.format, ns.cut, ns.store_setup)
     if not reader.check_log_exists():
         print("Log not found")
         sys.exit(1)
