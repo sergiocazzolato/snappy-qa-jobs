@@ -28,6 +28,7 @@ def _make_parser():
     # Subparsers definition
     subparser = parser.add_subparsers(help='commands', dest='command')
     parser_search = subparser.add_parser("search")
+    parser_show = subparser.add_parser("show")
     parser_create = subparser.add_parser("create")
     parser_create_sru = subparser.add_parser("create-sru")
     parser_move = subparser.add_parser("move")
@@ -39,7 +40,7 @@ def _make_parser():
     parser_attach = subparser.add_parser("attach")
 
     # Adding common parameters to identify a card
-    for subp in [parser_create, parser_move, parser_search, parser_add_result, parser_delete, parser_complete, parser_attach]:
+    for subp in [parser_create, parser_move, parser_search, parser_show, parser_add_result, parser_delete, parser_complete, parser_attach]:
         subp.add_argument('-s', '--snap', help="snap name", required=True)
         subp.add_argument('-v', '--version', help="snap version", required=True)
         subp.add_argument('-r', '--revision', help="snap revision", default="")
@@ -123,15 +124,46 @@ def search(board, snap, version, revision=None):
     pattern = get_pattern(snap, version, revision)
     card = _search_card(board, pattern)
     if card:
-        print('id:{}'.format(card.id))
+        print('card found: {}'.format(card.name))
     return card
+
+
+def show(board, snap, version, revision=None):
+    pattern = get_pattern(snap, version, revision)
+    card = _search_card(board, pattern)
+    if not card:
+        print('error: card not found')
+        sys.exit(1)
+    
+    print('id: {}'.format(card.id))
+    print('name: {}'.format(card.name))
+    print('desc: {}'.format(card.desc))
+
+    lane = card.get_list()
+    print('list: {}'.format(lane.name))
+
+    comments = card.get_comments()
+    print('comments')
+    for comment in comments:
+        print('\t' + comment.get('id') + ': ' + comment.get('data').get('text'))
+
+    checklists = card.checklists
+    for checklist in checklists:
+        print('checklist: {}'.format(checklist.name))
+        for item in checklist.items:
+            print('\t' + item.get('name') + ': ' + str(item.get('checked')))
+    
+    attachments = card.get_attachments()
+    print('attachments')
+    for attachment in attachments:
+        print('\t' + attachment.name + ': ' + attachment.url)
 
 
 def search_on_list(lane, snap, version, revision=None):
     pattern = get_pattern(snap, version, revision)
     card = _search_card_on_list(lane, pattern)
     if card:
-        print('id:{}'.format(card.id))
+        print('card found: {}'.format(card.name))
     return card
 
 
@@ -165,7 +197,7 @@ def create(board, snap, version, revision, channel, configfile):
         print('error:card cannot be created')
         return
 
-    print('info:card created {}'.format(card.name))
+    print('card created: {}'.format(card.name))
     _configure_card(card, config)
 
 
@@ -203,6 +235,7 @@ def move(board, snap, version, revision, channel):
         return
 
     card.change_list(lane.id)
+    print('card {} moved to list: {}'.format(card.name, lane.name))
 
 
 def _find_or_create_card(board, snap, version, revision, channel='edge'):
@@ -303,8 +336,9 @@ def add_result(board, snap, version, revision, name, arch, checklist_name_execut
 
     # Attach el link to the results checklist
     if link:
-        new_name = '{} [[Results]({})]'.format(checklist_name_results, link)
+        new_name = '{} [[Results]({})]'.format(name, link)
         checklist_results.rename_checklist_item(name, new_name)
+        print("link added to checklist on card: {}".format(card.name))
 
     # Add a comment with the results summary
     if summaryfile:
@@ -312,6 +346,7 @@ def add_result(board, snap, version, revision, name, arch, checklist_name_execut
             summary = sf.read()
         header = _create_comment_results_header(name, arch, passed)
         card.comment(header + summary)
+        print("comment added to card: {}".format(card.name))
  
 
 def complete(board, snap, version, revision, configfile):
@@ -344,6 +379,8 @@ def complete(board, snap, version, revision, configfile):
                 break
 
         target_checklist.set_checklist_item(target, is_ready)
+        if is_ready:
+            print("target: {} set as ready on card: {}".format(target, card.name))
 
 
 def delete(board, snap, version, revision):
@@ -352,6 +389,7 @@ def delete(board, snap, version, revision):
         print('error:card does not exist')
         return
     card.delete()
+    print('card deleted: {}'.format(card.name))
 
 
 def attach(board, snap, version, revision, name, file=None, url=None):
@@ -371,9 +409,11 @@ def attach(board, snap, version, revision, name, file=None, url=None):
 
         with open(file) as f:
             card.attach(name=name, file=f)
+            print("file attached to card: {}".format(card.name))
 
     if url:
         card.attach(name=name, url=url)
+        print("url attached to card: {}".format(card.name))
 
 
 def _string_to_seconds(expression):
@@ -412,12 +452,12 @@ def auto_clean(board, configfile):
         card_list = card.get_list()
         if card_list.name in archive.keys() and last_activity_seconds > archive.get(card_list.name):
             card.change_list(archive_list.id)
-            print('info:archiving card {}'.format(card))
+            print('card archived: {}'.format(card.name))
         elif card_list.name in delete.keys() and last_activity_seconds > delete.get(card_list.name):
             card.delete()
-            print('info:deleting card {}'.format(card))
+            print('card deleted: {}'.format(card.name))
         else:
-            print('info:skiping card {}'.format(card))
+            print('card skipped: {}'.format(card.name))
 
 
 def _get_snap_info_by_channel(snapname):
@@ -449,10 +489,10 @@ def auto_move(board, configfile):
     for card in movements:
         lane = card.get_list()
         if lane.name != channel.capitalize():
-            print('info: moving card {} to list {}'.format(card, channel))
+            print('card {} moved to list {}'.format(card.name, channel))
             card.change_list(movements.get(card).id)
         else:
-            print('info:kipping card in list {}'.format(lane))
+            print('card {} not moved{}'.format(card.name))
 
 
 def main():
@@ -468,6 +508,13 @@ def main():
             args.snap,
             args.version,
             args.revision)
+
+    if args.command == 'show':
+        show(
+            board,
+            args.snap,
+            args.version,
+            args.revision)        
 
     if args.command == 'create':
         create(

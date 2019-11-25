@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run a one-line script
+      env:
+        TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+        TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+        TEST_TRELLO_BOARD: AE3swczu
+      run: services/tests/trello-board-updater-ng-tests
