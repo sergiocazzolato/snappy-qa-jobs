@@ -17,7 +17,9 @@ jobs:
       env:
         TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
         TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
-        TEST_TRELLO: AE3swczu
         TEST_TRELLO_BOARD: AE3swczu
       run: |
+        export $TRELLO_TOKEN
+        export $TRELLO_API_KEY
+        export $TEST_TRELLO_BOARD
         ./services/tests/trello-board-updater-ng-tests
