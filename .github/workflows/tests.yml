@@ -5,15 +5,19 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
+    - name: Setup environment
+      run: |
+        ./services/create-env
+
+    - name: Run tests
       env:
         TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
         TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+        TEST_TRELLO: AE3swczu
         TEST_TRELLO_BOARD: AE3swczu
       run: |
-        ./services/create-env
         ./services/tests/trello-board-updater-ng-tests
