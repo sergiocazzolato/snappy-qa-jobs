@@ -2,4 +2,4 @@
 
 sudo apt update
 sudo apt install -y python3-pip
-pip3 install jsonpath-ng py-trello pyOpenSSL urllib3 pytz
+pip3 install jsonpath-ng setuptools py-trello pyOpenSSL urllib3 pytz
