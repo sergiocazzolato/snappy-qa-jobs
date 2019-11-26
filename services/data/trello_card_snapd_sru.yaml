@@ -19,6 +19,8 @@ checklists:
           default: false
         - name: Verify associated bugs
           default: false
+        - name: Run tests described on lp
+          default: false
     Automated tests:
         - name: Xenial
           default: false
