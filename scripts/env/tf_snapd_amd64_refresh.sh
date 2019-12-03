@@ -14,4 +14,4 @@ export SETUP=${SETUP:-""}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-16-64"}
 export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}
 export TEST_PASS=${TEST_PASS:-"ubuntu"}
-export SKIP_TESTS=${SKIP_TESTS:-"tests/main/auto-refresh,tests/main/auto-refresh-retry,tests/main/interfaces-many-snap-provided,tests/main/interfaces-many-core-provided"}
+export SKIP_TESTS=${SKIP_TESTS:-"tests/main/auto-refresh,tests/main/auto-refresh-retry,tests/main/interfaces-many-snap-provided,tests/main/interfaces-many-core-provided,tests/main/snap-model"}
