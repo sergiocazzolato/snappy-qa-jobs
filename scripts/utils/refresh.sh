@@ -92,7 +92,7 @@ check_refresh(){
 
     wait_for_no_ssh 30 2
     wait_for_ssh 120 2
-    retry_until "snap info $snap" "tracking: +${refresh_channel}" 10 2
+    retry_until "snap info $snap" "tracking: +(latest/${refresh_channel}|${refresh_channel})" 10 2
 }
 
 do_full_refresh(){
