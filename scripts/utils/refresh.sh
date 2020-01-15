@@ -158,7 +158,7 @@ do_snapd_refresh(){
 do_core_refresh(){
     local refresh_channel=$1
 
-    local core_line=$(execute_remote "snap list | grep 'core18'")
+    local core_line=$(execute_remote "snap list | grep -E '(core18|core20)'")
     if [ -z "$core_line" ]; then
         core_line=$(execute_remote "snap list | grep 'core'")
     fi
@@ -185,12 +185,15 @@ wait_auto_refresh(){
 }
 
 check_install_snap(){
-    local core18_line=$(execute_remote "snap list | grep 'core18'")
-    local snap_name=jq-core18
-
-    if [ -z "$core18_line" ]; then
-        snap_name=jq
+    local snap_name=jq
+    local core_line_18=$(execute_remote "snap list | grep 'core18'")
+    local core_line_20=$(execute_remote "snap list | grep 'core20'")
+    if [ -n "$core_line_18" ]; then
+        snap_name=jq-core18
+    elif [ -n "$core_line_20" ]; then
+        snap_name=jq-core20
     fi
+
     # Retry until the core is ready to install a snap and remove it
     retry_until "sudo snap install --devmode $snap_name" "$snap_name .* installed" 20 10
     execute_remote "sudo snap remove $snap_name"

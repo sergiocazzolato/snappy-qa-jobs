@@ -53,6 +53,7 @@ This example shows how to create a core16 image using stable channel but core fr
 
 Download the core 16 images from: http://cdimage.ubuntu.com/ubuntu-core/16/stable/current/
 Download the core 18 images from: http://cdimage.ubuntu.com/ubuntu-core/18/stable/current/
+Download the core 20 images from: http://cdimage.ubuntu.com/ubuntu-core/20/stable/current/
 
 It is possible to use older images too to validate the refresh scenario. 
 
@@ -80,6 +81,13 @@ It is possible to use older images too to validate the refresh scenario.
     i386: sudo kvm -snapshot -smp 2 -m 2000 -net nic,model=virtio -net user,hostfwd=tcp::8023-:22 -serial mon:stdio <PATH_TO_VM_IMAGE>
 
     Note: it could be needed to provide initial entropy by moving the mouse and using the keyboard in the kvm window.
+
+#### Core 20
+
+    amd64: sudo kvm -snapshot -smp 2 -m 2000 -net nic,model=virtio -net user,hostfwd=tcp::8022-:22 -bios /usr/share/OVMF/OVMF_CODE.fd -serial mon:stdio <PATH_TO_VM_IMAGE>    
+    i386: sudo kvm -snapshot -smp 2 -m 2000 -net nic,model=virtio -net user,hostfwd=tcp::8023-:22 -bios /usr/share/OVMF/OVMF_CODE.fd -serial mon:stdio <PATH_TO_VM_IMAGE>
+
+    Note: it is needed to install ovmf package as dependency
 
 ### Access to console through screen:
 
@@ -142,18 +150,22 @@ The following section shows the examples that are used to execution beta validat
 ##### Beta branch on amd64 using local vm
     DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64
     DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_18
+    DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8022 BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_20
 
 ##### Beta branch on i386 using local vm
     DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386
     DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_18
+    DEVICE_USER=sergio-j-cazzolato DEVICE_PORT=8023 BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_20
 
 ##### Beta branch on pi2/pi3
     DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi
     DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_18
+    DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_20
 
 ##### Beta branch on dragonboard
     DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db
     DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_18
+    DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_20
 
 
 ##### Beta branch on dragonboard using testflinger
@@ -165,10 +177,12 @@ The following section shows the examples that are used to execution beta validat
 ##### Beta branch on amd64 using testflinger vm
     IMAGE_URL=http://<GCE-IP>/validator/images/pc-amd64-16-beta/pc.img BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64
     IMAGE_URL=http://<GCE-IP>/validator/images/pc-amd64-18-beta/pc.img BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64_18
+    IMAGE_URL=http://<GCE-IP>/validator/images/pc-amd64-18-beta/pc.img BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_amd64_20
 
 ##### Beta branch on i386 using testflinger vm
     IMAGE_URL=http://<GCE-IP>/validator/images/pc-i386-16-beta/pc.img BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_i386
     IMAGE_URL=http://<GCE-IP>/validator/images/pc-i386-18-beta/pc.img BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_i386_18
+    IMAGE_URL=http://<GCE-IP>/validator/images/pc-i386-18-beta/pc.img BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_vm.sh tf_snapd_i386_20
 
 
 ### Beta refresh from stable
@@ -176,18 +190,22 @@ The following section shows the examples that are used to execution beta validat
 ##### Upgrade from stable on amd64 using local vm
     DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh
     DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh_18
+    DEVICE_PORT=8022 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_amd64_refresh_20
 
 ##### Upgrade from stable on i386 using local vm
     DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_refresh
     DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_refresh_18
+    DEVICE_PORT=8023 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_i386_refresh_20
 
 ##### Upgrade from stable on pi2/3
     DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh
     DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh_18
+    DEVICE_IP=10.42.0.67 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_pi_refresh_20
 
 ##### Upgrade from stable on db
     DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh
     DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh_18
+    DEVICE_IP=192.168.1.8 DEVICE_USER=sergio-j-cazzolato BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_external_device.sh dev_snapd_db_refresh_20
 
 ##### Upgrade from stable on dragonboard using testflinger
     BRANCH=beta ~/workspace/snappy-qa-jobs/scripts/run_tf_device.sh tf_snapd_db_refresh
@@ -236,3 +254,43 @@ The following section shows the examples that are used to execution beta validat
     DEVICE_USER=ubuntu DEVICE_PASS=pass DEVICE_IP=192.168.1.8 ~/workspace/snappy-qa-jobs/scripts/run_external_device_sru.sh dev_snapd_sru_validation
 
 
+## Core and Snapd snaps promotion
+
+### core/snapd snap to candidate
+
+This promotion can be done manually through the snap store site or by using the validator project which automates the process. 
+
+    git clone https://github.com/sergiocazzolato/validator.git
+    ./validator/promote.sh <SNAP_NAME> <FROM_CHANNEL> <TO_CHANNEL>
+
+The promote.sh script will promote the different revisions (all the architectures) for the snap <SNAP_NAME> from the channel <FROM_CHANNEL> to the channel <TO_CHANNEL>
+
+These are the typical examples:
+
+    ./validator/promote.sh core beta candidate
+    ./validator/promote.sh snapd beta candidate
+
+### core snap to stable
+
+For amd64 architecture due to the number of devices affected the progressive release is executed. The idea of this is to deliver the core snap to a predefined number of devices.
+
+For all the architectures but pc-amd64 the release can be done by runnign 'snapdcraft release core <REV_NUM> stable'
+In case of architecture pc-amd64 a progressive release is nedeed. For that the following steps need to be executed in that order, repeating the step 2 with different percentages until arrive to 100.
+
+Steps:
+1. surl -s production -a sca-production -e <EMAIL> --force -p package_access -p package_release
+2. surl -a sca-production -e <EMAIL> -X POST -d '{"name": "core", "revision": <REV_NUM>, "channels": ["stable"], "progressive": {"key": "progressive-core-16-<VERVION>", "percentage": <PERCENTAGE>, "paused": false}}' https://dashboard.snapcraft.io/dev/api/snap-release/
+3. snapcraft release core <REV_NUM> stable
+
+With:
+
+<EMAIL> = The email which is used to login in the snap store
+<REV_NUM> = The rev number for the snap to do progressive release
+<VERVION> = Id used to identify the progressive release
+<PERCENTAGE> = % of devices which will get the new release. The % should be increase by 25 every 6 hours when the snap store team validates the release is going well. The values for this should be: 25, 50, 75 and 100.   
+
+### snapd snap to stable
+
+This promotion can be done manually through the snap store site or by using the validator project which automates the process. 
+
+    ./validator/promote.sh snapd candidate stable
