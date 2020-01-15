@@ -132,12 +132,12 @@ It is occasionally useful to re-run a specific test (or set of tests), or skip a
 
 ##### Notes
 
-<DEVICE_IP> = The ip of the device that's gonna be tested, in case there are two ips (wifi and lan), it is more reliable to use the lan.
-<DEVICE_USER> = The user for whom the device to test is registered.
-<DEVICE_PORT> = The port used to ssh to the device, it is mostly used when the device is a local vm.
-<BRANCH> = The branch corresponding to the release to validate. Note: beta and edge can be used when testing core and core18.
-<WIFI_SSID> = The ssid for the wifi that is gonna used to validate
-<WIFI_PASSWORD> = The password to connect the device to the wifi
+    <DEVICE_IP> = The ip of the device that's gonna be tested, in case there are two ips (wifi and lan), it is more reliable to use the lan.
+    <DEVICE_USER> = The user for whom the device to test is registered.
+    <DEVICE_PORT> = The port used to ssh to the device, it is mostly used when the device is a local vm.
+    <BRANCH> = The branch corresponding to the release to validate. Note: beta and edge can be used when testing core and core18.
+    <WIFI_SSID> = The ssid for the wifi that is gonna used to validate
+    <WIFI_PASSWORD> = The password to connect the device to the wifi
 
 In case of dragonboard it can be tested on testflinger. For that it is needed to install the testflinger-cli snap and run the tests connected to the vpn. See the examples section to see how to run it. 
 
@@ -284,10 +284,10 @@ Steps:
 
 With:
 
-<EMAIL> = The email which is used to login in the snap store
-<REV_NUM> = The rev number for the snap to do progressive release
-<VERVION> = Id used to identify the progressive release
-<PERCENTAGE> = % of devices which will get the new release. The % should be increase by 25 every 6 hours when the snap store team validates the release is going well. The values for this should be: 25, 50, 75 and 100.   
+    <EMAIL> = The email which is used to login in the snap store
+    <REV_NUM> = The rev number for the snap to do progressive release
+    <VERVION> = Id used to identify the progressive release
+    <PERCENTAGE> = % of devices which will get the new release. The % should be increase by 25 every 6 hours when the snap store team validates the release is going well. The values for this should be: 25, 50, 75 and 100.   
 
 ### snapd snap to stable
 
