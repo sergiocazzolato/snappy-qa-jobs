@@ -22,18 +22,19 @@ if [ ! -f "${WORKSPACE}/snappy-qa-jobs/services/env/${SERVICE_ENV}.sh" ]; then
 fi
 . "${WORKSPACE}/snappy-qa-jobs/services/env/${SERVICE_ENV}.sh"
 
+# Prepare tests environment
 if [ "$PROJECT" == snapd ]; then
 	VERSION=$("${WORKSPACE}/snappy-qa-jobs/services/utils/get_version" "$SNAP_UT" "$TARGET_CHANNEL")
 	export HTTPS_PROXY=https://squid.internal:3128
-	BRANCH=$("${WORKSPACE}/snappy-qa-jobs/services/utils/get_branch" "$VERSION")
+	export BRANCH=$("${WORKSPACE}/snappy-qa-jobs/services/utils/get_branch" "$VERSION")
 else
 	export HTTPS_PROXY=https://squid.internal:3128	
 fi
+export $TESTS_ENV
 
 
-
-# Run spread tests 
-BRANCH="$BRANCH" $TESTS_ENV "${WORKSPACE}/snappy-qa-jobs/scripts/${TESTS_SCRIPT}.sh" "$TESTS_CONFIG" | tee "$SPREAD_LOG"
+# Run spread tests
+"${WORKSPACE}/snappy-qa-jobs/scripts/${TESTS_SCRIPT}.sh" "$TESTS_CONFIG" | tee "$SPREAD_LOG"
 
 # Integrate results with trello board
 "${WORKSPACE}/snappy-qa-jobs/services/trello-integrator" "$SNAP_UT" "$TARGET_CHANNEL" "$TRELLO_CONFIG" "$BOARD_UT" "$ARCH_UT" "$SPREAD_LOG" "$SUMMARY_LOG" "$ATTACH_LOG"
