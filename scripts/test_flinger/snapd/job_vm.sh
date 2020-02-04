@@ -22,6 +22,7 @@ DEVICE_IP='$DEVICE_IP'
 
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
+global_timeout: 36000
 provision_data:
     distro: bionic
 test_data:
