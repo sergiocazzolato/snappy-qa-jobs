@@ -4,18 +4,12 @@ echo "Creating job for cconf using a vm"
 
 HOST=localhost
 PORT=8022
-
-if [ -z "$IMAGE_URL" ]; then
-    echo "Nested image needed"
-    exit 1
-fi
-
 DEVICE_IP='$DEVICE_IP'
 
 cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 provision_data:
-    distro: bionic
+    distro: ${DEVICE_DISTRO:-bionic}
 test_data:
     test_cmds: |
         #!/bin/bash

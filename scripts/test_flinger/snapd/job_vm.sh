@@ -5,11 +5,6 @@ echo "Creating job for snapd using a vm"
 HOST=localhost
 PORT=8022
 
-if [ -z "$IMAGE_URL" ]; then
-    echo "Nested image needed"
-    exit 1
-fi
-
 . "$SCRIPTS_DIR/utils/snap_info.sh"
 sudo apt install -y jq
 if [ "$BRANCH" = beta ]; then
@@ -24,7 +19,7 @@ cat > job.yaml <<EOF
 job_queue: $DEVICE_QUEUE
 global_timeout: 36000
 provision_data:
-    distro: bionic
+    distro: ${DEVICE_DISTRO:-bionic}
 test_data:
     test_cmds: |
         #!/bin/bash
