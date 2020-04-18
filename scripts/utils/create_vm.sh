@@ -16,7 +16,8 @@ if test "$(lsb_release -cs)" = focal; then
     export CORE_CHANNEL=edge
 
     git clone https://github.com/snapcore/snapd.git snapd-master
-    TESTSLIB=./snapd-master/tests/lib . snapd-master/tests/lib/nested.sh
+    export TESTSLIB=./snapd-master/tests/lib
+    . snapd-master/tests/lib/nested.sh
     create_nested_core_vm
     start_nested_core_vm
     echo "VM Ready"
