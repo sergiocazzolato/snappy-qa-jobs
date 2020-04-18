@@ -13,6 +13,7 @@ if test "$(lsb_release -cs)" = focal; then
     export SPREAD_SYSTEM=ubuntu-20.04-64
     export SPREAD_BACKEND=external
     export NESTED_ARCHITECTURE=$1
+    export CORE_CHANNEL=edge
 
     git clone https://github.com/snapcore/snapd.git snapd-master
     TESTSLIB=./snapd-master/tests/lib . snapd-master/tests/lib/nested.sh
