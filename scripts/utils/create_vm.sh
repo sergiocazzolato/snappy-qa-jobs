@@ -14,6 +14,7 @@ if test "$(lsb_release -cs)" = focal; then
     export SPREAD_BACKEND=external
     export NESTED_ARCHITECTURE=$1
     export CORE_CHANNEL=edge
+    export SPREAD_PATH=/home/gopath
 
     git clone https://github.com/snapcore/snapd.git snapd-master
     export TESTSLIB=./snapd-master/tests/lib
