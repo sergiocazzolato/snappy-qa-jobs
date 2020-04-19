@@ -17,6 +17,8 @@ if test "$(lsb_release -cs)" = focal; then
     export SPREAD_PATH=/home/gopath
     export BUILD_FROM_CURRENT=false
     export USE_CLOUD_INIT=true
+    export ENABLE_SECURE_BOOT=true
+    export ENABLE_TPM=true
 
     git clone https://github.com/snapcore/snapd.git snapd-master
     export TESTSLIB=./snapd-master/tests/lib
