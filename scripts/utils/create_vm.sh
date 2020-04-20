@@ -4,7 +4,7 @@ set -x
 echo "Creating vm"
 
 echo "installing dependencies"
-sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git
+sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git lxd-tools
 sudo snap install ubuntu-image --classic
 
 if test "$(lsb_release -cs)" = focal; then
