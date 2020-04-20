@@ -4,7 +4,6 @@ set -x
 echo "Creating vm"
 
 echo "installing dependencies"
-sudo apt update
 sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git
 sudo snap install ubuntu-image --classic
 
@@ -20,16 +19,15 @@ if test "$(lsb_release -cs)" = focal; then
     export ENABLE_SECURE_BOOT=true
     export ENABLE_TPM=true
 
+    mkdir -p /home/gopath
+
     git clone https://github.com/snapcore/snapd.git snapd-master
     export TESTSLIB=./snapd-master/tests/lib
-    . snapd-master/tests/lib/nested.sh
+    "$TESTSLIB"/prepare-restore.sh --prepare-suite
+    . "$TESTSLIB"/nested.sh
     create_nested_core_vm
-    if ! start_nested_core_vm; then
-        journalctl -u nested-vm
-        exit 1
-    else
-        echo "VM Ready"
-    fi
+    start_nested_core_vm
+    echo "VM Ready"
 else
     ARCHITECTURE=$1
     IMAGE_URL=$2
