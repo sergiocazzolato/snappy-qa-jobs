@@ -4,7 +4,7 @@ set -x
 echo "Creating vm"
 
 echo "installing dependencies"
-sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git lxd-tools
+sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git
 sudo snap install ubuntu-image --classic
 
 if test "$(lsb_release -cs)" = focal; then
@@ -13,7 +13,6 @@ if test "$(lsb_release -cs)" = focal; then
     export SPREAD_BACKEND=external
     export NESTED_ARCHITECTURE=$1
     export CORE_CHANNEL=edge
-    export SPREAD_PATH=/home/gopath
     export BUILD_FROM_CURRENT=true
     export USE_CLOUD_INIT=true
     export ENABLE_SECURE_BOOT=true
@@ -23,7 +22,12 @@ if test "$(lsb_release -cs)" = focal; then
 
     git clone https://github.com/snapcore/snapd.git snapd-master
     export TESTSLIB=./snapd-master/tests/lib
-
+    export PATH="$PATH:$TESTSLIB/bin"
+    export GOHOME=/home/gopath
+    export GOPATH="$GOHOME"
+    export SPREAD_PATH="$GOHOME"
+    export PROJECT_PATH="$GOHOME/src/github.com/snapcore/snapd"
+  
     "$TESTSLIB"/prepare-restore.sh --prepare-project
     . "$TESTSLIB"/nested.sh
     create_nested_core_vm
