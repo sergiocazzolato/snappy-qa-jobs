@@ -23,7 +23,8 @@ if test "$(lsb_release -cs)" = focal; then
 
     git clone https://github.com/snapcore/snapd.git snapd-master
     export TESTSLIB=./snapd-master/tests/lib
-    "$TESTSLIB"/prepare-restore.sh --prepare-suite
+
+    "$TESTSLIB"/prepare-restore.sh --prepare-project
     . "$TESTSLIB"/nested.sh
     create_nested_core_vm
     start_nested_core_vm
