@@ -24,8 +24,12 @@ if test "$(lsb_release -cs)" = focal; then
     export TESTSLIB=./snapd-master/tests/lib
     . snapd-master/tests/lib/nested.sh
     create_nested_core_vm
-    start_nested_core_vm
-    echo "VM Ready"
+    if ! start_nested_core_vm; then
+        journalctl -u nested-vm
+        exit 1
+    else
+        echo "VM Ready"
+    fi
 else
     ARCHITECTURE=$1
     IMAGE_URL=$2
