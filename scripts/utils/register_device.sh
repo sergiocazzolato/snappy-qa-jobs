@@ -25,6 +25,8 @@ SCRIPT="( snap list core &>/dev/null && sudo snap install jq ) || (snap list cor
         sudo snap create-user $EMAIL; \
         sudo snap remove jq jq-core18 jq-core20"
 
+journalctl -u nested-vm
+
 if [ -z "$EMAIL" ]; then
     echo "No email provided to make the registration"
 elif [ -z "$PASS" ]; then
@@ -34,3 +36,4 @@ else
     echo "Registering device (with pass): $SCRIPT"
     sshpass -p $PASS ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p $DEVICE_PORT $USER@$DEVICE_IP "$SCRIPT"
 fi
+
