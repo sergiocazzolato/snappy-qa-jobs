@@ -17,18 +17,17 @@ if test "$(lsb_release -cs)" = focal; then
     export GOPATH="$GOHOME"
     export SPREAD_PATH="$GOHOME"
     export PROJECT_PATH="$GOHOME/src/github.com/snapcore/snapd"
+    export SPREAD_SYSTEM=ubuntu-20.04-64
   
     # Create test user
-    sudo adduser --quiet --disabled-password --gecos '' test
-    echo test:ubuntu | sudo chpasswd
-    echo 'test ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/create-user-test
-  
+    sudo groupadd --gid 12345 test
+    adduser --uid 12345 --gid 12345 --disabled-password --gecos '' test
+    
     # Build snapd
     "$TESTSLIB"/prepare-restore.sh --prepare-project
 
     # Define variables used to the nested vm
     export NESTED_TYPE=core
-    export SPREAD_SYSTEM=ubuntu-20.04-64
     export SPREAD_BACKEND=external
     export NESTED_ARCHITECTURE=$1
     export CORE_CHANNEL=edge
