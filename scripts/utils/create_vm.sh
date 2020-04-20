@@ -19,7 +19,7 @@ if test "$(lsb_release -cs)" = focal; then
     export PROJECT_PATH="$GOHOME/src/github.com/snapcore/snapd"
   
     # Create test user
-    sudo adduser --extrausers --quiet --disabled-password --gecos '' test
+    sudo adduser --quiet --disabled-password --gecos '' test
     echo test:ubuntu | sudo chpasswd
     echo 'test ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/create-user-test
   
