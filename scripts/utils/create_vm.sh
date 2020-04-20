@@ -8,6 +8,25 @@ sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-ima
 sudo snap install ubuntu-image --classic
 
 if test "$(lsb_release -cs)" = focal; then
+    # Install snapd and add variables
+    mkdir -p /home/gopath
+    git clone https://github.com/snapcore/snapd.git snapd-master
+    export TESTSLIB=./snapd-master/tests/lib
+    export PATH="$PATH:$TESTSLIB/bin"
+    export GOHOME=/home/gopath
+    export GOPATH="$GOHOME"
+    export SPREAD_PATH="$GOHOME"
+    export PROJECT_PATH="$GOHOME/src/github.com/snapcore/snapd"
+  
+    # Create test user
+    sudo adduser --extrausers --quiet --disabled-password --gecos '' test
+    echo test:ubuntu | sudo chpasswd
+    echo 'test ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/create-user-test
+  
+    # Build snapd
+    "$TESTSLIB"/prepare-restore.sh --prepare-project
+
+    # Define variables used to the nested vm
     export NESTED_TYPE=core
     export SPREAD_SYSTEM=ubuntu-20.04-64
     export SPREAD_BACKEND=external
@@ -18,17 +37,7 @@ if test "$(lsb_release -cs)" = focal; then
     export ENABLE_SECURE_BOOT=true
     export ENABLE_TPM=true
 
-    mkdir -p /home/gopath
-
-    git clone https://github.com/snapcore/snapd.git snapd-master
-    export TESTSLIB=./snapd-master/tests/lib
-    export PATH="$PATH:$TESTSLIB/bin"
-    export GOHOME=/home/gopath
-    export GOPATH="$GOHOME"
-    export SPREAD_PATH="$GOHOME"
-    export PROJECT_PATH="$GOHOME/src/github.com/snapcore/snapd"
-  
-    "$TESTSLIB"/prepare-restore.sh --prepare-project
+    # Create and run nested vm
     . "$TESTSLIB"/nested.sh
     create_nested_core_vm
     start_nested_core_vm
