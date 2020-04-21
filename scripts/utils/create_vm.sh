@@ -11,13 +11,13 @@ if test "$(lsb_release -cs)" = focal; then
     # Install snapd and add variables
     mkdir -p /home/gopath
     git clone https://github.com/snapcore/snapd.git snapd-master
+    export PROJECT_PATH="./snapd-master"
     export TESTSLIB=./snapd-master/tests/lib
-    export PATH="$PATH:$TESTSLIB/bin"
     export GOHOME=/home/gopath
     export GOPATH="$GOHOME"
     export SPREAD_PATH="$GOHOME"
-    export PROJECT_PATH="$GOHOME/src/github.com/snapcore/snapd"
     export SPREAD_SYSTEM=ubuntu-20.04-64
+    export PATH="$GOHOME/bin:/snap/bin:$PATH:/usr/lib/go-1.6/bin:/var/lib/snapd/snap/bin:$TESTSLIB/bin"
   
     # Create test user
     sudo groupadd --gid 12345 test
