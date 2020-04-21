@@ -24,7 +24,7 @@ if test "$(lsb_release -cs)" = focal; then
     adduser --uid 12345 --gid 12345 --disabled-password --gecos '' test
     
     echo "installing snapd build dependencies"
-    sudo apt install golang
+    sudo apt install -y golang
 
     # Build snapd
     "$TESTSLIB"/prepare-restore.sh --prepare-project
