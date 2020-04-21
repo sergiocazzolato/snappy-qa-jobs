@@ -23,17 +23,6 @@ if test "$(lsb_release -cs)" = focal; then
     export SPREAD_PATH="$GOHOME"
     export SPREAD_SYSTEM=ubuntu-20.04-64
     export PATH="$GOHOME/bin:/snap/bin:$PATH:/usr/lib/go-1.6/bin:/var/lib/snapd/snap/bin:$TESTSLIB/bin"
-  
-    # Create test user
-    sudo groupadd --gid 12345 test
-    adduser --uid 12345 --gid 12345 --disabled-password --gecos '' test
-    
-    echo "installing snapd build dependencies"
-    sudo apt install -y golang
-    go get -u github.com/kardianos/govendor
-
-    # Build snapd
-    "$TESTSLIB"/prepare-restore.sh --prepare-project
 
     # Define variables used to the nested vm
     export NESTED_TYPE=core
@@ -44,6 +33,19 @@ if test "$(lsb_release -cs)" = focal; then
     export USE_CLOUD_INIT=true
     export ENABLE_SECURE_BOOT=true
     export ENABLE_TPM=true
+  
+    # Create test user
+    sudo groupadd --gid 12345 test
+    adduser --uid 12345 --gid 12345 --disabled-password --gecos '' test
+    
+    echo "installing snapd build dependencies"
+    sudo apt install -y golang
+    go get -u github.com/kardianos/govendor
+
+    # Build snapd
+    if [ "$BUILD_FROM_CURRENT" == "true" ]; then
+        "$TESTSLIB"/prepare-restore.sh --prepare-project
+    fi
 
     # Create and run nested vm
     . "$TESTSLIB"/nested.sh
