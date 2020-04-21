@@ -3,7 +3,7 @@ set -x
 
 echo "Creating vm"
 
-echo "installing dependencies"
+echo "installing nested dependencies"
 sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git
 sudo snap install ubuntu-image --classic
 
@@ -23,6 +23,9 @@ if test "$(lsb_release -cs)" = focal; then
     sudo groupadd --gid 12345 test
     adduser --uid 12345 --gid 12345 --disabled-password --gecos '' test
     
+    echo "installing snapd build dependencies"
+    sudo apt install golang
+
     # Build snapd
     "$TESTSLIB"/prepare-restore.sh --prepare-project
 
