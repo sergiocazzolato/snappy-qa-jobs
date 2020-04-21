@@ -15,7 +15,9 @@ BUILD_SNAPD=$4
 if test "$(lsb_release -cs)" = focal; then
     # Install snapd and add variables
     mkdir -p /home/gopath
-    git clone https://github.com/snapcore/snapd.git snapd-master
+    wget https://github.com/snapcore/snapd/archive/master.zip
+    unzip -q master.zip
+
     export PROJECT_PATH="./snapd-master"
     export TESTSLIB=./snapd-master/tests/lib
     export GOHOME=/home/gopath
