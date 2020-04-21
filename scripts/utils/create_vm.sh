@@ -47,6 +47,9 @@ if test "$(lsb_release -cs)" = focal; then
         "$TESTSLIB"/prepare-restore.sh --prepare-project
     fi
 
+    # Update the memory used by the vm until is it possible to configure it
+    sed -i -e 's/-m 4096/-m 2048/g'" $TESTSLIB"/nested.sh
+
     # Create and run nested vm
     . "$TESTSLIB"/nested.sh
     create_nested_core_vm
