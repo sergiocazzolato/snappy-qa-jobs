@@ -9,6 +9,8 @@ export TF_CLIENT=${TF_CLIENT:-"/snap/bin/testflinger-cli"}
 export TF_DATA=${TF_DATA:-"/var/snap/testflinger-cli/current"}
 export GOPATH=$WORKSPACE/gopath
 
+export BUILD_SNAPD=${BUILD_SNAPD:-false}
+
 export DEVICE_USER=${DEVICE_USER:-"ubuntu"}
 export DEVICE_PASS=${DEVICE_PASS:-""}
 export DEVICE_PORT=${DEVICE_PORT:-22}

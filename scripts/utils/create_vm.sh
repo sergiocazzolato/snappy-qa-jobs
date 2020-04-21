@@ -7,6 +7,11 @@ echo "installing nested dependencies"
 sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git
 sudo snap install ubuntu-image --classic
 
+ARCHITECTURE=$1
+IMAGE_URL=$2
+USER_ASSERTION_URL=$3
+BUILD_SNAPD=$4
+
 if test "$(lsb_release -cs)" = focal; then
     # Install snapd and add variables
     mkdir -p /home/gopath
@@ -33,9 +38,9 @@ if test "$(lsb_release -cs)" = focal; then
     # Define variables used to the nested vm
     export NESTED_TYPE=core
     export SPREAD_BACKEND=external
-    export NESTED_ARCHITECTURE=$1
+    export NESTED_ARCHITECTURE="$ARCHITECTURE"
     export CORE_CHANNEL=edge
-    export BUILD_FROM_CURRENT=true
+    export BUILD_FROM_CURRENT="$BUILD_SNAPD"
     export USE_CLOUD_INIT=true
     export ENABLE_SECURE_BOOT=true
     export ENABLE_TPM=true
@@ -46,10 +51,6 @@ if test "$(lsb_release -cs)" = focal; then
     start_nested_core_vm
     echo "VM Ready"
 else
-    ARCHITECTURE=$1
-    IMAGE_URL=$2
-    USER_ASSERTION_URL=$3
-
     execute_remote(){
         sshpass -p ubuntu ssh -p $PORT -q -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user1@localhost "$*"
     }
