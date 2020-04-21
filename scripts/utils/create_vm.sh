@@ -25,6 +25,7 @@ if test "$(lsb_release -cs)" = focal; then
     
     echo "installing snapd build dependencies"
     sudo apt install -y golang
+    go get -u github.com/kardianos/govendor
 
     # Build snapd
     "$TESTSLIB"/prepare-restore.sh --prepare-project
