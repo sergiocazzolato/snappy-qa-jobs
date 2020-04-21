@@ -34,21 +34,21 @@ if test "$(lsb_release -cs)" = focal; then
     export ENABLE_SECURE_BOOT=true
     export ENABLE_TPM=true
   
-    # Create test user
-    sudo groupadd --gid 12345 test
-    adduser --uid 12345 --gid 12345 --disabled-password --gecos '' test
-    
-    echo "installing snapd build dependencies"
-    sudo apt install -y golang
-    go get -u github.com/kardianos/govendor
-
-    # Build snapd
     if [ "$BUILD_FROM_CURRENT" == "true" ]; then
+         # Create test user
+        sudo groupadd --gid 12345 test
+        adduser --uid 12345 --gid 12345 --disabled-password --gecos '' test
+
+        # Build snapd
+        echo "installing snapd build dependencies"
+        sudo apt install -y golang
+        go get -u github.com/kardianos/govendor
+
         "$TESTSLIB"/prepare-restore.sh --prepare-project
     fi
 
     # Update the memory used by the vm until is it possible to configure it
-    sed -i -e 's/-m 4096/-m 2048/g'" $TESTSLIB"/nested.sh
+    sed -i -e 's/-m 4096/-m 2048/g' "$TESTSLIB"/nested.sh
 
     # Create and run nested vm
     . "$TESTSLIB"/nested.sh
