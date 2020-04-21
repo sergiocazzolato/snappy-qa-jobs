@@ -4,7 +4,7 @@ set -x
 echo "Creating vm"
 
 echo "installing nested dependencies"
-sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git
+sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git unzip
 sudo snap install ubuntu-image --classic
 
 ARCHITECTURE=$1
