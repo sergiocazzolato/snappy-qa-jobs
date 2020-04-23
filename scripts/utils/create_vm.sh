@@ -50,7 +50,7 @@ if test "$(lsb_release -cs)" = focal; then
     fi
 
     # Update the memory used by the vm until is it possible to configure it
-    sed -i -e 's/-m 4096/-m 6144/g' "$TESTSLIB"/nested.sh
+    sed -i -e 's/-m 4096/-m 2048/g' "$TESTSLIB"/nested.sh
 
     # Create and run nested vm
     . "$TESTSLIB"/nested.sh
