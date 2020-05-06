@@ -195,7 +195,7 @@ check_install_snap(){
     fi
 
     # Retry until the core is ready to install a snap and remove it
-    retry_until "sudo snap install --devmode $snap_name" "$snap_name .* installed" 20 10
+    retry_until "sudo snap install --edge $snap_name" "$snap_name .* installed" 20 10
     execute_remote "sudo snap remove $snap_name"
 }
 
