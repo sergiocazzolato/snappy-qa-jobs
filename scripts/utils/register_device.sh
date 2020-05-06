@@ -25,8 +25,6 @@ SCRIPT="( snap list core &>/dev/null && sudo snap install --edge jq ) || (snap l
         sudo snap create-user $EMAIL; \
         sudo snap remove jq jq-core18 jq-core20"
 
-journalctl -u nested-vm
-
 if [ -z "$EMAIL" ]; then
     echo "No email provided to make the registration"
 elif [ -z "$PASS" ]; then

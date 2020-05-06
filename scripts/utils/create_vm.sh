@@ -178,7 +178,7 @@ EOF
         prepare_ssh
     else
         echo "ssh not established, exiting..."
-        journalctl -u nested-vm
+        journalctl -u nested-vm -n 100
         exit 1
     fi
 
