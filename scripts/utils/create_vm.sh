@@ -35,6 +35,7 @@ if test "$(lsb_release -cs)" = focal; then
     export USE_CLOUD_INIT=true
     export ENABLE_SECURE_BOOT=true
     export ENABLE_TPM=true
+    export CUSTOM_IMAGE_URL="$IMAGE_URL"
   
     if [ "$BUILD_FROM_CURRENT" == "true" ]; then
          # Create test user
