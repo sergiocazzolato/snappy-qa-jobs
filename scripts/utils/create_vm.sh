@@ -4,7 +4,15 @@ set -x
 echo "Creating vm"
 
 echo "installing nested dependencies"
-sudo apt install -y snapd qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git unzip
+sudo apt install -y qemu qemu-utils genisoimage sshpass qemu-kvm cloud-image-utils ovmf kpartx git unzip
+
+echo "installing snapd from ppa with version 2.45"
+sudo apt-add-repository -y http://ppa.launchpad.net/snappy-dev/image/ubuntu
+sudo apt update
+sudo apt install -y snapd
+
+echo "Installing snaps needed"
+sudo snap install core --beta
 sudo snap install ubuntu-image --classic
 
 ARCHITECTURE=$1
@@ -178,7 +186,7 @@ EOF
         prepare_ssh
     else
         echo "ssh not established, exiting..."
-        journalctl -u nested-vm -n 100
+        journalctl -u nested-vm -n 150
         exit 1
     fi
 
