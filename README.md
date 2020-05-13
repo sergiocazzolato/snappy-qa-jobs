@@ -84,8 +84,7 @@ It is possible to use older images too to validate the refresh scenario.
 
 #### Core 20
 
-    amd64: sudo kvm -snapshot -smp 2 -m 2000 -net nic,model=virtio -net user,hostfwd=tcp::8022-:22 -bios /usr/share/OVMF/OVMF_CODE.fd -serial mon:stdio <PATH_TO_VM_IMAGE>    
-    i386: sudo kvm -snapshot -smp 2 -m 2000 -net nic,model=virtio -net user,hostfwd=tcp::8023-:22 -bios /usr/share/OVMF/OVMF_CODE.fd -serial mon:stdio <PATH_TO_VM_IMAGE>
+    amd64: sudo qemu-system-x86_64 -smp 2 -m 2048 -snapshot -net nic,model=virtio -net user,hostfwd=tcp::8022-:22 -drive file=/usr/share/OVMF/OVMF_CODE.fd,if=pflash,format=raw,unit=0,readonly=on -drive  file=<PATH_TO_VM_IMAGE>,cache=none,format=raw,id=disk1,if=none -device virtio-blk-pci,drive=disk1,bootindex=1 -machine accel=kvm
 
     Note: it is needed to install ovmf package as dependency
 
