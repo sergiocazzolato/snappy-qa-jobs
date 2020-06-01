@@ -16,7 +16,7 @@ checklists:
     Results:
         - name: pi3
           default: true
-        - name: dragonboard
+        - name: pi4
           default: true
         - name: pc-amd64
           default: false
@@ -25,7 +25,7 @@ checklists:
     Executions:
         - name: pi3
           default: false
-        - name: dragonboard
+        - name: pi4
           default: false
         - name: pc-amd64
           default: false

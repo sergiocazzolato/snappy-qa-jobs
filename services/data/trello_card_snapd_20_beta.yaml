@@ -22,9 +22,9 @@ checklists:
           default: false
         - name: pi3-refresh-20
           default: false
-        - name: dragonboard-20
+        - name: pi4-20
           default: false
-        - name: dragonboard-refresh-20
+        - name: pi4-refresh-20
           default: false
         - name: pc-amd64-20
           default: false
@@ -43,9 +43,9 @@ checklists:
           default: false
         - name: pi3-refresh-20
           default: false
-        - name: dragonboard-20
+        - name: pi4-20
           default: false
-        - name: dragonboard-refresh-20
+        - name: pi4-refresh-20
           default: false
         - name: pc-amd64-20
           default: false
