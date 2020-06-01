@@ -22,11 +22,11 @@ rm -rf "$PROJECT_NAME"-master "$PROJECT_NAME"
 if [ -n "$PROJECT_URL" ]; then
 	git clone "$PROJECT_URL" "$PROJECT_NAME"	
 else
-	if [ "$PROJECT_NAME" == '$SNAPD_NAME' ]; then
+	if [ "$PROJECT_NAME" == "$SNAPD_NAME" ]; then
 		wget "$SNAPD_ZIP"
-	elif [ "$PROJECT_NAME" == '$CCONF_NAME' ]; then
+	elif [ "$PROJECT_NAME" == "$CCONF_NAME" ]; then
 		wget "$CCONF_ZIP"
-	elif [ "$PROJECT_NAME" == '$JOBS_NAME' ]; then
+	elif [ "$PROJECT_NAME" == "$JOBS_NAME" ]; then
 		wget "$JOBS_ZIP"
 	else
 		echo "Project configuration not supported, exiting..."
