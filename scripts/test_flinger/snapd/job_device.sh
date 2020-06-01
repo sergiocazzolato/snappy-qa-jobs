@@ -32,8 +32,7 @@ test_data:
         sudo apt install -y git curl sshpass jq
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
-        git clone $SNAPD_URL $PROJECT
-        (cd $PROJECT && git checkout $BRANCH && git checkout $COMMIT)
+        "$JOBS_PROJECT/scripts/utils/get_project.sh" "$SNAPD_URL" "$PROJECT" "$BRANCH" "$COMMIT"
         $PRE_HOOK
         . $PROJECT/tests/lib/external/prepare-ssh.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER"
         . $JOBS_PROJECT/scripts/utils/register_device.sh "$DEVICE_IP" "$DEVICE_PORT" "$TEST_USER" "$TEST_PASS" "$REGISTER_EMAIL"

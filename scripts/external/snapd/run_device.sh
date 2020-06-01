@@ -1,7 +1,6 @@
 #!/bin/bash
 
-git clone $SNAPD_URL $PROJECT
-
+"$SCRIPTS_DIR/utils/get_project.sh" "$SNAPD_URL" "$PROJECT" "" ""
 
 . "$SCRIPTS_DIR/utils/snap_info.sh"
 sudo apt install -y jq

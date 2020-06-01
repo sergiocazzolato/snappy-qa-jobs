@@ -17,8 +17,7 @@ test_data:
         ssh ${DEVICE_USER}@${DEVICE_IP} "sudo apt install -y git curl jq sshpass"
         ssh ${DEVICE_USER}@${DEVICE_IP} "git clone $JOBS_URL"
         ssh ${DEVICE_USER}@${DEVICE_IP} "(cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)"
-        ssh ${DEVICE_USER}@${DEVICE_IP} "git clone $CCONF_URL $PROJECT"
-        ssh ${DEVICE_USER}@${DEVICE_IP} "(cd $PROJECT && git checkout $BRANCH)"
+        ssh ${DEVICE_USER}@${DEVICE_IP} "$JOBS_PROJECT/scripts/utils/get_project.sh $CCONF_URL $PROJECT $BRANCH ''"
         $PRE_HOOK
         ssh ${DEVICE_USER}@${DEVICE_IP} "sudo $JOBS_PROJECT/scripts/utils/create_vm.sh \"$ARCH\" \"$IMAGE_URL\" \"$USER_ASSERTION_URL\" \"$BUILD_SNAPD\""
         ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/register_device.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$REGISTER_EMAIL\""

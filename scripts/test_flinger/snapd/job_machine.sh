@@ -35,8 +35,7 @@ test_data:
         sudo apt install -y git curl sshpass jq
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
-        git clone $SNAPD_URL $PROJECT
-        (cd $PROJECT && git checkout $BRANCH && git checkout $COMMIT)
+        "$JOBS_PROJECT/scripts/utils/get_project.sh" "$SNAPD_URL" "$PROJECT" "$BRANCH" "$COMMIT"
         $PRE_HOOK
         . $JOBS_PROJECT/scripts/utils/add_test_user.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "generic" "ubuntu" "$TEST_USER_TYPE"
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP" || true

@@ -8,7 +8,7 @@ elif [ "$BRANCH" = edge ]; then
 	BRANCH=$(get_edge_commit "$ARCH")
 fi
 
-git clone $SNAPD_URL $PROJECT
+"$SCRIPTS_DIR/utils/get_project.sh" "$SNAPD_URL" "$PROJECT" "" ""
 (cd $PROJECT && git reset --hard origin && git fetch origin && git checkout $BRANCH && git pull && git checkout $COMMIT)
 $PRE_HOOK
 . "$SCRIPTS_DIR/utils/get_spread.sh"
