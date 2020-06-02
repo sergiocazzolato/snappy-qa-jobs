@@ -155,10 +155,10 @@ export QEMU=$(get_qemu_for_nested_vm)
 mkdir -p "$WORK_DIR"
 
 if [[ "$IMAGE_URL" == *.img.xz ]]; then
-    curl -L -o "$WORK_DIR/ubuntu-core.img.xz" "$IMAGE_URL"
+    wget -O "$WORK_DIR/ubuntu-core.img.xz" "$IMAGE_URL"
     unxz "$WORK_DIR/ubuntu-core.img.xz"
 elif [[ "$IMAGE_URL" == *.img ]]; then
-    curl -L -o "$WORK_DIR/ubuntu-core.img" "$IMAGE_URL"
+    wget -O "$WORK_DIR/ubuntu-core.img" "$IMAGE_URL"
 else
     echo "Image extension not supported, exiting..."
     exit 1
