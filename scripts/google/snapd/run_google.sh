@@ -1,7 +1,7 @@
 #!/bin/bash
 
 . "$SCRIPTS_DIR/utils/snap_info.sh"
-sudo apt install -y jq
+sudo apt install -y jq unzip
 if [ "$BRANCH" = beta ]; then
 	BRANCH=$(get_beta_branch "$ARCH")
 elif [ "$BRANCH" = edge ]; then

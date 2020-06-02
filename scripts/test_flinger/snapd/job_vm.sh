@@ -24,7 +24,7 @@ test_data:
     test_cmds: |
         #!/bin/bash
         ssh ${DEVICE_USER}@${DEVICE_IP} "sudo apt update || ps aux | grep apt"
-        ssh ${DEVICE_USER}@${DEVICE_IP} "sudo apt install -y git curl jq sshpass"
+        ssh ${DEVICE_USER}@${DEVICE_IP} "sudo apt install -y git curl jq sshpass unzip"
         ssh ${DEVICE_USER}@${DEVICE_IP} "git clone $JOBS_URL"
         ssh ${DEVICE_USER}@${DEVICE_IP} "(cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)"
         ssh ${DEVICE_USER}@${DEVICE_IP} "$JOBS_PROJECT/scripts/utils/get_project.sh $SNAPD_URL $PROJECT $BRANCH ''"

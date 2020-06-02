@@ -32,7 +32,7 @@ test_data:
     test_cmds: |
         #!/bin/bash
         sudo apt update || ps aux | grep apt
-        sudo apt install -y git curl sshpass jq
+        sudo apt install -y git curl sshpass jq unzip
         git clone $JOBS_URL
         (cd $JOBS_PROJECT && git checkout $JOBS_BRANCH)
         "$JOBS_PROJECT/scripts/utils/get_project.sh" "$SNAPD_URL" "$PROJECT" "$BRANCH" "$COMMIT"
