@@ -114,7 +114,7 @@ create_cloud_init_config_uc20(){
       echo test
 EOF
 
-    loop=$(kpartx -avs "$WORK_DIR/image/ubuntu-core.img" | sed -n 2p | awk '{print $3}')
+    loop=$(kpartx -avs "$WORK_DIR/ubuntu-core.img" | sed -n 2p | awk '{print $3}')
     tmp=$(mktemp -d)
 
     mount "/dev/mapper/$loop" "$tmp"
