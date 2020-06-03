@@ -14,26 +14,38 @@ checklists:
         - name: Can be Archived
           default: false
     Results:
-        - name: pi2-refresh-20
+        - name: pi2-refresh-18
+          default: false
+        - name: pi3-refresh-18
           default: false
         - name: pi3-refresh-20
           default: false
-        - name: dragonboard-refresh-20
+        - name: dragonboard-refresh-18
+          default: false
+        - name: pi4-refresh-20
+          default: false
+        - name: pc-amd64-refresh-18
           default: false
         - name: pc-amd64-refresh-20
           default: false
-        - name: pc-i386-refresh-20
+        - name: pc-i386-refresh-18
           default: false
     Executions:
-        - name: pi2-refresh-20
+        - name: pi2-refresh-18
+          default: false
+        - name: pi3-refresh-18
           default: false
         - name: pi3-refresh-20
           default: false
-        - name: dragonboard-refresh-20
+        - name: dragonboard-refresh-18
+          default: false
+        - name: pi4-refresh-20
+          default: false
+        - name: pc-amd64-refresh-18
           default: false
         - name: pc-amd64-refresh-20
           default: false
-        - name: pc-i386-refresh-20
+        - name: pc-i386-refresh-18
           default: false
 complete:
     sign:
