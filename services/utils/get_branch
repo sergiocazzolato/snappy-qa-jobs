@@ -7,6 +7,8 @@ if git ls-remote --tags https://github.com/snapcore/snapd.git "$VERSION" | grep 
     echo "$VERSION"
 elif git ls-remote --heads https://github.com/snapcore/snapd.git "release/$VERSION" | grep -q "$VERSION"; then
     echo "release/$VERSION"
+elif echo "$VERSION" | grep -q '+git'; then
+	echo "$VERSION" | sed 's/\+git.*//'
 else
     echo "branch not found"
     exit 1
