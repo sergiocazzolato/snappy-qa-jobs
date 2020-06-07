@@ -1,26 +1,26 @@
 #!/bin/bash
 
-SNAPD_NAME=snapd
-SNAPD_ZIP=https://github.com/snapcore/snapd/archive/master.zip
-CCONF_NAME=console-conf-tests
-CCONF_ZIP=https://github.com/sergiocazzolato/console-conf-tests/archive/master.zip
-JOBS_NAME=snappy-qa-jobs
-JOBS_ZIP=https://github.com/sergiocazzolato/snappy-qa-jobs/archive/master.zip
-
 PROJECT_URL=$1
 PROJECT_NAME=$2
-BRANCH=${3:-}
+BRANCH=${3:-master}
 COMMIT=${4:-}
+
+SNAPD_NAME=snapd
+SNAPD_ZIP="https://github.com/snapcore/snapd/archive/$BRANCH.zip"
+CCONF_NAME=console-conf-tests
+CCONF_ZIP="https://github.com/sergiocazzolato/console-conf-tests/archive/$BRANCH.zip"
+JOBS_NAME=snappy-qa-jobs
+JOBS_ZIP="https://github.com/sergiocazzolato/snappy-qa-jobs/archive/$BRANCH.zip"
 
 if [ -z "$PROJECT_NAME" ]; then
 	echo "Project name cannot be empty, exiting..."
 	exit 1
 fi
 
-rm -rf "$PROJECT_NAME"-master "$PROJECT_NAME"
+rm -rf "$PROJECT_NAME"-"$BRANCH" "$PROJECT_NAME"
 
 if [ -n "$PROJECT_URL" ]; then
-	git clone "$PROJECT_URL" "$PROJECT_NAME"	
+	git clone --branch "$BRANCH" --progress "$PROJECT_URL" "$PROJECT_NAME"	
 else
 	if [ "$PROJECT_NAME" == "$SNAPD_NAME" ]; then
 		wget "$SNAPD_ZIP"
@@ -32,13 +32,10 @@ else
 		echo "Project configuration not supported, exiting..."
 		exit 1
 	fi
-	unzip -q master.zip
-	mv "$PROJECT_NAME"-master "$PROJECT_NAME"
+	unzip -q "$BRANCH.zip"
+	mv "$PROJECT_NAME"-"$BRANCH" "$PROJECT_NAME"
 fi
 
-if [ -n "$BRANCH" ]; then
-	( cd "$PROJECT_NAME" && git checkout "$BRANCH" )
-fi
 if [ -n "$COMMIT" ]; then
 	( cd "$PROJECT_NAME" && git checkout "$COMMIT" )
 fi
