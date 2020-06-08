@@ -19,8 +19,8 @@ fi
 
 rm -rf "$PROJECT_NAME"-"$BRANCH" "$PROJECT_NAME"
 
-if [ -n "$PROJECT_URL" ]; then
-	GIT_TRACE_PACKET=1 git clone --branch "$BRANCH" --progress "$PROJECT_URL" "$PROJECT_NAME"
+if [ -n "$PROJECT_URL" ] && [ ! "$PROJECT_URL" = 'default' ] ; then
+	git clone --branch "$BRANCH" --progress "$PROJECT_URL" "$PROJECT_NAME"
 else
 	if [ "$PROJECT_NAME" == "$SNAPD_NAME" ]; then
 		wget "$SNAPD_ZIP"
