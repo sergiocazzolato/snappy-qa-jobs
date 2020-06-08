@@ -20,7 +20,7 @@ fi
 rm -rf "$PROJECT_NAME"-"$BRANCH" "$PROJECT_NAME"
 
 if [ -n "$PROJECT_URL" ]; then
-	git clone --branch "$BRANCH" --progress --single-branch --ipv4 "$PROJECT_URL" "$PROJECT_NAME"
+	GIT_TRACE=1 git clone --branch "$BRANCH" --progress "$PROJECT_URL" "$PROJECT_NAME"
 else
 	if [ "$PROJECT_NAME" == "$SNAPD_NAME" ]; then
 		wget "$SNAPD_ZIP"
