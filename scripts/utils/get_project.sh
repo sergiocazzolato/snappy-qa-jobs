@@ -20,8 +20,7 @@ fi
 rm -rf "$PROJECT_NAME"-"$BRANCH" "$PROJECT_NAME"
 
 if [ -n "$PROJECT_URL" ]; then
-	export GIT_HTTP_MAX_REQUEST_BUFFER=100M
-	git clone --branch "$BRANCH" --progress "$PROJECT_URL" "$PROJECT_NAME"
+	git clone --branch "$BRANCH" --progress -v "$PROJECT_URL" "$PROJECT_NAME"
 else
 	if [ "$PROJECT_NAME" == "$SNAPD_NAME" ]; then
 		wget "$SNAPD_ZIP"
