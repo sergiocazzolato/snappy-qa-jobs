@@ -15,9 +15,9 @@ checklists:
           default: false
     Results:
         - name: pi3
-          default: true
+          default: false
         - name: pi4
-          default: true
+          default: false
         - name: pc-amd64
           default: false
         - name: pc-i386
