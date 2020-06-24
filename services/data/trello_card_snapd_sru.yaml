@@ -12,7 +12,7 @@ checklists:
           default: false
         - name: Eoan - http://people.canonical.com/~ubuntu-archive/proposed-migration/eoan/update_excuses.html#snapd
           default: false
-        - name: Focal - http://people.canonical.com/~ubuntu-archive/proposed-migration/disco/update_excuses.html#snapd
+        - name: Focal - http://people.canonical.com/~ubuntu-archive/proposed-migration/focal/update_excuses.html#snapd
           default: false
     Manual checks:
         - name: Review changelog
