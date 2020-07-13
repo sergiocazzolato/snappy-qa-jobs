@@ -36,7 +36,7 @@ wait_system_ready(){
     retry_until "snap changes" "Done.*Initialize system state" 20 5
 
     # Wait for seeding to finish.
-    execute_remote "snap wait system seed.loaded"
+    execute_remote "sudo snap wait system seed.loaded"
 }
 
 wait_for_ssh(){
