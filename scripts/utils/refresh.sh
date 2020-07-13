@@ -33,7 +33,10 @@ wait_system_ready(){
     retry_until "command -v snap" "/usr/bin/snap"
 
     # Wait for seeding to finish.
-    execute_remote "sudo snap wait system seed.loaded"
+    execute_remote "snap changes || true"
+
+    # Wait for seeding to finish.
+    execute_remote "snap wait system seed.loaded"
 }
 
 wait_for_ssh(){
