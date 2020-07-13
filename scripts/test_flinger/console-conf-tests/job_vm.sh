@@ -20,8 +20,8 @@ test_data:
         ssh ${DEVICE_USER}@${DEVICE_IP} "$JOBS_PROJECT/scripts/utils/get_project.sh \"$CCONF_URL\" \"$PROJECT\" \"$BRANCH\" ''"
         $PRE_HOOK
         ssh ${DEVICE_USER}@${DEVICE_IP} "sudo $JOBS_PROJECT/scripts/utils/create_vm.sh \"$ARCH\" \"$IMAGE_URL\" \"$USER_ASSERTION_URL\" \"$BUILD_SNAPD\""
-        ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/register_device.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$REGISTER_EMAIL\""
         ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/refresh.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$CHANNEL\" \"$CORE_CHANNEL\" \"$SNAPD_CHANNEL\""
+        ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/register_device.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$REGISTER_EMAIL\""
         ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/run_setup.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$SETUP\""
         ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/get_spread.sh"
         ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/run_spread.sh \"$HOST\" \"$PORT\" \"$PROJECT\" \"$SPREAD_TESTS\" \"$SPREAD_ENV\" \"$SKIP_TESTS\" \"$SPREAD_PARAMS\""
