@@ -28,6 +28,14 @@ execute_remote(){
     fi    
 }
 
+wait_system_ready(){
+    # Wait for the snap command to become available.
+    retry_until "command -v snap" "/usr/bin/snap"
+
+    # Wait for seeding to finish.
+    execute_remote "sudo snap wait system seed.loaded"
+}
+
 wait_for_ssh(){
     local retries=$1
     local sleep=$2
@@ -199,6 +207,8 @@ check_install_snap(){
     execute_remote "sudo snap remove $snap_name"
 }
 
+echo "Waiting system is ready"
+wait_system_ready
 
 echo "Snaps install before refresh"
 execute_remote "snap list"

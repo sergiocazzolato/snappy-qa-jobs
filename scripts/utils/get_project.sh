@@ -17,23 +17,27 @@ if [ -z "$PROJECT_NAME" ]; then
 	exit 1
 fi
 
-rm -rf "$PROJECT_NAME"-"$BRANCH" "$PROJECT_NAME"
-
-if [ -n "$PROJECT_URL" ] && [ ! "$PROJECT_URL" = 'default' ] ; then
-	git clone --branch "$BRANCH" --progress "$PROJECT_URL" "$PROJECT_NAME"
+if [ -d "$PROJECT_NAME" ]; then
+	( cd "$PROJECT_NAME" && git reset --hard origin && git fetch origin && git checkout "$BRANCH" && git pull )
 else
-	if [ "$PROJECT_NAME" == "$SNAPD_NAME" ]; then
-		wget "$SNAPD_ZIP"
-	elif [ "$PROJECT_NAME" == "$CCONF_NAME" ]; then
-		wget "$CCONF_ZIP"
-	elif [ "$PROJECT_NAME" == "$JOBS_NAME" ]; then
-		wget "$JOBS_ZIP"
+	if [ -n "$PROJECT_URL" ] && [ ! "$PROJECT_URL" = 'default' ] ; then
+		git clone --branch "$BRANCH" --progress "$PROJECT_URL" "$PROJECT_NAME"
 	else
-		echo "Project configuration not supported, exiting..."
-		exit 1
+		if [ "$PROJECT_NAME" == "$SNAPD_NAME" ]; then
+			wget "$SNAPD_ZIP"
+		elif [ "$PROJECT_NAME" == "$CCONF_NAME" ]; then
+			wget "$CCONF_ZIP"
+		elif [ "$PROJECT_NAME" == "$JOBS_NAME" ]; then
+			wget "$JOBS_ZIP"
+		else
+			echo "Project configuration not supported, exiting..."
+			exit 1
+		fi
+		rm -rf "$PROJECT_NAME"-"$BRANCH"
+		unzip -q "$BRANCH.zip"
+		mv "$PROJECT_NAME"-"$BRANCH" "$PROJECT_NAME"
+		rm -f "$BRANCH.zip"
 	fi
-	unzip -q "$BRANCH.zip"
-	mv "$PROJECT_NAME"-"$BRANCH" "$PROJECT_NAME"
 fi
 
 if [ -n "$COMMIT" ]; then
