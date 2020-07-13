@@ -75,7 +75,7 @@ retry_until(){
         retries=$(( retries - 1 ))
         if [ $retries -le 0 ]; then
             echo "Timed out reached. Aborting!"
-            exit 1
+            return 1
         fi
         sleep $sleep
     done
@@ -91,7 +91,7 @@ retry_while(){
         retries=$(( retries - 1 ))
         if [ $retries -le 0 ]; then
             echo "Timed out reached. Aborting!"
-            exit 1
+            return 1
         fi
         sleep $sleep
     done
