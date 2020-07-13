@@ -128,7 +128,7 @@ do_kernel_refresh(){
         return
     fi
 
-    output=$(execute_remote "sudo snap refresh --${refresh_channel} $kernel_name 2>&1" || true)
+    output=$(execute_remote "sudo snap refresh --channel ${refresh_channel} $kernel_name 2>&1" || true)
     if echo "$output" | grep -E "(no updates available|cannot refresh \"$kernel_name\"|is not installed)"; then
         echo "snap \"$kernel_name\" has no updates available"
     else
@@ -147,7 +147,7 @@ do_snapd_refresh(){
     local snapd_name=$(echo $snapd_line | awk '{ print $1 }')
 
     # Run update and make "|| true" to continue when the connection is closed by remote host
-    output=$(execute_remote "sudo snap refresh --${refresh_channel} $snapd_name 2>&1" || true)
+    output=$(execute_remote "sudo snap refresh --channel ${refresh_channel} $snapd_name 2>&1" || true)
     if echo "$output" | grep -E "(no updates available|cannot refresh \"$snapd_name\"|is not installed)"; then
         echo "snap \"$snapd_name\" has no updates available"
     else
@@ -165,7 +165,7 @@ do_core_refresh(){
     local core_name=$(echo $core_line | awk '{ print $1 }')
 
     # Run update and make "|| true" to continue when the connection is closed by remote host
-    output=$(execute_remote "sudo snap refresh --${refresh_channel} $core_name 2>&1" || true)
+    output=$(execute_remote "sudo snap refresh --channel ${refresh_channel} $core_name 2>&1" || true)
     if echo "$output" | grep -E "(no updates available|cannot refresh \"$core_name\"|is not installed)"; then
         echo "snap \"$core_name\" has no updates available"
     else
