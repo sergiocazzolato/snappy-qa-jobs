@@ -33,9 +33,6 @@ wait_system_ready(){
     retry_until "command -v snap" "/usr/bin/snap" 20 5
 
     # Wait for seeding to finish.
-    retry_until "snap changes" "Done.*Initialize system state" 20 5
-
-    # Wait for seeding to finish.
     execute_remote "sudo snap wait system seed.loaded"
 }
 
