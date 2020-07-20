@@ -42,6 +42,8 @@ checklists:
           default: false
         - name: pc-amd64-refresh-20
           default: true
+        - name: pc-amd64-nuc-20
+          default: false
         - name: pc-i386-18
           default: false
         - name: pc-i386-refresh-18
@@ -75,10 +77,13 @@ checklists:
           default: false
         - name: pc-amd64-refresh-20
           default: false
+        - name: pc-amd64-nuc-20
+          default: false
         - name: pc-i386-18
           default: false
         - name: pc-i386-refresh-18
           default: false
+
 complete:
     sign:
         sign-checklist: Sign-Off
