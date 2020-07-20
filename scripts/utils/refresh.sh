@@ -29,11 +29,11 @@ execute_remote(){
 }
 
 wait_system_ready(){
-    # Wait for the snap command to become available.
-    retry_until "command -v snap" "/usr/bin/snap" 20 5
+    # Wait for seeding to finish.
+    execute_remote "sudo snap refresh" || true
 
     # Wait for autorefresh is done.
-    wait_auto_refresh
+    wait_for_ssh
 
     # Wait for seeding to finish.
     execute_remote "sudo snap wait system seed.loaded"
