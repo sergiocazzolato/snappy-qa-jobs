@@ -33,7 +33,7 @@ wait_system_ready(){
     execute_remote "sudo snap refresh" || true
 
     # Wait for autorefresh is done.
-    wait_for_ssh
+    wait_for_ssh 20 5
 
     # Wait for seeding to finish.
     execute_remote "sudo snap wait system seed.loaded"
