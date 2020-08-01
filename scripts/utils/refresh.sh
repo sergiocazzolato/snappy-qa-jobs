@@ -32,6 +32,8 @@ wait_system_ready(){
     # Wait for seeding to finish.
     execute_remote "sudo snap refresh" || true
 
+    wait_for_no_ssh 5 5
+
     # Wait for autorefresh is done.
     wait_for_ssh 20 5
 
