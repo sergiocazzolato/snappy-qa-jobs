@@ -30,9 +30,10 @@ execute_remote(){
 
 wait_system_ready(){
     # Wait for seeding to finish.
-    execute_remote "sudo snap refresh" || true
-
-    wait_for_no_ssh 5 5
+    output=$(execute_remote "sudo snap refresh 2>&1" || true)
+    if echo "$output" | grep -E "snapd is about to reboot the system"; then
+        wait_for_no_ssh 20 5
+    fi
 
     # Wait for autorefresh is done.
     wait_for_ssh 20 5
