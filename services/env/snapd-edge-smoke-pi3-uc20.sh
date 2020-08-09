@@ -1,6 +1,7 @@
 #!/bin/bash
 
-export SNAP_UT=uc20
+export IMAGE_UT=cdimage
+export SNAP_UT=snapd
 export ARCH_UT=armhf
 export BOARD_UT=pi3
 export TARGET_CHANNEL=edge
