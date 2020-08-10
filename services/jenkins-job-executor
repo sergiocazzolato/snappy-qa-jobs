@@ -44,7 +44,7 @@ if [ -z "$IMAGE_UT" ]; then
 else
 	OBJECT_UT="$IMAGE_UT"
 	VERSION_UT="$TARGET_CHANNEL"
-	REVISION_UT=$(date +%Y%m%d)
+	REVISION_UT="($(date +%Y%m%d))"
 fi
 
 # Integrate results with trello board
