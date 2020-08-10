@@ -195,7 +195,7 @@ wait_auto_refresh(){
         wait_for_ssh 120 30
         
         if execute_remote "snap changes" | grep "Error.*Auto-refresh.*"; then
-            snap change --last=refresh
+            execute_remote "snap change --last=refresh"
             echo "Auto-refresh failed"
             exit 1
         fi
