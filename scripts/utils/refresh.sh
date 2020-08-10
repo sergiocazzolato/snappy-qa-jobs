@@ -39,7 +39,7 @@ wait_system_ready(){
     wait_for_ssh 60 5
 
     # Wait for seeding to finish.
-    execute_remote "sudo snap wait system seed.loaded"
+    execute_remote "sudo snap wait system seed.loaded" || true
 }
 
 wait_for_ssh(){
