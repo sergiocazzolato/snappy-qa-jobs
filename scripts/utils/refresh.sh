@@ -193,7 +193,13 @@ wait_auto_refresh(){
         echo "Auto-refresh in progress"
         retry_while "snap changes" "Doing.*Auto-refresh.*" 120 30
         wait_for_ssh 120 30
-        execute_remote "snap changes"
+        
+        if execute_remote "snap changes" | grep "Error.*Auto-refresh.*"; then
+            snap change --last=refresh
+            echo "Auto-refresh failed"
+            exit 1
+        fi
+
         retry_until "snap changes" "Done.*Auto-refresh.*" 120 4
         echo "Auto-refresh is completed"
     fi
