@@ -32,15 +32,14 @@ else
 fi
 export $TESTS_ENV
 
-
 # Run spread tests
 "${WORKSPACE}/snappy-qa-jobs/scripts/${TESTS_SCRIPT}.sh" "$TESTS_CONFIG" | tee "$SPREAD_LOG"
 
 if [ -z "$IMAGE_UT" ]; then
 	# Get version and revision for snap under test
 	OBJECT_UT="$SNAP_UT"
-	VERSION_UT=$(snap info "$SNAP_UT" | grep "${CHANNEL_UT}:" | awk '{print $2}')
-	REVISION_UT=$(snap info "$SNAP_UT" | grep "${CHANNEL_UT}:" | awk '{print $4}')
+	VERSION_UT=$(snap info "$SNAP_UT" | grep "${TARGET_CHANNEL}:" | awk '{print $2}')
+	REVISION_UT=$(snap info "$SNAP_UT" | grep "${TARGET_CHANNEL}:" | awk '{print $4}')
 else
 	OBJECT_UT="$IMAGE_UT"
 	VERSION_UT="$TARGET_CHANNEL"
