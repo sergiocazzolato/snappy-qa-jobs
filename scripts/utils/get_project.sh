@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 PROJECT_URL=$1
 PROJECT_NAME=$2
