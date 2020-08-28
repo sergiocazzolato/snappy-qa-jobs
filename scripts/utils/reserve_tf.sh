@@ -1,21 +1,28 @@
 #!/bin/bash
 
-if [ "$#" -ne 3 ] && [ "$#" -ne 4 ]; then
-    echo "Illegal number of parameters: $#"
-    i=1
-    for param in $*; do
-        echo "param $i: $param"
-        i=$(( i + 1 ))
-    done
-    exit 1
+show_help() {
+    echo "usage:    reserve_tf <DEVICE> <CHANNEL> <VERSION> [URL] [LAUNCHPAD-ID]"
+    echo "examples: reserve_tf.sh pi3 18 beta"
+    echo "          reserve_tf.sh pi4 20 beta 'https://storage.googleapis.com/spread-snapd-tests/images/pi4-20-beta/pi.img.xz' 'sergio-j-cazzolato'"
+}
+
+if [ $# -eq 0 ] || [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
+    show_help
+    exit 0
 fi
 
 DEVICE=$1
 CHANNEL=$2
 VERSION=$3
-LP_ID=${4:-sergio-j-cazzolato}
+URL=${4:-}
+LP_ID=${5:-sergio-j-cazzolato}
+
 TF_JOB=job.yaml
 TF_CLIENT=/snap/bin/testflinger-cli
+SUPPORTED_DEVICES='pi2 pi3 pi4 dragonboard'
+SUPPORTED_CHANNELS='edge beta candidate stable'
+SUPPORTED_VERSIONS='16 18 20'
+
 
 # Define the queue to use
 DEVICE_QUEUE=
@@ -28,17 +35,29 @@ elif [ "$DEVICE" = pi4 ]; then
 elif [ "$DEVICE" = dragonboard ]; then
 	DEVICE_QUEUE=dragonboard
 else
-	echo "Device not supported"
+	echo "Device $DEVICE not supported. Supported devices are: [$SUPPORTED_DEVICES]"
 	exit 1
 fi
 
-# Define the url to get
-if [ "$VERSION" != 16 ] && [[ "$DEVICE" =~ pi* ]]; then
-	IMAGE="pi.img.xz"
-else	
-	IMAGE="${DEVICE}.img.xz"
+if ! [[ "$SUPPORTED_CHANNELS" =~ "$CHANNEL" ]]; then
+	echo "Channel $CHANNEL not supported. Supported channels are: [$SUPPORTED_CHANNELS]"
+	exit 1
 fi
-URL=https://storage.googleapis.com/spread-snapd-tests/images/$DEVICE-$VERSION-$CHANNEL/$IMAGE
+
+if ! [[ "$SUPPORTED_VERSIONS" =~ "$VERSION" ]]; then
+	echo "Version $VERSION not supported. Supported verions are: [$SUPPORTED_VERSIONS]"
+	exit 1
+fi
+
+if [ -z "$URL" ]; then
+	# Define the url to get
+	if [ "$VERSION" != 16 ] && [[ "$DEVICE" =~ pi* ]]; then
+		IMAGE="pi.img.xz"
+	else	
+		IMAGE="${DEVICE}.img.xz"
+	fi
+	URL=https://storage.googleapis.com/spread-snapd-tests/images/$DEVICE-$VERSION-$CHANNEL/$IMAGE
+fi
 
 # Install testflinger client in case it is not installed
 if ! snap list testflinger-cli; then
