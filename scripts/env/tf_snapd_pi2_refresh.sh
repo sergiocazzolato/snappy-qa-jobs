@@ -11,4 +11,4 @@ export TEST_PASS=${TEST_PASS:-"ubuntu"}
 export SKIP_TESTS=${SKIP_TESTS:-"tests/main/interfaces-content,tests/main/install-sideload"}
 export CORE_CHANNEL=${CORE_CHANNEL:-"beta"}
 export SNAPD_CHANNEL=${SNAPD_CHANNEL:-"beta"}
-export SETUP=${SETUP:-""}
+export SETUP=${SETUP:-"tests/core/snapd16,tests/core/snapd-failover,tests/core/core-to-snapd-failover16,tests/core/failover"}
