@@ -11,7 +11,7 @@ BOARD_UT=$6
 ARCH_UT=$7
 SPREAD_LOG=$8
 SUMMARY_LOG=$9
-ATTACH_LOG=$10
+ATTACH_LOG=${10}
 
 # Get current dir
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
