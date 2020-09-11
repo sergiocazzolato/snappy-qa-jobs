@@ -3,13 +3,18 @@ set -ex
 
 INSTANCE_IP="${1:-localhost}"
 INSTANCE_PORT="${2:-8022}"
-USER="${3:-$(whoami)}"
-CERT_NAME="${4:-spread_external}"
-PASSPHRASE="${5:-ubuntu}"
+USER="${3:-ubuntu}"
+PASS="${4:-}"
+
+CERT_NAME="spread_external"
+PASSPHRASE="ubuntu"
 
 execute_remote() {
-    # shellcheck disable=SC2029
-    ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p "$INSTANCE_PORT" "$USER@$INSTANCE_IP" "$@"
+    if [ -z "$PASS" ]; then
+        ssh -p "$INSTANCE_PORT" -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$USER@$INSTANCE_IP" "$@"
+    else
+        sshpass -p "$PASS" ssh -p "$INSTANCE_PORT" -o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$USER@$INSTANCE_IP" "$@"
+    fi 
 }
 
 # Create certificates in case those are not stored

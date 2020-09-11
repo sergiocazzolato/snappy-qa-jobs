@@ -30,7 +30,7 @@ test_data:
         ssh ${DEVICE_USER}@${DEVICE_IP} "$JOBS_PROJECT/scripts/utils/get_project.sh \"$SNAPD_URL\" \"$PROJECT\" \"$BRANCH\" ''"
         $PRE_HOOK
         ssh ${DEVICE_USER}@${DEVICE_IP} "sudo $JOBS_PROJECT/scripts/utils/create_vm.sh \"$ARCH\" \"$IMAGE_URL\" \"$USER_ASSERTION_URL\" \"$BUILD_SNAPD\""
-        ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/add_root_key.sh \"$DEVICE_IP\" \"$DEVICE_PORT\" \"$DEVICE_USER\""
+        ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/add_root_key.sh \"$DEVICE_IP\" \"$DEVICE_PORT\" \"$TEST_USER\" \"$TEST_PASS\""
         ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/refresh.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$CHANNEL\" \"$CORE_CHANNEL\" \"$SNAPD_CHANNEL\""
         ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/register_device.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$REGISTER_EMAIL\""
         ssh ${DEVICE_USER}@${DEVICE_IP} ". $JOBS_PROJECT/scripts/utils/run_setup.sh \"$HOST\" \"$PORT\" \"$TEST_USER\" \"$TEST_PASS\" \"$SETUP\""
