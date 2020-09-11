@@ -45,7 +45,7 @@ test_data:
         $POST_SETUP_2
         . $JOBS_PROJECT/scripts/utils/run_setup.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "" "$SETUP_3" || true
         . $JOBS_PROJECT/scripts/utils/refresh.sh "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "" "$CHANNEL" "$CORE_CHANNEL" "$SNAPD_CHANNEL" || true
-        . $JOBS_PROJECT/scripts/utils/get_spread.sh
+        . $JOBS_PROJECT/scripts/utils/get_spread.sh "$SPREAD_URL"
         . $JOBS_PROJECT/scripts/utils/run_spread.sh "$DEVICE_IP" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
         $POST_HOOK
 EOF

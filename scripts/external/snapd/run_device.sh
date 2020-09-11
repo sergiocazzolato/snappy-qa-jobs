@@ -17,6 +17,6 @@ $PRE_HOOK
 . "$SCRIPTS_DIR/utils/refresh.sh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "$DEVICE_PASS" "$CHANNEL" "$CORE_CHANNEL" "$SNAPD_CHANNEL"
 . "$SCRIPTS_DIR/utils/register_device.sh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "$DEVICE_PASS" "$REGISTER_EMAIL" || true
 . "$SCRIPTS_DIR/utils/run_setup.sh" "$DEVICE_IP" "$DEVICE_PORT" "$DEVICE_USER" "$DEVICE_PASS" "$SETUP" || true
-. "$SCRIPTS_DIR/utils/get_spread.sh"
+. "$SCRIPTS_DIR/utils/get_spread.sh" "$SPREAD_URL"
 . "$SCRIPTS_DIR/utils/run_spread.sh" "$DEVICE_IP" "$DEVICE_PORT" "$PROJECT" "$SPREAD_TESTS" "$SPREAD_ENV" "$SKIP_TESTS" "$SPREAD_PARAMS"
 $POST_HOOK

@@ -7,6 +7,8 @@ export WORKSPACE=${WORKSPACE:-$(pwd)}
 export SPREAD_DIR=$WORKSPACE/spread
 export PATH=$SPREAD_DIR:$PATH
 
+SPREAD_URL=$1
+
 if [ -f "$SPREAD_DIR/spread" ]; then
     echo "Spread already downloaded"
 else
