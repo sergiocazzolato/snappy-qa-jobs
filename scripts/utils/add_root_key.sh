@@ -7,7 +7,7 @@ USER="${3:-ubuntu}"
 PASS="${4:-}"
 
 CERT_NAME="spread_external"
-PASSPHRASE="ubuntu"
+PASSPHRASE=""
 
 execute_remote() {
     if [ -z "$PASS" ]; then
