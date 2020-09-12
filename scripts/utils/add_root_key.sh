@@ -23,4 +23,4 @@ ssh-keygen -t rsa -N "$PASSPHRASE" -f "/tmp/$CERT_NAME"
 # Authorize key in the remote system
 execute_remote "sudo mkdir -p /root/.ssh"
 execute_remote "sudo chmod 700 /root/.ssh"
-cat "/tmp/$CERT_NAME".pub | execute_remote "sudo tee -a /root/.ssh/authorized_keys > /dev/null"
+execute_remote "sudo tee -a /root/.ssh/authorized_keys > /dev/null" < "/tmp/$CERT_NAME".pub
