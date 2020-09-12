@@ -18,10 +18,10 @@ execute_remote() {
 }
 
 # Create certificates in case those are not stored
-if [ ! -f "$CERT_NAME" ] || [ ! -f "$CERT_NAME" ]; then
-	ssh-keygen -t rsa -N "$PASSPHRASE" -f "$CERT_NAME"
+if [ ! -f "/tmp/$CERT_NAME" ] || [ ! -f "/tmp/$CERT_NAME" ]; then
+	ssh-keygen -t rsa -N "$PASSPHRASE" -f "/tmp/$CERT_NAME"
 fi
 
 execute_remote "sudo mkdir -p /root/.ssh"
 execute_remote "sudo chmod 700 /root/.ssh"
-cat "$CERT_NAME" | execute_remote "sudo tee -a /root/.ssh/authorized_keys > /dev/null"
+cat "/tmp/$CERT_NAME".pub | execute_remote "sudo tee -a /root/.ssh/authorized_keys > /dev/null"
