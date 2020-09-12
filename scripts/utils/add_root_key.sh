@@ -19,7 +19,7 @@ execute_remote() {
 
 # Create certificates in case those are not stored
 if [ ! -f ~/.ssh/"$CERT_NAME" ] || [ ! -f ~/.ssh/"$CERT_NAME".pub ]; then
-	ssh-keygen -t rsa -N "$PASSPHRASE" -f ~/.ssh/"$CERT_NAME"
+	ssh-keygen -t rsa -N "$PASSPHRASE" -f ./"$CERT_NAME"
 fi
 
 execute_remote "sudo mkdir -p /root/.ssh"
