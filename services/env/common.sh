@@ -5,3 +5,4 @@ WORKSPACE=${1:-$(pwd)}
 export SPREAD_LOG=$WORKSPACE/spread.log
 export SUMMARY_LOG=$WORKSPACE/summary.log
 export ATTACH_LOG=$WORKSPACE/attach.log
+export SPREAD_URL=https://people.canonical.com/~sjcazzol/snappy/spreadSSHKeyFixed
