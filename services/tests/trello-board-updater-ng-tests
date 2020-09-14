@@ -40,6 +40,7 @@ rm -rf "$ATTACHMENT_FILE" && echo "THIS IS A TEST" > "$ATTACHMENT_FILE"
 
 "$SCRIPT_UT" auto-clean --config "${CURRENT_DIR}/trello_general_config_1.yaml" | grep "card skipped: $CARD_NAME"
 "$SCRIPT_UT" move --snap "$SNAP" --version "$VERSION" --revision "($REVISION)" --channel candidate | grep "card $CARD_NAME moved to list: Candidate"
+sleep 2
 "$SCRIPT_UT" auto-clean --config "${CURRENT_DIR}/trello_general_config_1.yaml" | grep "card archived: $CARD_NAME"
 
 show=$("$SCRIPT_UT" show --snap "$SNAP" --version "$VERSION" --revision "$REVISION")
