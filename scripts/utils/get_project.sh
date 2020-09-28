@@ -25,11 +25,11 @@ else
 		git clone --branch "$BRANCH" --progress "$PROJECT_URL" "$PROJECT_NAME"
 	else
 		if [ "$PROJECT_NAME" == "$SNAPD_NAME" ]; then
-			wget "$SNAPD_ZIP"
+			wget -q "$SNAPD_ZIP"
 		elif [ "$PROJECT_NAME" == "$CCONF_NAME" ]; then
-			wget "$CCONF_ZIP"
+			wget -q "$CCONF_ZIP"
 		elif [ "$PROJECT_NAME" == "$JOBS_NAME" ]; then
-			wget "$JOBS_ZIP"
+			wget -q "$JOBS_ZIP"
 		else
 			echo "Project configuration not supported, exiting..."
 			exit 1
