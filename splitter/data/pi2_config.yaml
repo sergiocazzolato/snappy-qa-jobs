@@ -1,0 +1,17 @@
+name: pi2-external-config
+project: snapd
+backend: external
+system: ubuntu-core-16-arm-32
+levels:
+    level-1:
+        include:
+            tests: ['tests/core/.*', 'tests/main/refresh.*','tests/main/revert. *']
+            content: ['#PI2', '#PI']
+        exclude:
+            tests: ['tests/core/netplan']
+    level-2:
+        include:
+            tests: ['tests/main/.*']
+    level-3:
+        include:
+            tests: ['.*']       
