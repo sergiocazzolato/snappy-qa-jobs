@@ -13,10 +13,23 @@ TEST_FILENAME = 'task.yaml'
 
 def _make_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', help="path to the config file for the device", required=True)
-    parser.add_argument('-p', '--project', help="path to the project to scan", required=True)
-    parser.add_argument('-l', '--level', help="level to request")
-    parser.add_argument('-s', '--spread', help="Path to the spread binary")
+
+    subparser = parser.add_subparsers(help='commands', dest='command')
+
+    parser_tests = subparser.add_parser("print-tests")
+    parser_tests.add_argument('-c', '--config', help="path to the config file for the device", required=True)
+    parser_tests.add_argument('-p', '--project', help="path to the project to scan", required=True)
+    parser_tests.add_argument('-l', '--level', help="level to request")
+    parser_tests.add_argument('-s', '--spread', help="Path to the spread binary")
+
+    parser_spread = subparser.add_parser("print-spread")
+    parser_spread.add_argument('-c', '--config', help="path to the config file for the device", required=True)
+    parser_spread.add_argument('-p', '--project', help="path to the project to scan", required=True)
+    parser_spread.add_argument('-l', '--level', help="level to request", required=True)
+    parser_spread.add_argument('-s', '--spread', help="Path to the spread binary")
+
+    parser_levels = subparser.add_parser("print-levels")
+    parser_levels.add_argument('-c', '--config', help="path to the config file for the device", required=True)
 
     return parser
 
@@ -157,7 +170,6 @@ class Spread:
         self.backend = backend
         self.system = system
         self.tests = []
-        self._load_tests()
 
     def _check_spread(spreadpath):
         return os.path.exists(spreadpath) and os.access(spreadpath, os.X_OK)
@@ -183,11 +195,15 @@ class Spread:
                 self.tests.append(':'.join(test_variant))
 
     def get_tests(self):
+        self._load_tests()
         return self.tests
+
+    def get_spread(self):
+        return self.spread
 
 
 class Splitter:
-    def __init__(self, configfile, projectpath, spreadpath):
+    def __init__(self, configfile, projectpath=None, spreadpath=None):
         config = self._load_config(configfile)
         self.projectpath = projectpath
         self.name = config.get('name')
@@ -206,38 +222,68 @@ class Splitter:
 
         return data
 
-    def _print_tests(self, level, tests):
-        print('-'*20)
-        print(level)
-        print('-'*20)
+    def _print_tests(self, backend, system, level, tests):
         for test in tests:
-            print(test)
-        print('-'*20)
+            print('{}:{}:{}'.format(backend, system, test))
 
-    def _print_all_tests(self, tests_by_level):
+    def _print_all_tests(self, backend, system, tests_by_level):
         sorted_levels = self.levels.get_sorted_levels_names()
         for level in sorted_levels:
-            self._print_tests(level, tests_by_level[level])
+            print('-'*20)
+            print(level)
+            print('-'*20)
+            self._print_tests(backend, system, level, tests_by_level[level])
 
+    def _print_spread(self, spreadpath, backend, system, tests):
+        command = spreadpath
+        for test in tests:
+            command = '{} {}:{}:{}'.format(command, backend, system, test)
 
-    def filter_tests(self, level):
+        print(command)
+
+    def print_tests(self, level):
         tests = self.spread.get_tests()
         tests_by_level = self.levels.filter_tests(tests, level)
-        
+
         if not level:
-            self._print_all_tests(tests_by_level)
+            self._print_all_tests(self.backend, self.system, tests_by_level)
         elif level not in tests_by_level.keys():
             raise ValueError('Level {} was not found in the config'.format(level))
         else:
-            self._print_tests(level, tests_by_level[level])
+            self._print_tests(self.backend, self.system, level, tests_by_level[level])
+
+    def print_spread(self, level):
+        tests = self.spread.get_tests()
+        tests_by_level = self.levels.filter_tests(tests, level)
+
+        if not tests_by_level:
+            return
+        elif level not in tests_by_level.keys():
+            raise ValueError('Level {} was not found in the config'.format(level))
+        else:
+            self._print_spread(self.spread.get_spread(), self.backend, self.system, tests_by_level[level])
+
+    def print_levels(self):
+        sorted_levels = self.levels.get_sorted_levels_names()
+        for level in sorted_levels:
+            print(level)
 
 
 def main():
     parser = _make_parser()
     args = parser.parse_args()
 
-    splitter = Splitter(args.config, args.project, args.spread)
-    splitter.filter_tests(args.level)
+    if args.command == 'print-tests':
+        splitter = Splitter(args.config, args.project, args.spread)
+        splitter.print_tests(args.level)
+
+    if args.command == 'print-spread':
+        splitter = Splitter(args.config, args.project, args.spread)
+        splitter.print_spread(args.level)
+
+    if args.command == 'print-levels':
+        splitter = Splitter(args.config)
+        splitter.print_levels()
 
 
 if __name__ == "__main__":
