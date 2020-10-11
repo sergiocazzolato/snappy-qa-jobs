@@ -169,7 +169,7 @@ if test "$(lsb_release -cs)" = focal; then
     create_cloud_init_config_uc20
     systemd_create_and_start_unit nested-vm "${QEMU} -m 4096 -nographic \
         -machine ubuntu-q35,accel=kvm -global ICH9-LPC.disable_s3=1 \
-        -net nic,model=virtio -net user,hostfwd=tcp::$PORT-:22 \
+        -netdev user,id=mynet0,hostfwd=tcp::$PORT-:22 -device virtio-net-pci,netdev=mynet0 \
         -drive file=/usr/share/OVMF/OVMF_CODE.secboot.fd,if=pflash,format=raw,unit=0,readonly=on \
         -drive file=/usr/share/OVMF/OVMF_VARS.ms.fd,if=pflash,format=raw,unit=1 \
         -chardev socket,id=chrtpm,path=/var/snap/swtpm-mvo/current/swtpm-sock \
