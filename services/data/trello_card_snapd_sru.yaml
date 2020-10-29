@@ -10,9 +10,9 @@ checklists:
           default: false
         - name: Bionic - http://people.canonical.com/~ubuntu-archive/proposed-migration/bionic/update_excuses.html#snapd
           default: false
-        - name: Eoan - http://people.canonical.com/~ubuntu-archive/proposed-migration/eoan/update_excuses.html#snapd
-          default: false
         - name: Focal - http://people.canonical.com/~ubuntu-archive/proposed-migration/focal/update_excuses.html#snapd
+          default: false
+        - name: Groovy - http://people.canonical.com/~ubuntu-archive/proposed-migration/groovy/update_excuses.html#snapd
           default: false
     Manual checks:
         - name: Review changelog
@@ -26,16 +26,16 @@ checklists:
           default: false
         - name: Bionic
           default: false
-        - name: Eoan
-          default: false
         - name: Focal
+          default: false
+        - name: Groovy
           default: false
     Manual tests:
         - name: Xenial
           default: false
         - name: Bionic
           default: false
-        - name: Eoan
-          default: false
         - name: Focal
+          default: false
+        - name: Groovy
           default: false
