@@ -1,0 +1,39 @@
+summary: Setup new machine to host github agents
+
+prepare: |
+    test -n "$ACTIONS_VERSION"
+
+restore: |
+    rm -f ~/go/bin/spread
+    rm -rf spread-runner
+    rm -f actions-runner-linux-x64-*.tar.gz
+
+execute: |
+    # Prepare lxd to support github action agents
+    apt remove lxd || true
+    snap install lxd
+    lxd init --auto
+
+    # Build spread
+    sudo snap install --classic go
+    go get -u github.com/snapcore/spread/cmd/spread
+
+    # Get the actions runner
+    curl -O -L "https://github.com/actions/runner/releases/download/v${ACTIONS_VERSION}/actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz"
+
+    # Prepare a tarball with the following files. Don’t re-compress it as it’s just a waste of time.
+    # - spread
+    # - setup.sh
+    # - sa.json
+    # - actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz
+
+    mkdir -p spread-runner
+    cp "$TASKSLIB"/setup.sh spread-runner/
+    cp "$PROJECT_PATH"/sa.json spread-runner/
+    cp ~/go/bin/spread spread-runner/
+    cp actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz spread-runner/
+
+    tar cf spread-runner.tar spread-runner
+
+    mkdir -p "$DATA_PATH"
+    mv spread-runner.tar "$DATA_PATH"

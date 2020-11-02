@@ -1,0 +1,15 @@
+summary: Check agent status
+
+environment:
+    SERVICE_UNIT: "actions.runner.snapcore-snapd.$AGENT_PREFIX-$AGENT_ID.service"
+    AGENT_NAME: "$AGENT_PREFIX-$AGENT_ID"
+
+prepare: |
+    test -n "$AGENT_ID"
+
+debug: |
+    lxd.lxc exec "$AGENT_NAME" -- sudo journalctl -u "$SERVICE_UNIT" -n 200
+
+execute: |
+    lxd.lxc exec "$AGENT_NAME" -- sudo systemctl show -p User "$SERVICE_UNIT" | MATCH "User=ubuntu"
+    lxd.lxc exec "$AGENT_NAME" -- sudo systemctl status "$SERVICE_UNIT" | MATCH "Active: active"

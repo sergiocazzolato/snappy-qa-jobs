@@ -1,0 +1,41 @@
+summary: Create new github actions agent
+
+environment:
+    WORKER: $AGENT_PREFIX-$AGENT_ID
+
+prepare: |
+    test -n "$AGENT_ID"
+    test -n "$AGENT_AGENT_PREFIX"
+    test -n "$AGENT_USER"
+    test -n "$GITHUB_TOKEN"
+    test -f "$DATA_PATH"/spread-runner.tar
+
+
+restore: |
+    # Clean up the environment
+    lxd.lxc exec "$WORKER" -- apt-get clean
+    lxd.lxc exec "$WORKER" -- rm -rf /tmp/spread-runner{,.tar}
+    lxd.lxc exec "$WORKER" -- rm -f /etc/sudoers.d/90-cloud-init-users
+
+execute: |
+    # Registered TOKENS:
+    # canonistack-a-1: AAG7H4Q665M4LIYRITCPMUC7UAFQ6
+    # canonistack-a-2: 
+    
+    lxd.lxc delete --force "$WORKER" || true
+    lxd.lxc launch ubuntu:18.04 "$WORKER"
+
+    lxd.lxc exec "$WORKER" -- ls -ld /tmp
+    lxd.lxc config set "$WORKER" boot.autostart true
+    lxd.lxc config set "$WORKER" boot.autostart.delay 16
+    lxd.lxc file push "$DATA_PATH"/spread-runner.tar "$WORKER"/tmp/spread-runner.tar
+    lxd.lxc exec "$WORKER" -- tar -C /tmp -xf /tmp/spread-runner.tar
+    lxd.lxc --cwd /tmp/spread-runner exec "$WORKER" -- ./setup-container.sh
+    lxd.lxc --cwd /tmp/spread-runner exec "$WORKER" -- ./setup-gcloud.sh
+  
+    # Install & start the actions runner 
+    UID="$(lxd.lxc exec "$WORKER" -- id -u $AGENT_USER)"
+    lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$WORKER" -- ./config.sh --unattended --url https://github.com/snapcore/snapd --token $token
+    lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$WORKER" -- sudo ./svc.sh install
+    lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$WORKER" -- sudo ./svc.sh start
+    lxd.lxc exec "$WORKER" -- systemctl disable --now ssh.service unattended-upgrades.service networkd-dispatcher.service atd.service cron.service
