@@ -11,9 +11,8 @@ prepare: |
 
 execute: |
     if lxd.lxc info "$AGENT_NAME" | MATCH "Status: Running"; then
-        UID="$(lxd.lxc exec "$AGENT_NAME" -- id -u $AGENT_USER)"
-        lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh stop
-        lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh uninstall
-        lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./config.sh remove --token "$GITHUB_TOKEN"
+        lxd.lxc --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- ./svc.sh stop || true
+        lxd.lxc --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- ./svc.sh uninstall || true
+        lxd.lxc --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- ./config.sh remove --token "$GITHUB_TOKEN" || true
     fi
     lxd.lxc delete --force "$AGENT_NAME" || true

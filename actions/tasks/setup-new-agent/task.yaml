@@ -29,8 +29,8 @@ execute: |
     lxd.lxc --cwd /tmp/spread-runner exec "$AGENT_NAME" -- ./setup-agent.sh
   
     # Install & start the actions runner 
-    UID="$(lxd.lxc exec "$AGENT_NAME" -- id -u $AGENT_USER)"
-    lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- ./config.sh --unattended --url https://github.com/snapcore/snapd --token $token
-    lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh install
-    lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh start
+    USER_ID="$(lxd.lxc exec "$AGENT_NAME" -- id -u $AGENT_USER)"
+    lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- ./config.sh --unattended --url https://github.com/snapcore/snapd --token $GITHUB_TOKEN
+    lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh install
+    lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh start
     lxd.lxc exec "$AGENT_NAME" -- systemctl disable --now ssh.service unattended-upgrades.service networkd-dispatcher.service atd.service cron.service
