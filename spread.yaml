@@ -4,6 +4,7 @@ environment:
     PROJECT_PATH: /root/spread
     TESTSLIB: $PROJECT_PATH/lib
     TESTSFILES: $PROJECT_PATH/files
+    PATH: $GOHOME/bin:/snap/bin:$PATH
 
 backends:
     google:

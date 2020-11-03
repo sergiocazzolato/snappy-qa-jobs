@@ -23,12 +23,12 @@ execute: |
 
     # Prepare a tarball with the following files. Don’t re-compress it as it’s just a waste of time.
     # - spread
-    # - setup.sh
+    # - setup-agent.sh
     # - sa.json
     # - actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz
 
     mkdir -p spread-runner
-    cp "$TASKSLIB"/setup.sh spread-runner/
+    cp "$TASKSLIB"/setup-agent.sh spread-runner/
     cp "$PROJECT_PATH"/sa.json spread-runner/
     cp ~/go/bin/spread spread-runner/
     cp actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz spread-runner/

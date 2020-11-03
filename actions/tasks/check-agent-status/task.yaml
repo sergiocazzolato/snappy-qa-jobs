@@ -1,15 +1,24 @@
 summary: Check agent status
 
-environment:
-    SERVICE_UNIT: "actions.runner.snapcore-snapd.$AGENT_PREFIX-$AGENT_ID.service"
-    AGENT_NAME: "$AGENT_PREFIX-$AGENT_ID"
-
 prepare: |
-    test -n "$AGENT_ID"
+    test -n "$(command -v lxd.lxc)"
 
 debug: |
     lxd.lxc exec "$AGENT_NAME" -- sudo journalctl -u "$SERVICE_UNIT" -n 200
 
 execute: |
-    lxd.lxc exec "$AGENT_NAME" -- sudo systemctl show -p User "$SERVICE_UNIT" | MATCH "User=ubuntu"
-    lxd.lxc exec "$AGENT_NAME" -- sudo systemctl status "$SERVICE_UNIT" | MATCH "Active: active"
+    if [ -z "$AGENT_ID" ]; then
+        echo "Checking status for all the agents"
+        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
+        
+        for agent_name in $agents; do
+            service_unit="actions.runner.snapcore-snapd.$agent_name.service"
+            lxd.lxc exec "$agent_name" -- sudo systemctl show -p User "$service_unit" | MATCH "User=ubuntu"
+            lxd.lxc exec "$agent_name" -- sudo systemctl status "$service_unit" | MATCH "Active: active"
+        done
+    else
+        service_unit="actions.runner.snapcore-snapd.$AGENT_PREFIX-$AGENT_ID.service"
+        agent_name="$AGENT_PREFIX-$AGENT_ID"
+        lxd.lxc exec "$agent_name" -- sudo systemctl show -p User "$service_unit" | MATCH "User=ubuntu"
+        lxd.lxc exec "$agent_name" -- sudo systemctl status "$service_unit" | MATCH "Active: active"
+    fi

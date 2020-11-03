@@ -1,0 +1,19 @@
+summary: Delete a github actions agent
+
+environment:
+    AGENT_NAME: $AGENT_PREFIX-$AGENT_ID
+
+prepare: |
+    test -n "$AGENT_ID"
+    test -n "$AGENT_USER"
+    test -n "$GITHUB_TOKEN"
+    test -n "$(command -v lxd.lxc)"
+
+execute: |
+    if lxd.lxc info "$AGENT_NAME" | MATCH "Status: Running"; then
+        UID="$(lxd.lxc exec "$AGENT_NAME" -- id -u $AGENT_USER)"
+        lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh stop
+        lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh uninstall
+        lxd.lxc --user "$UID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./config.sh remove --token "$GITHUB_TOKEN"
+    fi
+    lxd.lxc delete --force "$AGENT_NAME" || true

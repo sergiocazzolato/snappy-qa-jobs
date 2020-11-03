@@ -14,6 +14,12 @@ cp spread /usr/local/bin/
 chown root.spread /usr/local/bin/spread
 chmod u=rwx,g=rxs,o=rx /usr/local/bin/spread
 
+# Add gcloud configuration file that is readable only by the spread group
+mkdir -p /home/ubuntu/.config/gcloud
+mv /home/ubuntu/actions-runner/sa.json /home/ubuntu/.config/gcloud/application_default_credentials.json
+chown root.spread /home/ubuntu/.config/gcloud/application_default_credentials.json
+chmod u=,g=r,o= /home/ubuntu/.config/gcloud/application_default_credentials.json
+
 # Unpack the runner in the ~ of the ubuntu user
 mkdir -p /home/ubuntu/actions-runner
 tar -C /home/ubuntu/actions-runner -xf actions-runner-linux-x64-*.tar.gz

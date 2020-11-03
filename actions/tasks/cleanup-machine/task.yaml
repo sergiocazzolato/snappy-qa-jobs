@@ -1,0 +1,13 @@
+summary: Clean up a machine which hosts github agents
+
+execute: |
+    # Remove lxd to support github action agents
+    snap remove --purge lxd || true
+    apt remove --purge lxd || true
+
+    # Remove go
+    sudo snap remove --purge go
+    rm -rf ~/go
+    
+    # Remove stored data
+    rm -rf "$DATA_PATH"
