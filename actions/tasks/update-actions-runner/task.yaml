@@ -2,14 +2,13 @@ summary: Update actions runner for the service agents specified
 
 prepare: |
     test -n "$ACTIONS_VERSION"
-    test -n "$AGENT_PATH"
 
 restore: |
-	rm -rf actions-runner-linux-x64-*
+    rm -rf actions-runner-linux-x64-*
 
 execute: |
     # Download actions runner
-	curl -O -L "https://github.com/actions/runner/releases/download/v${ACTIONS_VERSION}/actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz"
+    curl -O -L "https://github.com/actions/runner/releases/download/v${ACTIONS_VERSION}/actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz"
 
     if [ -z "$AGENT_ID" ]; then
         echo "Updating spread for all the agents"

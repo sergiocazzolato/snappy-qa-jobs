@@ -9,13 +9,21 @@ restore: |
     rm -f actions-runner-linux-x64-*.tar.gz
 
 execute: |
+    # install monitoring tools
+    apt update
+    apt install -y "linux-tools-$(uname -r)" "linux-cloud-tools-$(uname -r)"
+
     # Prepare lxd to support github action agents
-    apt remove lxd || true
-    snap install lxd
-    lxd init --auto
+    apt remove --purge lxd || true
+    if ! snap list lxd; then
+        snap install lxd
+        lxd init --auto
+    fi
 
     # Build spread
-    sudo snap install --classic go
+    if ! snap list go; then
+        snap install --classic go
+    fi
     go get -u github.com/snapcore/spread/cmd/spread
 
     # Get the actions runner
@@ -24,11 +32,13 @@ execute: |
     # Prepare a tarball with the following files. Don’t re-compress it as it’s just a waste of time.
     # - spread
     # - setup-agent.sh
+    # - setup-sa.sh
     # - sa.json
     # - actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz
 
     mkdir -p spread-runner
     cp "$TASKSLIB"/setup-agent.sh spread-runner/
+    cp "$TASKSLIB"/setup-sa.sh spread-runner/
     cp "$PROJECT_PATH"/sa.json spread-runner/
     cp ~/go/bin/spread spread-runner/
     cp actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz spread-runner/

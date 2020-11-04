@@ -10,7 +10,6 @@ prepare: |
     test -n "$GITHUB_TOKEN"
     test -f "$DATA_PATH"/spread-runner.tar
 
-
 restore: |
     # Clean up the environment
     lxd.lxc exec "$AGENT_NAME" -- apt-get clean
@@ -27,6 +26,7 @@ execute: |
     lxd.lxc file push "$DATA_PATH"/spread-runner.tar "$AGENT_NAME"/tmp/spread-runner.tar
     lxd.lxc exec "$AGENT_NAME" -- tar -C /tmp -xf /tmp/spread-runner.tar
     lxd.lxc --cwd /tmp/spread-runner exec "$AGENT_NAME" -- ./setup-agent.sh
+    lxd.lxc --cwd /tmp/spread-runner exec "$AGENT_NAME" -- ./setup-sa.sh
   
     # Install & start the actions runner 
     USER_ID="$(lxd.lxc exec "$AGENT_NAME" -- id -u $AGENT_USER)"
