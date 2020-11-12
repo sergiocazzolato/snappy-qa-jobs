@@ -95,23 +95,15 @@ EOF
 }
  
 create_cloud_init_config_uc20(){
-    cat <<EOF > "$WORK_DIR/data.cfg"
+    cat << 'EOF' > "$WORK_DIR/data.cfg"
 #cloud-config
-  ssh_pwauth: True
-  users:
-   - name: user1
-     sudo: ALL=(ALL) NOPASSWD:ALL
-     shell: /bin/bash
-  chpasswd:
-   list: |
-    user1:ubuntu
-   expire: False
-  datasource_list: [ "None"]
-  datasource:
-    None:
-     userdata_raw: |
-      #!/bin/bash
-      echo test
+datasource_list: [NoCloud]
+users:
+  - name: user1
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    lock_passwd: false
+    # passwd is just "ubuntu"
+    passwd: "$6$rounds=4096$PCrfo.ggdf4ubP$REjyaoY2tUWH2vjFJjvLs3rDxVTszGR9P7mhH9sHb2MsELfc53uV/v15jDDOJU/9WInfjjTKJPlD5URhX5Mix0"
 EOF
 
     loop=$(kpartx -avs "$WORK_DIR/ubuntu-core.img" | sed -n 2p | awk '{print $3}')
@@ -120,7 +112,9 @@ EOF
     mount "/dev/mapper/$loop" "$tmp"
     mkdir -p "$tmp/data/etc/cloud/cloud.cfg.d/"
     cp -f "$WORK_DIR/data.cfg" "$tmp/data/etc/cloud/cloud.cfg.d/"
+    sync
     umount "$tmp"
+    kpartx -d "$WORK_DIR/ubuntu-core.img"
 }
 
 systemd_create_and_start_unit() {
