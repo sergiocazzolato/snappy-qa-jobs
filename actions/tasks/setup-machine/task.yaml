@@ -14,9 +14,9 @@ execute: |
     apt install -y "linux-tools-$(uname -r)" "linux-cloud-tools-$(uname -r)"
 
     # Prepare lxd to support github action agents
-    apt remove --purge lxd || true
     if ! snap list lxd; then
         snap install lxd
+        apt remove --purge lxd -y || true
         lxd init --auto
     fi
 
