@@ -18,6 +18,7 @@ set -ex
 instances=$(( $(jq ". | length" $AGENTS) - 1 ))
 
 for key in $(seq "$instances"); do
+    echo "-------------------------------------------"
     jq ".[$key].name" agents.json
     ip=$(jq -r ".[$key].ip" $AGENTS)
 
