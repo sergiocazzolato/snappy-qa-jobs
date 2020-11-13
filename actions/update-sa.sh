@@ -15,12 +15,13 @@ set -ex
 
 . variables.sh
 
-instances=$(( $(jq ". | length" $AGENTS) - 1 ))
+instances=$(jq ". | length" $AGENTS)
 
 for key in $(seq "$instances"); do
     echo "-------------------------------------------"
-    jq ".[$key].name" agents.json
-    ip=$(jq -r ".[$key].ip" $AGENTS)
+    iter=$(( $key - 1 ))
+    jq ".[$iter].name" agents.json
+    ip=$(jq -r ".[$iter].ip" $AGENTS)
 
     ssh -o IdentitiesOnly=yes -i $SPREAD_EXTERNAL_KEY $USER@$ip lxd.lxc list
     SPREAD_EXTERNAL_ADDRESS=$ip $SPREAD external:"$SYSTEM":tasks/update-service_account
