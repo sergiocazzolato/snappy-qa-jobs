@@ -2,8 +2,8 @@
 
 show_help() {
     echo "usage:    reserve_tf <DEVICE> <CHANNEL> <VERSION> [URL] [LAUNCHPAD-ID]"
-    echo "examples: reserve_tf.sh pi3 18 beta"
-    echo "          reserve_tf.sh pi4 20 beta 'https://storage.googleapis.com/spread-snapd-tests/images/pi4-20-beta/pi.img.xz' 'sergio-j-cazzolato'"
+    echo "examples: reserve_tf.sh pi3 beta 18"
+    echo "          reserve_tf.sh pi4 beta 20 'https://storage.googleapis.com/spread-snapd-tests/images/pi4-20-beta/pi.img.xz' 'sergio-j-cazzolato'"
 }
 
 if [ $# -eq 0 ] || [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
