@@ -34,4 +34,6 @@ suites:
             AGENT_PREFIX: "$(HOST: echo ${SPREAD_AGENT_PREFIX:-canonistack-a})"
             AGENT_USER: "$(HOST: echo ${SPREAD_AGENT_USER:-ubuntu})"
             ACTIONS_VERSION: "$(HOST: echo ${SPREAD_ACTIONS_VERSION:-2.273.5})"
+            HTTPS_PROXY: "$(HOST: echo ${SPREAD_HTTPS_PROXY:-})"
+            HTTP_PROXY: "$(HOST: echo ${SPREAD_HTTP_PROXY:-})"
 

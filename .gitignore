@@ -1,4 +1,4 @@
 sa.json
-agents.json
-variables.sh
+agents-*.json
+variables-*.sh
 .spread-reuse*.yaml

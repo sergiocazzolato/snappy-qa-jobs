@@ -27,7 +27,7 @@ SUPPORTED_VERSIONS='16 18 20'
 # Define the queue to use
 DEVICE_QUEUE=
 if [ "$DEVICE" = pi2 ]; then
-	DEVICE_QUEUE=
+	DEVICE_QUEUE=cert-rpi2
 elif [ "$DEVICE" = pi3 ]; then
 	DEVICE_QUEUE=rpi3b
 elif [ "$DEVICE" = pi4 ]; then

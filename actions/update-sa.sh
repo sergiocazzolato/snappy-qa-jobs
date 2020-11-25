@@ -13,7 +13,11 @@
 # SPREAD_EXTERNAL_ADDRESS=<IP> SPREAD_EXTERNAL_KEY=<KEY_PATH> spread2 -debug external:ubuntu-18.04-64-key:tasks/check-agent-status
 set -ex
 
-. variables.sh
+if $(hostname) | grep prod-snapd-testing; then
+    . variables-prodstack.sh
+else
+    . variables-canonistack.sh
+fi
 
 instances=$(jq ". | length" $AGENTS)
 
