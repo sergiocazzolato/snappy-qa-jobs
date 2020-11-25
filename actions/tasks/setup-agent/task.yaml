@@ -20,6 +20,11 @@ execute: |
     lxd.lxc delete --force "$AGENT_NAME" || true
     lxd.lxc launch ubuntu:18.04 "$AGENT_NAME"
 
+    echo "Setting up proxy for lxc"
+    if [ -n "${HTTPS_PROXY:-}" ]; then
+        lxd.lxc config set core.proxy_https "$HTTPS_PROXY"
+    fi
+
     lxd.lxc exec "$AGENT_NAME" -- ls -ld /tmp
     lxd.lxc config set "$AGENT_NAME" boot.autostart true
     lxd.lxc config set "$AGENT_NAME" boot.autostart.delay 16
