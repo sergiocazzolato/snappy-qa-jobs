@@ -30,7 +30,7 @@ execute: |
     if [ -z "$ACTIONS_URL" ]; then
         curl -O -L "https://github.com/actions/runner/releases/download/v${ACTIONS_VERSION}/actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz"
     else
-        curl -O -L "$ACTIONS_URL"
+        HTTPS_PROXY= curl -O -L "$ACTIONS_URL"
     fi
 
     # Prepare a tarball with the following files. Don’t re-compress it as it’s just a waste of time.
