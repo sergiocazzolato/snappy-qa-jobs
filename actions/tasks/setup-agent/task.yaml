@@ -22,7 +22,7 @@ execute: |
 
     echo "Setting up proxy for lxc"
     if [ -n "${HTTPS_PROXY:-}" ]; then
-        lxd.lxc config set "$AGENT_NAME" core.proxy_https "$HTTPS_PROXY"
+        lxd.lxc config set core.proxy_https "$HTTPS_PROXY"
     fi
 
     lxd.lxc exec "$AGENT_NAME" -- ls -ld /tmp
