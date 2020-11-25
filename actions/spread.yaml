@@ -34,6 +34,7 @@ suites:
             AGENT_PREFIX: "$(HOST: echo ${SPREAD_AGENT_PREFIX:-canonistack-a})"
             AGENT_USER: "$(HOST: echo ${SPREAD_AGENT_USER:-ubuntu})"
             ACTIONS_VERSION: "$(HOST: echo ${SPREAD_ACTIONS_VERSION:-2.273.5})"
+            ACTIONS_URL: "$(HOST: echo ${SPREAD_ACTIONS_URL:-http://people.canonical.com/~sjcazzol/snappy/actions-runner-linux-x64-2.273.5.tar.gz})"
             HTTPS_PROXY: "$(HOST: echo ${SPREAD_HTTPS_PROXY:-})"
             HTTP_PROXY: "$(HOST: echo ${SPREAD_HTTP_PROXY:-})"
 
