@@ -24,7 +24,7 @@ instances=$(jq ". | length" $AGENTS)
 for key in $(seq "$instances"); do
     echo "-------------------------------------------"
     iter=$(( $key - 1 ))
-    jq ".[$iter].name" agents.json
+    jq ".[$iter].name" "$AGENTS"
     ip=$(jq -r ".[$iter].ip" $AGENTS)
 
     ssh -o IdentitiesOnly=yes -i $SPREAD_EXTERNAL_KEY $USER@$ip lxd.lxc list
