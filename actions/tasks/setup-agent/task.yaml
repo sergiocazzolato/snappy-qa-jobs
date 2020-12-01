@@ -38,6 +38,8 @@ execute: |
     if [ -n "${HTTPS_PROXY:-}" ]; then
         echo "https_proxy=$HTTPS_PROXY" | lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- tee -a .env
         echo "HTTPS_PROXY=$HTTPS_PROXY" | lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- tee -a .env
+        echo "http_proxy=$HTTPS_PROXY" | lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- tee -a .env
+        echo "HTTP_PROXY=$HTTPS_PROXY" | lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- tee -a .env
     fi
     lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- ./config.sh --unattended --url https://github.com/snapcore/snapd --token $GITHUB_TOKEN
     lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh install
