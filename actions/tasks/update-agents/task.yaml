@@ -9,17 +9,9 @@ execute: |
         
         for agent_name in $agents; do
             echo "Updating the agent"
-            HTTPS_PROXY=http://squid.internal:3128
-            echo "HTTPS_PROXY=$HTTPS_PROXY" | lxd.lxc exec "$agent_name" -- tee -a /etc/environment
-            echo "HTTP_PROXY=$HTTPS_PROXY" | lxd.lxc exec "$agent_name" -- tee -a /etc/environment
-            echo "https_proxy=$HTTPS_PROXY" | lxd.lxc exec "$agent_name" -- tee -a /etc/environment
-            echo "http_proxy=$HTTPS_PROXY" | lxd.lxc exec "$agent_name" -- tee -a /etc/environment
+            # ADD THE CODE HERE
         done
     else
         agent_name="$AGENT_PREFIX-$AGENT_ID"
-        HTTPS_PROXY=http://squid.internal:3128
-        echo "HTTPS_PROXY=$HTTPS_PROXY" | lxd.lxc exec "$agent_name" -- tee -a /etc/environment
-        echo "HTTP_PROXY=$HTTPS_PROXY" | lxd.lxc exec "$agent_name" -- tee -a /etc/environment
-        echo "https_proxy=$HTTPS_PROXY" | lxd.lxc exec "$agent_name" -- tee -a /etc/environment
-        echo "http_proxy=$HTTPS_PROXY" | lxd.lxc exec "$agent_name" -- tee -a /etc/environment
+        # ADD THE CODE HERE
     fi
