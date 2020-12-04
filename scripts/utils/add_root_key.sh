@@ -18,6 +18,7 @@ execute_remote() {
 }
 
 # Create certificates
+rm -f "/tmp/$CERT_NAME"
 ssh-keygen -t rsa -N "$PASSPHRASE" -f "/tmp/$CERT_NAME"
 
 # Authorize key in the remote system
