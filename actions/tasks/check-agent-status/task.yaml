@@ -12,12 +12,12 @@ execute: |
         agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
         
         for agent_name in $agents; do
-            service_unit="actions.runner.snapcore-snapd.$agent_name.service"
+            service_unit="actions.runner.snapcore-$PROJECT_NAME.$agent_name.service"
             lxd.lxc exec "$agent_name" -- sudo systemctl show -p User "$service_unit" | MATCH "User=ubuntu"
             lxd.lxc exec "$agent_name" -- sudo systemctl status "$service_unit" | MATCH "Active: active"
         done
     else
-        service_unit="actions.runner.snapcore-snapd.$AGENT_PREFIX-$AGENT_ID.service"
+        service_unit="actions.runner.snapcore-$PROJECT_NAME.$AGENT_PREFIX-$AGENT_ID.service"
         agent_name="$AGENT_PREFIX-$AGENT_ID"
         lxd.lxc exec "$agent_name" -- sudo systemctl show -p User "$service_unit" | MATCH "User=ubuntu"
         lxd.lxc exec "$agent_name" -- sudo systemctl status "$service_unit" | MATCH "Active: active"

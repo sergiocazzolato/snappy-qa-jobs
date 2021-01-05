@@ -37,4 +37,6 @@ suites:
             ACTIONS_URL: "$(HOST: echo ${SPREAD_ACTIONS_URL:-http://people.canonical.com/~sjcazzol/snappy/actions-runner-linux-x64-2.273.5.tar.gz})"
             HTTPS_PROXY: "$(HOST: echo ${SPREAD_HTTPS_PROXY:-})"
             HTTP_PROXY: "$(HOST: echo ${SPREAD_HTTP_PROXY:-})"
+            PROJECT_NAME: "$(HOST: echo ${SPREAD_PROJECT_NAME:-snapd})"
+            PROJECT_URL: "$(HOST: echo ${SPREAD_PROJECT_URL:-https://github.com/snapcore/snapd})"
 

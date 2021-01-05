@@ -46,7 +46,7 @@ execute: |
         echo "https_proxy=$HTTPS_PROXY" | lxd.lxc exec "$AGENT_NAME" -- tee -a /etc/environment
         echo "http_proxy=$HTTPS_PROXY" | lxd.lxc exec "$AGENT_NAME" -- tee -a /etc/environment
     fi
-    lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- ./config.sh --unattended --url https://github.com/snapcore/snapd --token $GITHUB_TOKEN
+    lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- ./config.sh --unattended --url $PROJECT_URL --token $GITHUB_TOKEN
     lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh install
     lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh start
     lxd.lxc exec "$AGENT_NAME" -- systemctl disable --now ssh.service unattended-upgrades.service networkd-dispatcher.service atd.service cron.service
