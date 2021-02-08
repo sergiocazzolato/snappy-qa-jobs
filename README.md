@@ -278,10 +278,10 @@ For amd64 architecture due to the number of devices affected the progressive rel
 For all the architectures but pc-amd64 the release can be done by runnign 'snapdcraft release core <REV_NUM> stable'
 In case of architecture pc-amd64 a progressive release is nedeed. For that the following steps need to be executed in that order, repeating the step 2 with different percentages until arrive to 100.
 
-Steps:
-1. surl -s production -a sca-production -e <EMAIL> --force -p package_access -p package_release
-2. surl -a sca-production -e <EMAIL> -X POST -d '{"name": "core", "revision": <REV_NUM>, "channels": ["stable"], "progressive": {"key": "progressive-core-16-<VERVION>", "percentage": <PERCENTAGE>, "paused": false}}' https://dashboard.snapcraft.io/dev/api/snap-release/
-3. snapcraft release core <REV_NUM> stable
+Steps (for core and snapd):
+```
+$ snapcraft release --experimental-progressive-releases --progressive <PERCENTAGE> core <REV_NUM> stable
+```
 
 With:
 
