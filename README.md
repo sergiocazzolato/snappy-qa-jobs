@@ -279,9 +279,9 @@ For all the architectures but pc-amd64 the release can be done by runnign 'snapd
 In case of architecture pc-amd64 a progressive release is nedeed. For that the following steps need to be executed in that order, repeating the step 2 with different percentages until arrive to 100.
 
 Steps (for core and snapd):
-```
-$ snapcraft release --experimental-progressive-releases --progressive <PERCENTAGE> core <REV_NUM> stable
-```
+
+      $ snapcraft release --experimental-progressive-releases --progressive <PERCENTAGE> core <REV_NUM> stable
+
 
 With:
 
@@ -289,6 +289,11 @@ With:
     <REV_NUM> = The rev number for the snap to do progressive release
     <VERVION> = Id used to identify the progressive release
     <PERCENTAGE> = % of devices which will get the new release. The % should be increase by 25 every 6 hours when the snap store team validates the release is going well. The values for this should be: 25, 50, 75 and 100.   
+
+After many hours, once the progressive release has reached 100% please do:
+
+     snapcraft relase core <REV_NUM>
+
 
 ### snapd snap to stable
 
