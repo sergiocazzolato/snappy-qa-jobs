@@ -13,4 +13,4 @@ export SETUP=${SETUP:-""}
 export SPREAD_TESTS=${SPREAD_TESTS:-"external:ubuntu-core-20-64"}
 export SPREAD_PARAMS=${SPREAD_PARAMS:-"-v"}
 export TEST_PASS=${TEST_PASS:-"ubuntu"}
-export SKIP_TESTS=${SKIP_TESTS:-""}
+export SKIP_TESTS=${SKIP_TESTS:-"tests/core/uc20-recovery"}

@@ -3,7 +3,10 @@
 "$SCRIPTS_DIR/utils/get_project.sh" "$SNAPD_URL" "$PROJECT" "" ""
 
 . "$SCRIPTS_DIR/utils/snap_info.sh"
-sudo apt install -y jq unzip
+if ! dpkg -l jq unzip >/dev/null; then
+	sudo apt install -y jq unzip
+fi
+
 if [ "$BRANCH" = beta ]; then
 	BRANCH=$(get_beta_branch "$ARCH")
 elif [ "$BRANCH" = edge ]; then
