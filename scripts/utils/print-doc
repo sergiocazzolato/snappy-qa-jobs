@@ -63,15 +63,15 @@ def print_test_doc(testfile):
         data = yaml.safe_load(handle)
 
     summary = data.get('summary')
-    description = data.get('description')
-    prepare = data.get('description')
+    details = data.get('details')
+    prepare = data.get('prepare')
     execute = data.get('execute')
     restore = data.get('restore')
 
     print(testfile)
     print('*'*80)
     print_section('summary', summary)
-    print_section('description', description)
+    print_section('details', details)
     print_section('prepare', process_content(prepare))
     print_section('execute', process_content(execute))
     print_section('restore', process_content(restore))
