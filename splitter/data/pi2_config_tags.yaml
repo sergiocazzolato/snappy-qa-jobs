@@ -1,0 +1,11 @@
+name: pi2-external-config
+project: snapd
+backend: external
+system: ubuntu-core-16-arm-32
+levels:
+    level-1:
+        include:
+            tags: ['smoke']
+    level-2:
+        include:
+            tags: ['networking']
