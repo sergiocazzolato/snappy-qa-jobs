@@ -7,9 +7,9 @@ import subprocess
 import shutil
 import yaml
 
-SUPPORTED_FILTERS = ['tests','content']
+SUPPORTED_FILTERS = ['tests','content', 'tags']
 TEST_FILENAME = 'task.yaml'
-
+TAGS_NAME= 'tags'
 
 def _make_parser():
     parser = argparse.ArgumentParser()
@@ -51,6 +51,28 @@ class TestsFilter:
         return filtered
 
 
+class TagsFilter:
+    def __init__(self, projectpath, tags):
+        self.projectpath = projectpath
+        if not isinstance(tags, list):
+            raise RuntimeError('Content filter {} needs to be a list of strings: {}'.format(regexlist, type(regexlist)))
+        self.tags = tags
+
+    def filter_tests(self, tests, ):
+        filtered = []
+        for test in tests:
+            # Remove the variant
+            testname = test.split(':')[0]
+            with open(os.path.join(self.projectpath, testname, TEST_FILENAME)) as task:
+                data = yaml.safe_load(task)
+                test_tags = data.get(TAGS_NAME, [])
+                for tag in self.tags:
+                    if tag in test_tags:
+                        filtered.append(test)
+                        break
+        return filtered
+
+
 class ContentFilter:
     def __init__(self, projectpath, regexlist):
         self.projectpath = projectpath
@@ -63,9 +85,9 @@ class ContentFilter:
         for test in tests:
             # Remove the variant
             testname = test.split(':')[0]
-            with open(os.path.join(self.projectpath, testname, TEST_FILENAME)) as f:
+            with open(os.path.join(self.projectpath, testname, TEST_FILENAME)) as task:
                 for regex in self.regexlist:
-                    if re.search(regex, f.read(), re.MULTILINE):
+                    if re.search(regex, task.read(), re.MULTILINE):
                         filtered.append(test)
                         break
         return filtered
@@ -87,6 +109,8 @@ class FilterSet:
                 self.filters.append(TestsFilter(projectpath, definition.get(filter)))
             elif filter == 'content':
                 self.filters.append(ContentFilter(projectpath, definition.get(filter)))
+            elif filter == 'tags':
+                self.filters.append(TagsFilter(projectpath, definition.get(filter)))
 
     def filter_tests(self, tests):
         filtered_tests = []
