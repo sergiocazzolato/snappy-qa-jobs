@@ -1,8 +1,0 @@
-name: pi2-external-config
-project: snapd
-backend: external
-system: ubuntu-core-16-arm-32
-levels:
-    level-1:
-        include:
-            content: ['TEST-XX1']

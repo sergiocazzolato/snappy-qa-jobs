@@ -55,10 +55,10 @@ class TagsFilter:
     def __init__(self, projectpath, tags):
         self.projectpath = projectpath
         if not isinstance(tags, list):
-            raise RuntimeError('Content filter {} needs to be a list of strings: {}'.format(regexlist, type(regexlist)))
+            raise RuntimeError('Content filter {} needs to be a list of strings: {}'.format(tags, type(tags)))
         self.tags = tags
 
-    def filter_tests(self, tests, ):
+    def filter_tests(self, tests):
         filtered = []
         for test in tests:
             # Remove the variant
@@ -128,7 +128,8 @@ class Level:
         inclueded_tests = self.include.filter_tests(tests)
         exclueded_tests = self.exclude.filter_tests(tests)
         for excluded in exclueded_tests:
-            inclueded_tests.remove(excluded)
+            if excluded in inclueded_tests:
+                inclueded_tests.remove(excluded)
 
         return inclueded_tests
 
@@ -209,7 +210,10 @@ class Spread:
         out, err = process.communicate()
         
         if err:
-            raise RuntimeError('Spread failed to list tests')
+            if "nothing matches provider filter" in err:
+                return
+            else:
+                raise RuntimeError('Spread failed to list tests: "{}"'.format(err))
 
         # Expected format: BACKEND:SYSTEM:<PATH-TO-TEST>[:VARIANT]
         tests = out.split('\n')
