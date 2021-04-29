@@ -20,11 +20,8 @@ execute: |
         lxd init --auto
     fi
 
-    # Build spread
-    if ! snap list go; then
-        snap install --classic go
-    fi
-    go get -u github.com/snapcore/spread/cmd/spread
+    # Get spread
+    curl -O -L http://people.canonical.com/~sjcazzol/snappy/spread
 
     # Get the actions runner
     if [ -z "$ACTIONS_URL" ]; then
@@ -44,7 +41,7 @@ execute: |
     cp "$TASKSLIB"/setup-agent.sh spread-runner/
     cp "$TASKSLIB"/setup-sa.sh spread-runner/
     cp "$PROJECT_PATH"/sa.json spread-runner/
-    cp ~/go/bin/spread spread-runner/
+    cp spread spread-runner/
     cp actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz spread-runner/
 
     tar cf spread-runner.tar spread-runner
