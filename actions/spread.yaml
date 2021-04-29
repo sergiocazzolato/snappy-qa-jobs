@@ -39,4 +39,5 @@ suites:
             HTTP_PROXY: "$(HOST: echo ${SPREAD_HTTP_PROXY:-})"
             PROJECT_NAME: "$(HOST: echo ${SPREAD_PROJECT_NAME:-snapd})"
             PROJECT_URL: "$(HOST: echo ${SPREAD_PROJECT_URL:-https://github.com/snapcore/snapd})"
+            SA_FILE: "$(HOST: echo ${SPREAD_SA_FILE:-sa.json})"
 

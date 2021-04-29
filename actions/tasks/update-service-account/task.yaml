@@ -2,22 +2,22 @@ summary: Update service accout for the service agents specified
 
 prepare: |
     test -f "$DATA_PATH"/spread-runner.tar
-    test -f "$PROJECT_PATH"/sa.json
+    test -f "$PROJECT_PATH/$SA_FILE"
 
 restore: |
     rm -rf spread-runner spread-runner.tar
 
 execute: |
-    # Add the new sa.json to the spread-runner.tar
+    # Add the new sa file to the spread-runner.tar
     cp "$DATA_PATH"/spread-runner.tar "$PWD"
     tar -xf spread-runner.tar
     cp "$TASKSLIB"/setup-sa.sh spread-runner
-    cp "$PROJECT_PATH"/sa.json spread-runner
+    cp "$PROJECT_PATH/$SA_FILE" spread-runner
     tar cf spread-runner.tar spread-runner
     mv spread-runner.tar "$DATA_PATH"
 
     if [ -z "$AGENT_ID" ]; then
-        echo "Updating sa.json for all the agents"
+        echo "Updating sa file for all the agents"
         agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
         
         for agent_name in $agents; do
