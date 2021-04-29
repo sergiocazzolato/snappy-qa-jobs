@@ -21,7 +21,7 @@ execute: |
     fi
 
     # Get spread
-    curl -O -L http://people.canonical.com/~sjcazzol/snappy/spread
+    wget http://people.canonical.com/~sjcazzol/snappy/spread
 
     # Get the actions runner
     if [ -z "$ACTIONS_URL" ]; then
