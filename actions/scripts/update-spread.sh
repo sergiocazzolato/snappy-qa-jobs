@@ -15,6 +15,7 @@ for key in $(seq "$instances"); do
     jq ".[$iter].name" "$AGENTS"
     ip=$(jq -r ".[$iter].ip" $AGENTS)
 
-    SPREAD_EXTERNAL_ADDRESS=$ip "$SPREAD" external:"$SYSTEM":tasks/update-agents
+    ssh -o IdentitiesOnly=yes -i $SPREAD_EXTERNAL_KEY $USER@$ip sudo lxd.lxc list
+    ( cd .. && SPREAD_EXTERNAL_ADDRESS=$ip "$SPREAD" external:"$SYSTEM":tasks/update-spread )
 done
 

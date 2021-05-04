@@ -2,6 +2,8 @@ summary: Setup new machine to host github agents
 
 prepare: |
     test -n "$ACTIONS_VERSION"
+    test -n "$SA_FILE"
+    test -f "$PROJECT_PATH/$SA_FILE"
 
 restore: |
     rm -f ~/go/bin/spread
@@ -40,7 +42,7 @@ execute: |
     mkdir -p spread-runner
     cp "$TASKSLIB"/setup-agent.sh spread-runner/
     cp "$TASKSLIB"/setup-sa.sh spread-runner/
-    cp "$PROJECT_PATH"/sa.json spread-runner/
+    cp "$PROJECT_PATH/$SA_FILE" spread-runner/sa.json
     cp spread spread-runner/
     cp actions-runner-linux-x64-${ACTIONS_VERSION}.tar.gz spread-runner/
 

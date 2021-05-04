@@ -7,20 +7,15 @@ debug: |
     lxd.lxc exec "$AGENT_NAME" -- sudo journalctl -u "$SERVICE_UNIT" -n 200
 
 execute: |
-    if [ -z "$AGENT_ID" ]; then
-        echo "Checking status for all the agents"
-        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
-        
-        for agent_name in $agents; do
-            lxd.lxc exec "$agent_name" -- sudo journalctl --vacuum-time=7d
-            lxd.lxc exec "$agent_name" -- sudo find /home/ubuntu/actions-runner/_diag -mtime +7 -name 'Runner_*.log' -exec rm {} \;
-            lxd.lxc exec "$agent_name" -- sudo rm -rf /home/ubuntu/actions-runner/externals.2.276.0
-            lxd.lxc exec "$agent_name" -- sudo rm -rf /home/ubuntu/actions-runner/bin.2.276.0
-        done
+    if [ -n "$AGENT_ID" ]; then
+        agents="$AGENT_PREFIX-$AGENT_ID"
     else
-            lxd.lxc exec "$agent_name" -- sudo journalctl --vacuum-time=7d
-            lxd.lxc exec "$agent_name" -- sudo find /home/ubuntu/actions-runner/_diag -mtime +7 -name 'Runner_*.log' -exec rm {} \;
-            lxd.lxc exec "$agent_name" -- sudo rm -rf /home/ubuntu/actions-runner/externals.2.276.0
-            lxd.lxc exec "$agent_name" -- sudo rm -rf /home/ubuntu/actions-runner/bin.2.276.0
-
+        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
     fi
+
+    for agent_name in $agents; do
+        lxd.lxc exec "$agent_name" -- sudo journalctl --vacuum-time=7d
+        lxd.lxc exec "$agent_name" -- sudo find /home/ubuntu/actions-runner/_diag -mtime +7 -name 'Runner_*.log' -exec rm {} \;
+        lxd.lxc exec "$agent_name" -- sudo rm -rf /home/ubuntu/actions-runner/externals.2.276.0
+        lxd.lxc exec "$agent_name" -- sudo rm -rf /home/ubuntu/actions-runner/bin.2.276.0
+    done

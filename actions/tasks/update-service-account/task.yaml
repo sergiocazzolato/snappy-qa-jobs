@@ -17,20 +17,15 @@ execute: |
     tar cf spread-runner.tar spread-runner
     mv spread-runner.tar "$DATA_PATH"
 
-    if [ -z "$AGENT_ID" ]; then
-        echo "Updating sa file for all the agents"
-        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
-        
-        for agent_name in $agents; do
-            lxd.lxc file push "$DATA_PATH"/spread-runner.tar "$agent_name"/tmp/spread-runner.tar
-            lxd.lxc exec "$agent_name" -- tar -C /tmp -xf /tmp/spread-runner.tar
-            lxd.lxc --cwd /tmp/spread-runner exec "$agent_name" -- ./setup-sa.sh
-            lxd.lxc exec "$agent_name" -- rm -rf /tmp/spread-runner
-        done
+    if [ -n "$AGENT_ID" ]; then
+        agents="$AGENT_PREFIX-$AGENT_ID"
     else
-        agent_name="$AGENT_PREFIX-$AGENT_ID"
+        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
+    fi
+
+    for agent_name in $agents; do
         lxd.lxc file push "$DATA_PATH"/spread-runner.tar "$agent_name"/tmp/spread-runner.tar
         lxd.lxc exec "$agent_name" -- tar -C /tmp -xf /tmp/spread-runner.tar
         lxd.lxc --cwd /tmp/spread-runner exec "$agent_name" -- ./setup-sa.sh
         lxd.lxc exec "$agent_name" -- rm -rf /tmp/spread-runner
-    fi
+    done

@@ -15,8 +15,12 @@ for key in $(seq "$instances"); do
     jq ".[$iter].name" "$AGENTS"
     ip=$(jq -r ".[$iter].ip" $AGENTS)
 
-    ssh -o IdentitiesOnly=yes -i $SPREAD_EXTERNAL_KEY $USER@$ip sudo lxd.lxc list
+    echo "Disk before cleanup"
     ssh -o IdentitiesOnly=yes -i $SPREAD_EXTERNAL_KEY $USER@$ip sudo lxd.lxc storage info default
-    SPREAD_EXTERNAL_ADDRESS=$ip "$SPREAD" external:"$SYSTEM":tasks/check-agent-status
+
+    ( cd .. && SPREAD_EXTERNAL_ADDRESS=$ip "$SPREAD" external:"$SYSTEM":tasks/cleanup-agents )
+
+    echo "Disk after cleanup"
+    ssh -o IdentitiesOnly=yes -i $SPREAD_EXTERNAL_KEY $USER@$ip sudo lxd.lxc storage info default
 done
 

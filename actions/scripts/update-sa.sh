@@ -29,7 +29,7 @@ for key in $(seq "$instances"); do
 
     if [ "$target_project" = "$curr_project" ]; then
     	ssh -o IdentitiesOnly=yes -i $SPREAD_EXTERNAL_KEY $USER@$ip sudo lxd.lxc list
-    	SPREAD_EXTERNAL_ADDRESS=$ip SPREAD_SA_FILE="$sa_file" "$SPREAD" external:"$SYSTEM":tasks/update-service-account
+    	( cd .. && SPREAD_EXTERNAL_ADDRESS=$ip SPREAD_SA_FILE="$sa_file" "$SPREAD" external:"$SYSTEM":tasks/update-service-account )
     else
     	echo "Skipping service account configuration for project $curr_project"
     fi

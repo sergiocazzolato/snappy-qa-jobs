@@ -10,14 +10,12 @@ execute: |
     # Update spread version
     go get -u github.com/snapcore/spread/cmd/spread
 
-    if [ -z "$AGENT_ID" ]; then
-        echo "Updating spread for all the agents"
-        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
-        
-        for agent in $agents; do
-            lxd.lxc file push ~/go/bin/spread "$agent"/tmp/spread-runner/spread
-        done
+    if [ -n "$AGENT_ID" ]; then
+        agents="$AGENT_PREFIX-$AGENT_ID"
     else
-        agent="$AGENT_PREFIX-$AGENT_ID"
-        lxd.lxc file push ~/go/bin/spread "$agent"/tmp/spread-runner/spread   
+        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
     fi
+
+    for agent in $agents; do
+        lxd.lxc file push ~/go/bin/spread "$agent"/tmp/spread-runner/spread
+    done

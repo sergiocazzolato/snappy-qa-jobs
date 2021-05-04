@@ -4,14 +4,14 @@ prepare: |
     test -n "$AGENT_PREFIX"
 
 execute: |
-    if [ -z "$AGENT_ID" ]; then
-        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
-        
-        for agent_name in $agents; do
-            echo "Updating the agent"
-            # ADD THE CODE HERE
-        done
+
+    if [ -n "$AGENT_ID" ]; then
+        agents="$AGENT_PREFIX-$AGENT_ID"
     else
-        agent_name="$AGENT_PREFIX-$AGENT_ID"
-        # ADD THE CODE HERE
+        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
     fi
+
+    for agent_name in $agents; do
+        echo "Updating the agent"
+        # ADD THE CODE HERE
+    done

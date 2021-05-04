@@ -1,0 +1,32 @@
+summary: Check agent status
+
+prepare: |
+    test -n "$(command -v lxd.lxc)"
+
+debug: |
+    lxd.lxc exec "$AGENT_NAME" -- sudo journalctl -u "$SERVICE_UNIT" -n 200
+
+execute: |
+    if [ -n "$AGENT_ID" ]; then
+        agents="$AGENT_PREFIX-$AGENT_ID"
+    else
+        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
+    fi
+      
+    for agent_name in $agents; do
+        # Check credentials can be read from root
+        lxd.lxc exec "$agent_name" -- cat /home/ubuntu/.config/gcloud/application_default_credentials.json
+        
+        # Check ubuntu user cannot read credentials
+        lxd.lxc exec "$agent_name" -- su ubuntu -c "cat /home/ubuntu/.config/gcloud/application_default_credentials.json" 2>&1 | MATCH "Permission denied"
+        
+        # Check there is no spread user
+        lxd.lxc exec "$agent_name" -- su spread -c "cat /home/ubuntu/.config/gcloud/application_default_credentials.json" 2>&1 | MATCH "No passwd entry for user 'spread'"
+        
+        # Check ubuntu user cannot make sudo
+        lxd.lxc exec "$agent_name" -- su ubuntu -c "sudo cat /home/ubuntu/.config/gcloud/application_default_credentials.json" 2>&1 | MATCH "sudo: no tty present"
+
+        # Check spread can be executed from ubuntu user
+        lxd.lxc exec "$agent_name" -- su ubuntu -c "spread" 2>&1 |  MATCH "error: cannot load project file from ."
+
+    done
