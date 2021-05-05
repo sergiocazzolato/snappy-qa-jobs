@@ -1,0 +1,25 @@
+project: security-test
+
+backends:
+    test:
+        type: adhoc
+        allocate: |
+            echo "Allocating ad-hoc $SPREAD_SYSTEM"
+            echo '' > /etc/sudoers.d/99-spread-users
+            ADDRESS localhost:22
+        discard: |
+            echo "Discarding ad-hoc $SPREAD_SYSTEM"
+        systems:
+            - ubuntu-core-16-64:
+                  username: external
+                  password: ubuntu
+
+path: /home/adhoc
+
+restore:
+    rm -rf /home/adhoc
+
+suites:
+    checks/: 
+        summary: Verification tasks.
+

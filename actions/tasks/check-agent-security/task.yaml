@@ -1,4 +1,4 @@
-summary: Check agent status
+summary: Check agent security
 
 prepare: |
     test -n "$(command -v lxd.lxc)"
@@ -28,5 +28,4 @@ execute: |
 
         # Check spread can be executed from ubuntu user
         lxd.lxc exec "$agent_name" -- su ubuntu -c "spread" 2>&1 |  MATCH "error: cannot load project file from ."
-
     done

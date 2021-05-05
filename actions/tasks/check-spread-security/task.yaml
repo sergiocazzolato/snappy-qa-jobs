@@ -1,0 +1,45 @@
+summary: Check spread security
+
+prepare: |
+    test -n "$(command -v lxd.lxc)"
+
+restore: |
+    if [ -n "$AGENT_ID" ]; then
+        agents="$AGENT_PREFIX-$AGENT_ID"
+    else
+        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
+    fi
+      
+    for agent_name in $agents; do
+        # Check credentials can be read from root
+        lxd.lxc --cwd "/home/$AGENT_USER" exec "$agent_name" -- rm -rf test
+        lxd.lxc exec "$agent_name" -- rm -f /etc/sudoers.d/99-spread-users        
+    done
+
+debug: |
+    lxd.lxc exec "$AGENT_NAME" -- sudo journalctl -u "$SERVICE_UNIT" -n 200
+
+execute: |
+    if [ -n "$AGENT_ID" ]; then
+        agents="$AGENT_PREFIX-$AGENT_ID"
+    else
+        agents=$(lxd.lxc list --format csv | cut -d ',' -f1)
+    fi
+      
+    for agent_name in $agents; do
+        # Check credentials can be read from root
+        lxd.lxc --cwd "/home/$AGENT_USER" exec "$agent_name" -- mkdir -p test/checks/task
+        lxd.lxc file push task.yaml.1 "${agent_name}/home/${AGENT_USER}/test/checks/task/task.yaml"
+
+        # Run first spread.yaml check
+        lxd.lxc file push spread.yaml.1 "${agent_name}/home/${AGENT_USER}/test/spread.yaml"
+        lxd.lxc --cwd "/home/${AGENT_USER}/test" exec "$agent_name" -- su ubuntu -c "spread test:ubuntu-core-16-64:" 2>&1 |  MATCH "Permission denied"
+        
+        # Run second spread.yaml check
+        lxd.lxc file push spread.yaml.2 "${agent_name}/home/${AGENT_USER}/test/spread.yaml"
+        lxd.lxc --cwd "/home/${AGENT_USER}/test" exec "$agent_name" -- su ubuntu -c "spread test:ubuntu-core-16-64:" 2>&1 |  MATCH "sudo: no tty present and no askpass program specified"
+
+        # Run third spread.yaml check
+        lxd.lxc file push spread.yaml.3 "${agent_name}/home/${AGENT_USER}/test/spread.yaml"
+        lxd.lxc --cwd "/home/${AGENT_USER}/test" exec "$agent_name" -- su ubuntu -c "spread test:ubuntu-core-16-64:" 2>&1 |  MATCH "Permission denied"
+    done
