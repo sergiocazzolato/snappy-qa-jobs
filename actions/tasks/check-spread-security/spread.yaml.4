@@ -5,8 +5,9 @@ backends:
         type: adhoc
         allocate: |
             if [ ! -f already.ran ]; then
-                touch already.ran
-                sudo cat /home/ubuntu/.config/gcloud/application_default_credentials.json
+                touch already.ran    
+                cp /home/ubuntu/.config/gcloud/application_default_credentials.json cred.json
+                chown ubuntu:ubuntu cread.json                                
             fi
         systems:
             - ubuntu-core-16-64:

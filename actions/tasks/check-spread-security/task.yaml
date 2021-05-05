@@ -46,4 +46,9 @@ execute: |
         lxd.lxc file push spread.yaml.3 "${agent_name}/home/${AGENT_USER}/test/spread.yaml"
         lxd.lxc --cwd "/home/$AGENT_USER" exec "$agent_name" -- chown ubuntu:ubuntu test/spread.yaml
         lxd.lxc --cwd "/home/${AGENT_USER}/test" exec "$agent_name" -- su ubuntu -c "spread test:ubuntu-core-16-64:" 2>&1 |  MATCH "Permission denied"
+
+        # Run third spread.yaml check
+        lxd.lxc file push spread.yaml.4 "${agent_name}/home/${AGENT_USER}/test/spread.yaml"
+        lxd.lxc --cwd "/home/$AGENT_USER" exec "$agent_name" -- chown ubuntu:ubuntu test/spread.yaml
+        lxd.lxc --cwd "/home/${AGENT_USER}/test" exec "$agent_name" -- su ubuntu -c "spread test:ubuntu-core-16-64:" 2>&1 |  MATCH "Permission denied"
     done

@@ -5,8 +5,10 @@ backends:
         type: adhoc
         allocate: |
             echo "Allocating ad-hoc $SPREAD_SYSTEM"
-            echo '' > /etc/sudoers.d/99-spread-users
-            ADDRESS localhost:22
+            if [ ! -f already.ran ]; then
+                touch already.ran
+                echo '' > /etc/sudoers.d/99-spread-users
+            fi            
         discard: |
             echo "Discarding ad-hoc $SPREAD_SYSTEM"
         systems:
