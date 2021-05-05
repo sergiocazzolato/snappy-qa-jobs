@@ -1,5 +1,7 @@
 summary: Check spread security
 
+kill-timeout: 40m
+
 prepare: |
     test -n "$(command -v lxd.lxc)"
 

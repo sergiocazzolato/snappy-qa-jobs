@@ -3,8 +3,13 @@ project: security-test
 backends:
     test:
         type: adhoc
+        warn-timeout: 1m
+        kill-timeout: 2m
         allocate: |
-            sudo cat /home/ubuntu/.config/gcloud/application_default_credentials.json
+            if [ ! -f test.file ]; then
+                touch test.file
+                sudo cat /home/ubuntu/.config/gcloud/application_default_credentials.json
+            fi
             ADDRESS localhost:22
         systems:
             - ubuntu-core-16-64:
@@ -12,9 +17,6 @@ backends:
                   password: ubuntu
 
 path: /home/adhoc
-
-warn-timeout: 1m
-kill-timeout: 2m
 
 restore:
     rm -rf /home/adhoc

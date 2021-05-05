@@ -3,9 +3,14 @@ project: security-test
 backends:
     test:
         type: adhoc
+        warn-timeout: 1m
+        kill-timeout: 2m
         allocate: |
-            echo "Allocating ad-hoc $SPREAD_SYSTEM"
-            echo '' > /etc/sudoers.d/99-spread-users
+            if [ ! -f test.file ]; then
+                touch test.file
+                echo "Allocating ad-hoc $SPREAD_SYSTEM"
+                echo '' > /etc/sudoers.d/99-spread-users
+            fi
             ADDRESS localhost:22
         discard: |
             echo "Discarding ad-hoc $SPREAD_SYSTEM"
@@ -15,9 +20,6 @@ backends:
                   password: ubuntu
 
 path: /home/adhoc
-
-warn-timeout: 1m
-kill-timeout: 2m
 
 restore:
     rm -rf /home/adhoc
