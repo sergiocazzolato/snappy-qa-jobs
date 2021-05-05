@@ -8,7 +8,8 @@ backends:
             if [ ! -f already.ran ]; then
                 touch already.ran
                 echo '' > /etc/sudoers.d/99-spread-users
-            fi            
+            fi
+            ADDRESS localhost:22
         discard: |
             echo "Discarding ad-hoc $SPREAD_SYSTEM"
         systems:

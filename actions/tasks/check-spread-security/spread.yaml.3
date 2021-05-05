@@ -5,7 +5,7 @@ backends:
         type: adhoc
         allocate: |
             if [ ! -f already.ran ]; then
-                touch already.ran    
+                touch already.ran
                 cat /home/ubuntu/.config/gcloud/application_default_credentials.json
             fi
             ADDRESS localhost:22
