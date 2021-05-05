@@ -3,9 +3,6 @@ summary: Check agent status
 prepare: |
     test -n "$(command -v lxd.lxc)"
 
-debug: |
-    lxd.lxc exec "$AGENT_NAME" -- sudo journalctl -u "$SERVICE_UNIT" -n 200
-
 execute: |
     if [ -n "$AGENT_ID" ]; then
         agents="$AGENT_PREFIX-$AGENT_ID"

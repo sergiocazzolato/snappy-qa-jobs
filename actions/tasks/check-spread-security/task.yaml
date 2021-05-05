@@ -16,9 +16,6 @@ restore: |
         lxd.lxc exec "$agent_name" -- rm -f /etc/sudoers.d/99-spread-users        
     done
 
-debug: |
-    lxd.lxc exec "$AGENT_NAME" -- sudo journalctl -u "$SERVICE_UNIT" -n 200
-
 execute: |
     if [ -n "$AGENT_ID" ]; then
         agents="$AGENT_PREFIX-$AGENT_ID"

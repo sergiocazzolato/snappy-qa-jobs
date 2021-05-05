@@ -4,11 +4,8 @@ backends:
     test:
         type: adhoc
         allocate: |
-            if [ ! -f already.ran ]; then
-                touch already.ran    
-                cp /home/ubuntu/.config/gcloud/application_default_credentials.json cred.json
-                chown ubuntu:ubuntu cread.json
-            fi
+            cp /home/ubuntu/.config/gcloud/application_default_credentials.json cred.json
+            chown ubuntu:ubuntu cred.json
             ADDRESS localhost:22
         systems:
             - ubuntu-core-16-64:
@@ -16,6 +13,8 @@ backends:
                   password: ubuntu
 
 path: /home/adhoc
+
+kill-timeout: 1m
 
 restore:
     rm -rf /home/adhoc
