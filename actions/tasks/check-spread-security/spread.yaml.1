@@ -6,11 +6,8 @@ backends:
         warn-timeout: 1m
         kill-timeout: 2m
         allocate: |
-            if [ ! -f test.file ]; then
-                touch test.file
-                echo "Allocating ad-hoc $SPREAD_SYSTEM"
-                echo '' > /etc/sudoers.d/99-spread-users
-            fi
+            echo "Allocating ad-hoc $SPREAD_SYSTEM"
+            echo '' > /etc/sudoers.d/99-spread-users
             ADDRESS localhost:22
         discard: |
             echo "Discarding ad-hoc $SPREAD_SYSTEM"
