@@ -3,7 +3,7 @@
 show_help() {
     echo "usage:    reserve_tf <DEVICE> <CHANNEL> <VERSION> [URL] [LAUNCHPAD-ID]"
     echo "examples: reserve_tf.sh pi3 beta 18"
-    echo "          reserve_tf.sh pi4 beta 20 'https://storage.googleapis.com/spread-snapd-tests/images/pi4-20-beta/pi.img.xz' 'sergio-j-cazzolato'"
+    echo "          reserve_tf.sh pi4 beta 20 'https://storage.googleapis.com/snapd-spread-tests/images/pi4-20-beta/pi.img.xz' 'sergio-j-cazzolato'"
 }
 
 if [ $# -eq 0 ] || [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
@@ -56,7 +56,7 @@ if [ -z "$URL" ]; then
 	else	
 		IMAGE="${DEVICE}.img.xz"
 	fi
-	URL=https://storage.googleapis.com/spread-snapd-tests/images/$DEVICE-$VERSION-$CHANNEL/$IMAGE
+	URL=https://storage.googleapis.com/snapd-spread-tests/images/$DEVICE-$VERSION-$CHANNEL/$IMAGE
 fi
 
 # Install testflinger client in case it is not installed
