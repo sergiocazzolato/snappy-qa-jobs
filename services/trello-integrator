@@ -28,7 +28,10 @@ if [ -z "$VERSION_UT" ] || [ -z "$REVISION_UT" ]; then
 fi
 
 # Generate the summary of the test execution
-"${DIR}"/log-analyzer "$SPREAD_LOG" -p result | tee "$SUMMARY_LOG"
+"${DIR}"/log-analyzer "$SPREAD_LOG" -pr all | tee "$SUMMARY_LOG"
+
+# Generate the errors log of the test execution
+"${DIR}"/log-analyzer "$SPREAD_LOG" -pd error -pr all | tee "$ERRORS_LOG"
 
 # Create card in trello
 "${DIR}"/trello-board-updater-ng create -s "$SNAP_UT" -v "$VERSION_UT" -r "$REVISION_UT" --channel "$TARGET_CHANNEL" --config "${DIR}/data/${CONFIG}"
