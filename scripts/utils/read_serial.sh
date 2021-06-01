@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 REUSE_PID=$1
 REUSE_FILE=".spread-reuse.${REUSE_PID}.yaml"
@@ -25,6 +24,10 @@ for i in $(seq 10); do
 	fi
 done
 
+# Save all the logs in a same dir
+LOGSDIR=gce-serial-logs
+mkdir -p "$LOGSDIR"
+
 # We use 240 because 2400 is a 40 minutes kill-timeout 
 for i in $(seq 240); do
 	if [ ! -f "$REUSE_FILE" ]; then
@@ -33,7 +36,7 @@ for i in $(seq 240); do
 	fi
 	NAMES="$(cat $REUSE_FILE | grep name: | awk '{ print $2 }')"
 	for NAME in $NAMES; do
-		LOGNAME="${NAME}.serial.log"
+		LOGNAME="${LOGSDIR}/${NAME}.serial.log"
 		if [ ! -f "$LOGNAME" ]; then
 			echo "Starting new serial log $LOGNAME"
 			gcloud compute instances tail-serial-port-output --zone us-east1-b "$NAME" > "$LOGNAME" 2>&1 &
