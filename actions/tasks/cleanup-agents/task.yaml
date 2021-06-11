@@ -13,6 +13,10 @@ execute: |
     for agent_name in $agents; do
         lxd.lxc exec "$agent_name" -- sudo journalctl --vacuum-time=7d
         lxd.lxc exec "$agent_name" -- sudo find /home/ubuntu/actions-runner/_diag -mtime +7 -name 'Runner_*.log' -exec rm {} \;
-        lxd.lxc exec "$agent_name" -- sudo rm -rf /home/ubuntu/actions-runner/externals.2.276.0
-        lxd.lxc exec "$agent_name" -- sudo rm -rf /home/ubuntu/actions-runner/bin.2.276.0
+
+        current_externals=$(lxd.lxc exec "$agent_name" -- readlink -f /home/ubuntu/actions-runner/externals)
+        lxd.lxc exec "$agent_name" -- find /home/ubuntu/actions-runner/ -maxdepth 1 -name "externals.*" -type d -not -path "$current_externals" -exec rm -r {} \;
+
+        current_bin=$(lxd.lxc exec "$agent_name" -- readlink -f /home/ubuntu/actions-runner/bin)
+        lxd.lxc exec "$agent_name" -- find /home/ubuntu/actions-runner/ -maxdepth 1 -name "bin.*" -type d -not -path "$current_bin" -exec rm -r {} \;
     done
