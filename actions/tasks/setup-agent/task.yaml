@@ -52,6 +52,9 @@ execute: |
     lxd.lxc --user "$USER_ID" --cwd "/home/$AGENT_USER/actions-runner" exec "$AGENT_NAME" -- sudo ./svc.sh start
     lxd.lxc exec "$AGENT_NAME" -- systemctl disable --now ssh.service unattended-upgrades.service networkd-dispatcher.service atd.service cron.service
 
+    # Restart the agent to make sure the proxy is used
+    lxd.lxc restart "$AGENT_NAME"
+
     # Install dependencies to run cla-check python script
     lxd.lxc exec "$AGENT_NAME" -- apt update
     lxd.lxc exec "$AGENT_NAME" -- apt install -y python3-launchpadlib python3-pip python3-setuptools jq
