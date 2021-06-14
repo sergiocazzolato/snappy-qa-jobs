@@ -53,6 +53,10 @@ execute: |
     lxd.lxc exec "$AGENT_NAME" -- systemctl disable --now ssh.service unattended-upgrades.service networkd-dispatcher.service atd.service cron.service
 
     # Restart the agent to make sure the proxy is used
+    lxd.lxc config set "$AGENT_NAME" environment.HTTPS_PROXY http://squid.internal:3128
+    lxd.lxc config set "$AGENT_NAME" environment.https_proxy http://squid.internal:3128
+    lxd.lxc config set "$AGENT_NAME" environment.HTTP_PROXY http://squid.internal:3128
+    lxd.lxc config set "$AGENT_NAME" environment.http_proxy http://squid.internal:3128
     lxd.lxc restart "$AGENT_NAME"
 
     # Install dependencies to run cla-check python script
