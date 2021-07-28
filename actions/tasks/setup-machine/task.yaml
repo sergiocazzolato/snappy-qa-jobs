@@ -22,8 +22,17 @@ execute: |
         lxd init --auto
     fi
 
+    if [ -n "${HTTPS_PROXY:-}" ]; then
+        echo "HTTPS_PROXY=$HTTPS_PROXY" | tee -a /etc/environment
+        echo "HTTP_PROXY=$HTTPS_PROXY" | tee -a /etc/environment
+        echo "https_proxy=$HTTPS_PROXY" |  tee -a /etc/environment
+        echo "http_proxy=$HTTPS_PROXY" | tee -a /etc/environment
+    fi
+
     # Get spread
-    wget http://people.canonical.com/~sjcazzol/snappy/spread
+    wget https://storage.googleapis.com/snapd-spread-tests/spread/spread-amd64.tar.gz
+    tar -xvzf spread-amd64.tar.gz
+    test -x ./spread
 
     # Get the actions runner
     if [ -z "$ACTIONS_URL" ]; then
