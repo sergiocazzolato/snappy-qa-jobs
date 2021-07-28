@@ -5,7 +5,7 @@ restore: |
 
 execute: |
     # Update spread version
-    wget https://storage.googleapis.com/snapd-spread-tests/spread/spread-amd64-tmp.tar.gz
+    wget https://storage.googleapis.com/snapd-spread-tests/spread/spread-amd64.tar.gz
     tar -xvzf spread-amd64-tmp.tar.gz
     test -x ./spread
 
