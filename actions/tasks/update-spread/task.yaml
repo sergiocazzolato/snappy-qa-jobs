@@ -16,5 +16,5 @@ execute: |
     fi
 
     for agent in $agents; do
-        lxd.lxc file push ./spread "$agent"/tmp/spread-runner/spread
+        lxd.lxc file push ./spread "$agent"/usr/local/bin/spread
     done
