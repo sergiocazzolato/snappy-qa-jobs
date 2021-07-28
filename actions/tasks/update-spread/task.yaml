@@ -1,14 +1,13 @@
 summary: Update spread for the service agents specified
 
-prepare: |
-    test -n "$(command -v go)"
-
 restore: |
-    rm -rf ~/go/bin/spread
+    rm -rf ./spread
 
 execute: |
     # Update spread version
-    go get -u github.com/snapcore/spread/cmd/spread
+    wget https://storage.googleapis.com/snapd-spread-tests/spread/spread-amd64-tmp.tar.gz
+    tar -xvzf spread-amd64-tmp.tar.gz
+    test -x ./spread
 
     if [ -n "$AGENT_ID" ]; then
         agents="$AGENT_PREFIX-$AGENT_ID"
@@ -17,5 +16,5 @@ execute: |
     fi
 
     for agent in $agents; do
-        lxd.lxc file push ~/go/bin/spread "$agent"/tmp/spread-runner/spread
+        lxd.lxc file push ./spread "$agent"/tmp/spread-runner/spread
     done
