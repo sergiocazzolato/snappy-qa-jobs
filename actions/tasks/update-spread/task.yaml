@@ -17,4 +17,6 @@ execute: |
 
     for agent in $agents; do
         lxd.lxc file push ./spread "$agent"/usr/local/bin/spread
+        lxd.lxc exec $agent" -- chown root.spread /usr/local/bin/spread
+        lxd.lxc exec $agent" -- chmod u=rwx,g=rxs,o=rx /usr/local/bin/spread
     done
