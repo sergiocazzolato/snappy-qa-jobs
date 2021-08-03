@@ -62,4 +62,4 @@ execute: |
     # Install dependencies to run cla-check python script
     lxd.lxc exec "$AGENT_NAME" -- apt update
     lxd.lxc exec "$AGENT_NAME" -- apt install -y python3-launchpadlib python3-pip python3-setuptools jq
-    lxd.lxc exec "$AGENT_NAME" -- pip3 install yamlordereddictloader
+    lxd.lxc exec "$AGENT_NAME" -- pip3 install yamlordereddictloader jsonpath-ng py-trello pyOpenSSL urllib3 pytz
