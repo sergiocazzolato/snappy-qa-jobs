@@ -271,17 +271,18 @@ These are the typical examples:
     ./validator/promote.sh core beta candidate
     ./validator/promote.sh snapd beta candidate
 
-### core snap to stable
+### core/snapd snap to stable
 
-For amd64 architecture due to the number of devices affected the progressive release is executed. The idea of this is to deliver the core snap to a predefined number of devices.
+For amd64 architecture due to the number of devices affected the progressive release is executed. The idea of this is to deliver the core/snapd snap to a predefined number of devices.
 
-For all the architectures but pc-amd64 the release can be done by runnign 'snapdcraft release core <REV_NUM> stable'
-In case of architecture pc-amd64 a progressive release is nedeed. For that the following steps need to be executed in that order, repeating the step 2 with different percentages until arrive to 100.
+For all the architectures but amd64 the release can be done by runnign 'snapdcraft release core <REV_NUM> stable'
+In case of architecture pc-amd64 a progressive release is nedeed. For that the following steps need to be executed different percentages until arrive to 100.
 
-Steps:
-1. surl -s production -a sca-production -e <EMAIL> --force -p package_access -p package_release
-2. surl -a sca-production -e <EMAIL> -X POST -d '{"name": "core", "revision": <REV_NUM>, "channels": ["stable"], "progressive": {"key": "progressive-core-16-<VERVION>", "percentage": <PERCENTAGE>, "paused": false}}' https://dashboard.snapcraft.io/dev/api/snap-release/
-3. snapcraft release core <REV_NUM> stable
+Step (for core and snapd):
+
+      $ snapcraft release --experimental-progressive-releases --progressive <PERCENTAGE> core <REV_NUM> stable
+      $ snapcraft release --experimental-progressive-releases --progressive <PERCENTAGE> snapd <REV_NUM> stable
+
 
 With:
 
@@ -289,6 +290,13 @@ With:
     <REV_NUM> = The rev number for the snap to do progressive release
     <VERVION> = Id used to identify the progressive release
     <PERCENTAGE> = % of devices which will get the new release. The % should be increase by 25 every 6 hours when the snap store team validates the release is going well. The values for this should be: 25, 50, 75 and 100.   
+
+ONLY DO THIS AFTER THE PROGRESSIVE RELEASE IS UP TO 100%. After many
+hours, once the progressive release has reached 100% please do:
+
+     snapcraft relase core <REV_NUM>
+     snapcraft relase snapd <REV_NUM>
+
 
 ### snapd snap to stable
 
